@@ -1,36 +1,25 @@
-module BusRoutes.Update exposing (Msg(..), initialize, update)
+module BusRoutes.Update exposing (Msg(..), load, update)
 
-import Utils exposing (..)
+import Task exposing (Task)
 import Pages exposing (Page)
 import Api exposing (BusRouteSummary)
 import BusRoutes.Model as Model exposing (Model)
 
 
 type Msg
-    = LoadRoutesStart
-    | LoadRoutesFinish (Result String (List BusRouteSummary))
-    | NavigateTo Page
+    = NavigateTo Page
     | NoOp
 
 
-initialize : Cmd Msg
-initialize =
-    constant LoadRoutesStart
+load : Task String Model
+load =
+    Api.getBusRoutes
+        |> Task.map Model.model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        LoadRoutesStart ->
-            ( { model | routes = Loading }
-            , Api.getBusRoutes |> performSucceed LoadRoutesFinish
-            )
-
-        LoadRoutesFinish result ->
-            ( { model | routes = loadStateFromResult result }
-            , Cmd.none
-            )
-
         NavigateTo page ->
             ( model
             , Pages.navigateTo page

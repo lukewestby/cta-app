@@ -10,6 +10,7 @@ import Routing
 import Pages
 import Html.CssHelpers
 import Classes exposing (Classes(..), appNamespace)
+import Components.Loading as LoadingComponent
 import Icons
 
 
@@ -17,7 +18,7 @@ import Icons
 
 
 type alias Model =
-    { pageModel : Routing.PageModel
+    { pageModel : LoadState String Routing.PageModel
     , currentPage : Pages.Page
     }
 
@@ -27,19 +28,17 @@ type alias Model =
 
 
 type Msg
-    = PageMsg Routing.PageMsg
+    = PageMsg Pages.Page Routing.PageMsg
+    | LoadPageFinish (Result String Routing.PageModel)
     | NavigateTo Pages.Page
 
 
 init : Pages.Page -> ( Model, Cmd Msg )
 init page =
-    let
-        ( pageModel, pageCmd ) =
-            Routing.init page
-    in
-        ( { pageModel = pageModel, currentPage = page }
-        , Cmd.map PageMsg pageCmd
-        )
+    ( { pageModel = Loading, currentPage = page }
+    , Routing.load page
+        |> performSucceed LoadPageFinish
+    )
 
 
 urlUpdate : Pages.Page -> Model -> ( Model, Cmd Msg )
@@ -50,14 +49,24 @@ urlUpdate page model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PageMsg subMsg ->
-            let
-                ( pageModel, pageCmd ) =
-                    Routing.update subMsg model.pageModel
-            in
-                ( { model | pageModel = pageModel }
-                , Cmd.map PageMsg pageCmd
-                )
+        LoadPageFinish result ->
+            ( { model | pageModel = loadStateFromResult result }
+            , Cmd.none
+            )
+
+        PageMsg intendedPage subMsg ->
+            case ( intendedPage == model.currentPage, model.pageModel ) of
+                ( True, Success pageModel ) ->
+                    let
+                        ( pageModel, pageCmd ) =
+                            Routing.update subMsg pageModel
+                    in
+                        ( { model | pageModel = Success pageModel }
+                        , Cmd.map (PageMsg model.currentPage) pageCmd
+                        )
+
+                _ ->
+                    ( model, Cmd.none )
 
         NavigateTo page ->
             ( model
@@ -81,6 +90,23 @@ viewNavIcon currentPage pageForIcon icon =
         [ icon ]
 
 
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.pageModel of
+        Success pageModel ->
+            div []
+                [ div [ class [ PageTitle ] ]
+                    [ text <| Routing.title pageModel ]
+                , HtmlApp.map (PageMsg model.currentPage) <| Routing.view pageModel
+                ]
+
+        Failure _ ->
+            text "nope"
+
+        _ ->
+            LoadingComponent.view
+
+
 view : Model -> Html Msg
 view model =
     div [ class [ AppContainer ] ]
@@ -91,9 +117,7 @@ view model =
             , viewNavIcon model.currentPage Pages.NotFound Icons.search
             ]
         , main' [ class [ PageContainer ] ]
-            [ div [ class [ PageTitle ] ]
-                [ text <| Routing.title model.pageModel ]
-            , HtmlApp.map PageMsg <| Routing.view model.pageModel
+            [ viewPage model
             ]
         ]
 
@@ -110,7 +134,7 @@ main : Program Never
 main =
     Navigation.program Pages.parser
         { init = init
-        , update = update
+        , update = (\msg model -> Debug.log "out" (update msg model))
         , urlUpdate = urlUpdate
         , view = view
         , subscriptions = always Sub.none

@@ -1,6 +1,5 @@
 module BusRoutes.View exposing (view)
 
-import Utils exposing (..)
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.CssHelpers
@@ -10,7 +9,6 @@ import BusRoutes.Model as Model exposing (Model)
 import BusRoutes.Update as Update exposing (Msg(..))
 import BusRoutes.Classes exposing (..)
 import Icons
-import Components.Loading as LoadingComponent
 
 
 viewRouteIdLabel : String -> String -> Html Msg
@@ -31,22 +29,9 @@ viewRoute summary =
         ]
 
 
-viewSuccess : List BusRouteSummary -> Html Msg
-viewSuccess routes =
-    div [] (List.map viewRoute routes)
-
-
 view : Model -> Html Msg
 view model =
-    case model.routes of
-        Success routes ->
-            viewSuccess routes
-
-        Failure message ->
-            text "nope"
-
-        _ ->
-            LoadingComponent.view
+    div [] (List.map viewRoute model.routes)
 
 
 { class, classList } =

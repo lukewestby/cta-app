@@ -1,26 +1,20 @@
-module BusRoute.Model exposing (Model, RouteData, model)
+module BusRoute.Model exposing (Model, model)
 
-import Utils exposing (..)
 import Api exposing (BusRoute, BusStop, Direction)
 
 
-type alias RouteData =
-    { stops : List BusStop
+type alias Model =
+    { searchText : String
     , route : BusRoute
+    , stops : List BusStop
     , selectedDirection : Direction
     }
 
 
-type alias Model =
-    { routeData : LoadState String RouteData
-    , routeId : String
-    , searchText : String
-    }
-
-
-model : String -> Model
-model routeId =
-    { routeData = Initial
-    , routeId = routeId
-    , searchText = ""
+model : BusRoute -> List BusStop -> Model
+model route stops =
+    { searchText = ""
+    , route = route
+    , stops = stops
+    , selectedDirection = fst route.directions
     }

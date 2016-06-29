@@ -9,6 +9,7 @@ import Html exposing (text)
 import Classes exposing (Classes(..), appNamespace)
 import BusRoutes.Stylesheet as BusRoutes
 import BusRoute.Stylesheet as BusRoute
+import BusStop.Stylesheet as BusStop
 import Components.Stylesheet as Components
 import Colors exposing (..)
 
@@ -80,6 +81,7 @@ css =
                 ]
             , BusRoutes.styles
             , BusRoute.styles
+            , BusStop.styles
             , Components.styles
             ]
 

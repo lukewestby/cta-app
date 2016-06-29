@@ -3,12 +3,13 @@ module Routing
         ( PageModel(..)
         , PageMsg(..)
         , update
-        , init
+        , load
         , view
         , title
         )
 
 import Utils exposing (..)
+import Task exposing (Task)
 import Html exposing (Html)
 import Html.App as HtmlApp
 import Pages exposing (Page(..))
@@ -18,17 +19,22 @@ import BusRoute.View as BusRoute
 import BusRoutes.Model as BusRoutes
 import BusRoutes.Update as BusRoutes
 import BusRoutes.View as BusRoutes
+import BusStop.Model as BusStop
+import BusStop.Update as BusStop
+import BusStop.View as BusStop
 
 
 type PageModel
     = BusRouteModel BusRoute.Model
     | BusRoutesModel BusRoutes.Model
+    | BusStopModel BusStop.Model
     | NoneModel
 
 
 type PageMsg
     = BusRouteMsg BusRoute.Msg
     | BusRoutesMsg BusRoutes.Msg
+    | BusStopMsg BusStop.Msg
     | NoneMsg
 
 
@@ -53,25 +59,33 @@ update msg model =
                 , Cmd.map BusRoutesMsg subCmd
                 )
 
+        ( BusStopMsg subMsg, BusStopModel subModel ) ->
+            let
+                ( newModel, subCmd ) =
+                    BusStop.update subMsg subModel
+            in
+                ( BusStopModel newModel
+                , Cmd.map BusStopMsg subCmd
+                )
+
         _ ->
             ( model, Cmd.none )
 
 
-init : Page -> ( PageModel, Cmd PageMsg )
-init page =
+load : Page -> Task String PageModel
+load page =
     case page of
         BusRoutesPage ->
-            ( BusRoutesModel BusRoutes.model
-            , Cmd.map BusRoutesMsg BusRoutes.initialize
-            )
+            BusRoutes.load |> Task.map BusRoutesModel
 
         BusRoutePage routeId ->
-            ( BusRouteModel <| BusRoute.model routeId
-            , Cmd.map BusRouteMsg BusRoute.initialize
-            )
+            BusRoute.load routeId |> Task.map BusRouteModel
+
+        BusStopPage routeId direction stopId ->
+            BusStop.load routeId direction stopId |> Task.map BusStopModel
 
         _ ->
-            ( NoneModel, Cmd.none )
+            Task.succeed NoneModel
 
 
 view : PageModel -> Html PageMsg
@@ -82,6 +96,9 @@ view pageModel =
 
         BusRoutesModel model ->
             HtmlApp.map BusRoutesMsg <| BusRoutes.view model
+
+        BusStopModel model ->
+            HtmlApp.map BusStopMsg <| BusStop.view model
 
         _ ->
             Html.text ""
@@ -94,12 +111,10 @@ title model =
             "Bus Routes"
 
         BusRouteModel model ->
-            case model.routeData of
-                Success routeData ->
-                    "Route " ++ model.routeId ++ " - " ++ routeData.route.name
+            "Bus Route " ++ model.route.id ++ " – " ++ model.route.name
 
-                _ ->
-                    "Route " ++ model.routeId
+        BusStopModel model ->
+            model.busStop.name ++ " - " ++ toString model.busStop.direction
 
         _ ->
             "Not Found"

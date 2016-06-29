@@ -1,6 +1,7 @@
 module Utils exposing (..)
 
 import Task exposing (Task)
+import Process
 
 
 type LoadState x a
@@ -76,3 +77,9 @@ flatten =
                 Just val
             else
                 Nothing
+
+
+delay : Float -> Task x a -> Task x a
+delay howLong task =
+    Process.sleep howLong
+        |> andThen (always task)

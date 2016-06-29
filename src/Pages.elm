@@ -2,12 +2,14 @@ module Pages exposing (Page(..), parser, url, navigateTo, redirectTo)
 
 import String
 import UrlParser exposing (..)
+import Api exposing (Direction)
 import Navigation
 
 
 type Page
     = BusRoutesPage
     | BusRoutePage String
+    | BusStopPage String Direction String
     | NotFound
 
 
@@ -20,8 +22,11 @@ url page =
         BusRoutePage routeId ->
             "bus/routes/" ++ routeId
 
+        BusStopPage routeId direction stopId ->
+            "bus/routes/" ++ routeId ++ "/" ++ toString direction ++ "/" ++ stopId
+
         _ ->
-            ""
+            "not-found"
 
 
 navigateTo : Page -> Cmd msg
@@ -37,7 +42,8 @@ redirectTo page =
 pageParser : Parser (Page -> a) a
 pageParser =
     oneOf
-        [ format BusRoutePage (s "bus" </> s "routes" </> string)
+        [ format BusStopPage (s "bus" </> s "routes" </> string </> custom "DIRECTION" Api.parseDirection </> string)
+        , format BusRoutePage (s "bus" </> s "routes" </> string)
         , format BusRoutesPage (s "bus" </> s "routes")
         ]
 

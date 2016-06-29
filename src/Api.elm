@@ -4,9 +4,11 @@ module Api
         , getBusRoutes
         , BusRoute
         , Direction(..)
+        , parseDirection
         , getBusRoute
         , BusStop
         , getBusStops
+        , getBusStop
         , BusVehicle
         , getBusVehicles
         , BusPrediction
@@ -14,12 +16,28 @@ module Api
         , getBusPredictions
         )
 
-import Process
+import Utils exposing (..)
 import Date exposing (Date)
 import Task exposing (Task)
 import HttpBuilder as Http exposing (..)
 import Json.Decode as Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
+
+
+trackError : Http.Error String -> String
+trackError error =
+    case error of
+        UnexpectedPayload msg ->
+            msg
+
+        NetworkError ->
+            "Failed network"
+
+        Timeout ->
+            "timeout"
+
+        BadResponse response ->
+            response.data
 
 
 dateDecoder : Decoder Date
@@ -54,7 +72,7 @@ getBusRoutes =
     get (fullUrl "/bus/routes")
         |> send busRouteSummariesReader stringReader
         |> Task.map .data
-        |> Task.mapError (always "Couldn't fetch bus routes!")
+        |> Task.mapError trackError
 
 
 type alias BusRoute =
@@ -72,25 +90,28 @@ type Direction
     | Westbound
 
 
+parseDirection : String -> Result String Direction
+parseDirection value =
+    case value of
+        "Northbound" ->
+            Ok Northbound
+
+        "Southbound" ->
+            Ok Southbound
+
+        "Eastbound" ->
+            Ok Eastbound
+
+        "Westbound" ->
+            Ok Westbound
+
+        _ ->
+            Err ("Unknown direction " ++ value)
+
+
 directionDecoder : Decoder Direction
 directionDecoder =
-    customDecoder string
-        <| \value ->
-            case value of
-                "Northbound" ->
-                    Ok Northbound
-
-                "Southbound" ->
-                    Ok Southbound
-
-                "Eastbound" ->
-                    Ok Eastbound
-
-                "Westbound" ->
-                    Ok Westbound
-
-                _ ->
-                    Err ("Unknown direction " ++ value)
+    customDecoder string parseDirection
 
 
 busRouteReader : BodyReader BusRoute
@@ -109,7 +130,7 @@ getBusRoute id =
         |> get
         |> send busRouteReader stringReader
         |> Task.map .data
-        |> Task.mapError (always ("Couldn't fetch bus route #" ++ id))
+        |> Task.mapError trackError
 
 
 type alias BusStop =
@@ -121,16 +142,24 @@ type alias BusStop =
     }
 
 
-busStopsReader : Direction -> BodyReader (List BusStop)
-busStopsReader direction =
+busStopDecoder : Direction -> Decoder BusStop
+busStopDecoder direction =
     decode BusStop
         |> required "id" string
         |> required "name" string
         |> required "latitude" float
         |> required "longitude" float
         |> hardcoded direction
-        |> list
-        |> jsonReader
+
+
+busStopsReader : Direction -> BodyReader (List BusStop)
+busStopsReader direction =
+    busStopDecoder direction |> list |> jsonReader
+
+
+busStopReader : Direction -> BodyReader BusStop
+busStopReader direction =
+    busStopDecoder direction |> jsonReader
 
 
 getBusStops : String -> Direction -> Task String (List BusStop)
@@ -139,8 +168,16 @@ getBusStops id direction =
         |> get
         |> send (busStopsReader direction) stringReader
         |> Task.map .data
-        |> Task.mapError (always ("couldn't get " ++ toString direction ++ " stops for route " ++ id ++ "!"))
-        |> (\t -> Process.sleep 2000 `Task.andThen` (\_ -> t))
+        |> Task.mapError trackError
+
+
+getBusStop : String -> Direction -> String -> Task String BusStop
+getBusStop routeId direction stopId =
+    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ (toString direction) ++ "/" ++ stopId)
+        |> get
+        |> send (busStopReader direction) stringReader
+        |> Task.map .data
+        |> Task.mapError trackError
 
 
 type alias BusVehicle =
@@ -178,7 +215,7 @@ getBusVehicles routeId =
         |> get
         |> send busVehiclesReader stringReader
         |> Task.map .data
-        |> Task.mapError (always ("couldn't get vehicles for route " ++ routeId ++ "!"))
+        |> Task.mapError trackError
 
 
 type alias BusPrediction =
@@ -219,7 +256,7 @@ approachDecoder =
 busPredictionsReader : BodyReader (List BusPrediction)
 busPredictionsReader =
     decode BusPrediction
-        |> required "id" dateDecoder
+        |> required "timestamp" dateDecoder
         |> required "approach" approachDecoder
         |> required "stopId" string
         |> required "stopName" string
@@ -240,4 +277,4 @@ getBusPredictions stopId =
         |> get
         |> send busPredictionsReader stringReader
         |> Task.map .data
-        |> Task.mapError (always ("couldn't fetch predictions for stop " ++ stopId ++ "!"))
+        |> Task.mapError trackError
