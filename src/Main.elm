@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Dict exposing (Dict)
 import Utils exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -20,6 +21,7 @@ import Icons
 type alias Model =
     { pageModel : LoadState String Routing.PageModel
     , currentPage : Pages.Page
+    , cache : Dict String Routing.PageModel
     }
 
 
@@ -29,30 +31,57 @@ type alias Model =
 
 type Msg
     = PageMsg Pages.Page Routing.PageMsg
-    | LoadPageFinish (Result String Routing.PageModel)
+    | LoadPageFinish Bool (Result String Routing.PageModel)
+    | RetryLoad
     | NavigateTo Pages.Page
 
 
 init : Pages.Page -> ( Model, Cmd Msg )
 init page =
-    ( { pageModel = Loading, currentPage = page }
+    ( { pageModel = Loading, currentPage = page, cache = Dict.empty }
     , Routing.load page
-        |> performSucceed LoadPageFinish
+        |> performSucceed (LoadPageFinish (Routing.isCacheable page))
     )
 
 
 urlUpdate : Pages.Page -> Model -> ( Model, Cmd Msg )
 urlUpdate page model =
-    init page
+    case Dict.get (Pages.url page) model.cache of
+        Just cachedModel ->
+            ( { model | pageModel = Success cachedModel, currentPage = page }
+            , Cmd.none
+            )
+
+        Nothing ->
+            ( { model | pageModel = Loading, currentPage = page }
+            , Routing.load page |> performSucceed (LoadPageFinish (Routing.isCacheable page))
+            )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        LoadPageFinish result ->
-            ( { model | pageModel = loadStateFromResult result }
-            , Cmd.none
-            )
+        LoadPageFinish isCacheable result ->
+            case result of
+                Ok pageModel ->
+                    ( { model
+                        | pageModel = Success pageModel
+                        , cache =
+                            if isCacheable then
+                                Dict.insert (Pages.url model.currentPage) pageModel model.cache
+                            else
+                                model.cache
+                      }
+                    , Cmd.none
+                    )
+
+                Err message ->
+                    ( { model | pageModel = Failure message }
+                    , Cmd.none
+                    )
+
+        RetryLoad ->
+            init model.currentPage
 
         PageMsg intendedPage subMsg ->
             case ( intendedPage == model.currentPage, model.pageModel ) of
@@ -90,6 +119,21 @@ viewNavIcon currentPage pageForIcon icon =
         [ icon ]
 
 
+viewFailure : Html Msg
+viewFailure =
+    div [ class [ FailureView ] ]
+        [ div [ class [ ErrorMessage ] ]
+            [ text "Something went wrong!" ]
+        , div [ class [ ReloadButtonContainer ] ]
+            [ button
+                [ class [ ReloadButton ]
+                , onClick RetryLoad
+                ]
+                [ text "Retry" ]
+            ]
+        ]
+
+
 viewPage : Model -> Html Msg
 viewPage model =
     case model.pageModel of
@@ -101,7 +145,7 @@ viewPage model =
                 ]
 
         Failure _ ->
-            text "nope"
+            viewFailure
 
         _ ->
             LoadingComponent.view
@@ -134,7 +178,7 @@ main : Program Never
 main =
     Navigation.program Pages.parser
         { init = init
-        , update = (\msg model -> Debug.log "out" (update msg model))
+        , update = update
         , urlUpdate = urlUpdate
         , view = view
         , subscriptions = always Sub.none

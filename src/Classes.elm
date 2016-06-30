@@ -13,3 +13,7 @@ type Classes
     | HeaderNavIconActive
     | PageTitle
     | PageContainer
+    | ReloadButtonContainer
+    | ReloadButton
+    | ErrorMessage
+    | FailureView

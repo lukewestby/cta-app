@@ -53,8 +53,6 @@ parser =
     Navigation.makeParser
         (.pathname
             >> String.dropLeft 1
-            >> Debug.log "path"
             >> UrlParser.parse identity pageParser
-            >> Debug.log "parsed"
             >> Result.withDefault NotFound
         )

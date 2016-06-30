@@ -6,6 +6,7 @@ module Routing
         , load
         , view
         , title
+        , isCacheable
         )
 
 import Utils exposing (..)
@@ -102,6 +103,22 @@ view pageModel =
 
         _ ->
             Html.text ""
+
+
+isCacheable : Page -> Bool
+isCacheable page =
+    case page of
+        BusRoutesPage ->
+            True
+
+        BusRoutePage _ ->
+            True
+
+        BusStopPage _ _ _ ->
+            False
+
+        NotFound ->
+            False
 
 
 title : PageModel -> String

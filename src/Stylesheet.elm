@@ -78,6 +78,30 @@ css =
                     , fontSize (px 20)
                     , borderBottom3 (px 1) solid (hex lightGray)
                     ]
+                , (.) FailureView
+                    [ backgroundColor (hex "#fff")
+                    , height (pct 100)
+                    , displayFlex
+                    , property "align-items" "center"
+                    , property "flex-direction" "column"
+                    , padding (px 32)
+                    ]
+                , (.) ErrorMessage
+                    [ color (hex midGray)
+                    , fontSize (px 20)
+                    ]
+                , (.) ReloadButtonContainer
+                    [ padding2 (px 32) zero
+                    ]
+                , (.) ReloadButton
+                    [ border3 (px 1) solid (hex primaryColor)
+                    , color (hex primaryColor)
+                    , textTransform uppercase
+                    , backgroundColor transparent
+                    , fontSize (px 16)
+                    , padding2 (px 8) (px 16)
+                    , property "outline" "0"
+                    ]
                 ]
             , BusRoutes.styles
             , BusRoute.styles
