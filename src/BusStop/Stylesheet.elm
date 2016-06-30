@@ -15,11 +15,18 @@ styles =
             , property "fill" midGray
             , display inlineBlock
             ]
-        , (.) StopItem
+        , (.) PredictionItem
             [ borderBottom3 (px 1) solid (hex lightGray)
             , height (px 64)
             , displayFlex
             , property "align-items" "center"
             , padding2 zero (px 32)
+            ]
+        , (.) PredictionDetails
+            [ padding2 zero (px 16)
+            ]
+        , (.) StopName
+            [ color (hex midGray)
+            , fontSize (px 14)
             ]
         ]

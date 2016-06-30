@@ -8,4 +8,8 @@ cssNamespace =
 
 type Classes
     = ItemIcon
-    | StopItem
+    | PredictionItem
+    | PredictionDetails
+    | StopName
+    | RouteName
+    | PredictionValue

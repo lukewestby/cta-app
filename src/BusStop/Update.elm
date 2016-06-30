@@ -19,7 +19,7 @@ load routeId direction stopId =
     in
         Api.getBusStop routeId direction stopId
             |> andThen stopToStopAndPredictions
-            |> Task.map (\( stop, predictions ) -> Model.model stop predictions)
+            |> Task.map (\( stop, predictions ) -> Model.model stop predictions routeId)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

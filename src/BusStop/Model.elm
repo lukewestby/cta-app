@@ -6,9 +6,10 @@ import Api exposing (BusStop, BusPrediction)
 type alias Model =
     { busStop : BusStop
     , predictions : List BusPrediction
+    , routeId : String
     }
 
 
-model : BusStop -> List BusPrediction -> Model
+model : BusStop -> List BusPrediction -> String -> Model
 model =
     Model
