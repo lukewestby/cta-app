@@ -1,5 +1,6 @@
 module BusRoutes.View exposing (view)
 
+import String
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.CssHelpers
@@ -9,6 +10,7 @@ import BusRoutes.Model as Model exposing (Model)
 import BusRoutes.Update as Update exposing (Msg(..))
 import BusRoutes.Classes exposing (..)
 import Icons
+import Components.SearchBar as SearchBar
 
 
 viewRouteIdLabel : String -> String -> Html Msg
@@ -29,9 +31,29 @@ viewRoute summary =
         ]
 
 
+fieldMatches : String -> (BusRouteSummary -> String) -> BusRouteSummary -> Bool
+fieldMatches searchText accessor summary =
+    String.contains searchText (String.toLower (accessor summary))
+
+
+filteredRoutes : Model -> List BusRouteSummary
+filteredRoutes model =
+    let
+        lowerSearchText =
+            String.toLower (SearchBar.getSearchValue model.searchModel)
+    in
+        model.routes
+            |> List.filter (\s -> (fieldMatches lowerSearchText .id s) || (fieldMatches lowerSearchText .name s))
+
+
 view : Model -> Html Msg
 view model =
-    div [] (List.map viewRoute model.routes)
+    div []
+        [ div [ class [ ControlsContainer ] ]
+            [ SearchBar.view model.searchModel SearchBarMsg
+            ]
+        , div [] (filteredRoutes model |> List.map viewRoute)
+        ]
 
 
 { class, classList } =

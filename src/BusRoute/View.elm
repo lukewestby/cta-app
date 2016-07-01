@@ -9,7 +9,7 @@ import Api exposing (BusStop, Direction)
 import BusRoute.Model as Model exposing (Model)
 import BusRoute.Update as Update exposing (Msg(..))
 import BusRoute.Classes exposing (..)
-import Components.SearchBar as SearchBarCmp
+import Components.SearchBar as SearchBar
 import Icons
 
 
@@ -60,12 +60,12 @@ view : Model -> Html Msg
 view model =
     div []
         [ div [ class [ ControlsContainer ] ]
-            [ SearchBarCmp.view model.searchText UpdateSearchText ClearSearchText
+            [ SearchBar.view model.searchModel SearchBarMsg
             , viewDirectionSelector model.selectedDirection model.route.directions
             ]
         , div []
             <| (model.stops
-                    |> filterStops model.searchText model.selectedDirection
+                    |> filterStops (SearchBar.getSearchValue model.searchModel) model.selectedDirection
                     |> List.map (viewStop model.route.id)
                )
         ]

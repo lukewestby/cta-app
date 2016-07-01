@@ -13,3 +13,4 @@ type Classes
     | RouteNameContainer
     | RouteName
     | ReloadingContainer
+    | ControlsContainer

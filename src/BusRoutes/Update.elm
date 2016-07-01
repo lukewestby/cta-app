@@ -4,11 +4,12 @@ import Task exposing (Task)
 import Pages exposing (Page)
 import Api exposing (BusRouteSummary)
 import BusRoutes.Model as Model exposing (Model)
+import Components.SearchBar as SearchBar
 
 
 type Msg
     = NavigateTo Page
-    | NoOp
+    | SearchBarMsg SearchBar.Msg
 
 
 load : Task String Model
@@ -25,5 +26,11 @@ update msg model =
             , Pages.navigateTo page
             )
 
-        NoOp ->
-            model ! []
+        SearchBarMsg subMsg ->
+            let
+                ( subModel, subCmd ) =
+                    SearchBar.update subMsg model.searchModel
+            in
+                ( { model | searchModel = subModel }
+                , Cmd.map SearchBarMsg subCmd
+                )

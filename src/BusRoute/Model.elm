@@ -1,10 +1,11 @@
 module BusRoute.Model exposing (Model, model)
 
 import Api exposing (BusRoute, BusStop, Direction)
+import Components.SearchBar as SearchBar
 
 
 type alias Model =
-    { searchText : String
+    { searchModel : SearchBar.Model
     , route : BusRoute
     , stops : List BusStop
     , selectedDirection : Direction
@@ -13,7 +14,7 @@ type alias Model =
 
 model : BusRoute -> List BusStop -> Model
 model route stops =
-    { searchText = ""
+    { searchModel = SearchBar.model
     , route = route
     , stops = stops
     , selectedDirection = fst route.directions

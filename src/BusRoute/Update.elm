@@ -5,13 +5,13 @@ import Utils exposing (..)
 import Api exposing (BusRoute, BusStop, Direction)
 import Pages
 import BusRoute.Model as Model exposing (Model)
+import Components.SearchBar as SearchBar
 
 
 type Msg
     = SelectDirection Direction
-    | UpdateSearchText String
-    | ClearSearchText
     | NavigateTo Pages.Page
+    | SearchBarMsg SearchBar.Msg
 
 
 load : String -> Task String Model
@@ -44,15 +44,14 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateSearchText value ->
-            ( { model | searchText = value }
-            , Cmd.none
-            )
-
-        ClearSearchText ->
-            ( { model | searchText = "" }
-            , Cmd.none
-            )
-
         NavigateTo page ->
             ( model, Pages.navigateTo page )
+
+        SearchBarMsg subMsg ->
+            let
+                ( subModel, subCmd ) =
+                    SearchBar.update subMsg model.searchModel
+            in
+                ( { model | searchModel = subModel }
+                , Cmd.map SearchBarMsg subCmd
+                )

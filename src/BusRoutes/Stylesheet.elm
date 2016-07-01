@@ -47,4 +47,8 @@ styles =
             , position absolute
             , top (px -64)
             ]
+        , (.) ControlsContainer
+            [ padding2 (px 16) (px 32)
+            , borderBottom3 (px 1) solid (hex lightGray)
+            ]
         ]
