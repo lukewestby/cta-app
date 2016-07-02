@@ -24,8 +24,35 @@ styles =
             ]
         , (.) PredictionDetails
             [ padding2 zero (px 16)
+            , property "width" "calc(100% - 108px)"
+            ]
+        , (.) RouteName
+            [ whiteSpace noWrap
+            , overflowX hidden
+            , textOverflow ellipsis
+            ]
+        , (.) PredictionValue
+            [ textAlign center
+            , textTransform uppercase
+            , width (px 76)
             ]
         , (.) StopName
+            [ color (hex midGray)
+            , fontSize (px 14)
+            , whiteSpace noWrap
+            , overflowX hidden
+            , textOverflow ellipsis
+            ]
+        , (.) NearPrediction
+            [ color (hex green)
+            ]
+        , (.) MediumPrediction
+            [ color (hex yellow)
+            ]
+        , (.) FarPrediction
+            [ color (hex red)
+            ]
+        , (.) PredictionLabel
             [ color (hex midGray)
             , fontSize (px 14)
             ]

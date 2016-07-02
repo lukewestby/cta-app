@@ -16,6 +16,7 @@ module Api
         , getBusPredictions
         )
 
+import Time
 import Utils exposing (..)
 import Date exposing (Date)
 import Task exposing (Task)
@@ -253,8 +254,8 @@ approachDecoder =
                     Err ("Unknown approach " ++ value)
 
 
-busPredictionsReader : BodyReader (List BusPrediction)
-busPredictionsReader =
+busPredictionsDecoder : Decoder (List BusPrediction)
+busPredictionsDecoder =
     decode BusPrediction
         |> required "timestamp" dateDecoder
         |> required "approach" approachDecoder
@@ -268,12 +269,16 @@ busPredictionsReader =
         |> required "predictedTime" dateDecoder
         |> required "isDelayed" bool
         |> list
-        |> jsonReader
 
 
-getBusPredictions : String -> Task String (List BusPrediction)
-getBusPredictions stopId =
-    fullUrl ("/bus/stops/" ++ stopId ++ "/predictions")
+busPredictionsReader : BodyReader (List BusPrediction)
+busPredictionsReader =
+    jsonReader busPredictionsDecoder
+
+
+getBusPredictions : String -> Direction -> String -> Task String (List BusPrediction)
+getBusPredictions routeId direction stopId =
+    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ toString direction ++ "/" ++ stopId ++ "/predictions")
         |> get
         |> send busPredictionsReader stringReader
         |> Task.map .data

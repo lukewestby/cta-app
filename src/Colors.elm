@@ -14,3 +14,18 @@ lightGray =
 primaryColor : String
 primaryColor =
     "#1DA1F2"
+
+
+green : String
+green =
+    "#2DDE93"
+
+
+yellow : String
+yellow =
+    "#F8E71C"
+
+
+red : String
+red =
+    "#D0021B"

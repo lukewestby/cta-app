@@ -17,3 +17,4 @@ type Classes
     | ReloadButton
     | ErrorMessage
     | FailureView
+    | PageTitleInner

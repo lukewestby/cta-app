@@ -7,6 +7,7 @@ module Routing
         , view
         , title
         , isCacheable
+        , subscriptions
         )
 
 import Utils exposing (..)
@@ -23,6 +24,7 @@ import BusRoutes.View as BusRoutes
 import BusStop.Model as BusStop
 import BusStop.Update as BusStop
 import BusStop.View as BusStop
+import BusStop.Subscriptions as BusStop
 
 
 type PageModel
@@ -135,3 +137,13 @@ title model =
 
         _ ->
             "Not Found"
+
+
+subscriptions : PageModel -> Sub PageMsg
+subscriptions pageModel =
+    case pageModel of
+        BusStopModel model ->
+            Sub.map BusStopMsg <| BusStop.subscriptions model
+
+        _ ->
+            Sub.none

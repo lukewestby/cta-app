@@ -140,7 +140,9 @@ viewPage model =
         Success pageModel ->
             div []
                 [ div [ class [ PageTitle ] ]
-                    [ text <| Routing.title pageModel ]
+                    [ div [ class [ PageTitleInner ] ]
+                        [ text <| Routing.title pageModel ]
+                    ]
                 , HtmlApp.map (PageMsg model.currentPage) <| Routing.view pageModel
                 ]
 
@@ -171,6 +173,20 @@ view model =
 
 
 
+-- SUBS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.pageModel of
+        Success pageModel ->
+            Sub.map (PageMsg model.currentPage) (Routing.subscriptions pageModel)
+
+        _ ->
+            Sub.none
+
+
+
 -- APP
 
 
@@ -181,5 +197,5 @@ main =
         , update = update
         , urlUpdate = urlUpdate
         , view = view
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }

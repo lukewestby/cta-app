@@ -8,13 +8,15 @@ import BusStop.Model as Model exposing (Model)
 
 type Msg
     = NoOp
+    | ReloadPredictionsStart
+    | ReloadPredictionsFinish (Result String (List BusPrediction))
 
 
 load : String -> Direction -> String -> Task String Model
 load routeId direction stopId =
     let
         stopToStopAndPredictions stop =
-            Api.getBusPredictions stopId
+            Api.getBusPredictions routeId direction stopId
                 |> Task.map (\predictions -> ( stop, predictions ))
     in
         Api.getBusStop routeId direction stopId
@@ -27,3 +29,19 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        ReloadPredictionsStart ->
+            ( model
+            , Api.getBusPredictions model.routeId model.busStop.direction model.busStop.id
+                |> performSucceed ReloadPredictionsFinish
+            )
+
+        ReloadPredictionsFinish result ->
+            case result of
+                Ok predictions ->
+                    ( { model | predictions = predictions }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )

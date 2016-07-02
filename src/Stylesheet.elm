@@ -78,6 +78,11 @@ css =
                     , fontSize (px 20)
                     , borderBottom3 (px 1) solid (hex lightGray)
                     ]
+                , (.) PageTitleInner
+                    [ whiteSpace noWrap
+                    , overflowX hidden
+                    , textOverflow ellipsis
+                    ]
                 , (.) FailureView
                     [ backgroundColor (hex "#fff")
                     , height (pct 100)

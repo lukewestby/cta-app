@@ -1,10 +1,11 @@
 module BusStop.View exposing (view)
 
 import Date
+import String
 import Html exposing (..)
 import Html.CssHelpers
 import BusStop.Classes exposing (..)
-import Api exposing (BusStop, BusPrediction)
+import Api exposing (BusStop, BusPrediction, Direction)
 import BusStop.Model as Model exposing (Model)
 import BusStop.Update exposing (Msg(..))
 import Icons
@@ -40,6 +41,22 @@ viewArrivingMinutes inMinutes =
         toString inMinutes ++ " mins"
 
 
+arrivingClass : Int -> Html.Attribute msg
+arrivingClass inMinutes =
+    classList
+        [ ( NearPrediction, inMinutes <= 5 )
+        , ( MediumPrediction, inMinutes > 5 && inMinutes <= 12 )
+        , ( FarPrediction, inMinutes > 12 )
+        ]
+
+
+viewDirection : Direction -> String
+viewDirection direction =
+    direction
+        |> toString
+        |> String.dropRight 5
+
+
 viewPrediction : String -> BusStop -> BusPrediction -> Html Msg
 viewPrediction routeId stop prediction =
     let
@@ -50,22 +67,27 @@ viewPrediction routeId stop prediction =
             [ div [ class [ ItemIcon ] ] [ Icons.bus ]
             , div [ class [ PredictionDetails ] ]
                 [ div [ class [ RouteName ] ]
-                    [ text <| "Route " ++ routeId ++ " – " ++ toString stop.direction ]
+                    [ text <| "Route " ++ routeId ++ " – " ++ viewDirection stop.direction ]
                 , div [ class [ StopName ] ]
                     [ text stop.name ]
                 ]
             , div [ class [ PredictionValue ] ]
-                [ div [] [ text <| viewArrivingLabel inMinutes ]
-                , div [] [ text <| viewArrivingMinutes inMinutes ]
+                [ div [ class [ PredictionLabel ] ] [ text <| viewArrivingLabel inMinutes ]
+                , div [ arrivingClass inMinutes ] [ text <| viewArrivingMinutes inMinutes ]
                 ]
             ]
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        (List.map (viewPrediction model.routeId model.busStop) model.predictions)
+    let
+        items =
+            model.predictions
+                |> List.sortBy predictionInMinutes
+                |> List.map (viewPrediction model.routeId model.busStop)
+    in
+        div [] items
 
 
-{ class } =
+{ class, classList } =
     Html.CssHelpers.withNamespace cssNamespace

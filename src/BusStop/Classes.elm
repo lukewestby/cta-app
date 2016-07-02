@@ -13,3 +13,7 @@ type Classes
     | StopName
     | RouteName
     | PredictionValue
+    | PredictionLabel
+    | NearPrediction
+    | MediumPrediction
+    | FarPrediction
