@@ -72,7 +72,8 @@ update msg model =
                             else
                                 model.cache
                       }
-                    , Cmd.none
+                    , Routing.initialize model.currentPage
+                        |> Cmd.map (PageMsg model.currentPage)
                     )
 
                 Err message ->

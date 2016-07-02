@@ -4,7 +4,8 @@ import Api exposing (BusStop, BusPrediction)
 
 
 type alias Model =
-    { busStop : BusStop
+    { isFavorited : Bool
+    , busStop : BusStop
     , predictions : List BusPrediction
     , routeId : String
     }
@@ -12,4 +13,4 @@ type alias Model =
 
 model : BusStop -> List BusPrediction -> String -> Model
 model =
-    Model
+    Model False

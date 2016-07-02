@@ -3,6 +3,7 @@ module BusStop.View exposing (view)
 import Date
 import String
 import Html exposing (..)
+import Html.Events exposing (..)
 import Html.CssHelpers
 import BusStop.Classes exposing (..)
 import Api exposing (BusStop, BusPrediction, Direction)
@@ -78,6 +79,28 @@ viewPrediction routeId stop prediction =
             ]
 
 
+viewFavoriteControl : Bool -> Html Msg
+viewFavoriteControl isFavorited =
+    let
+        ( icon, favoriteText, message ) =
+            if isFavorited then
+                ( Icons.star, "Added to favorites", RemoveFavorite )
+            else
+                ( Icons.starOutline, "Add to favorites", SaveFavorite )
+    in
+        div [ class [ ControlsContainer ] ]
+            [ div
+                [ class [ FavoriteContainer ]
+                , onClick message
+                ]
+                [ span [ class [ FavoriteIcon ] ]
+                    [ icon ]
+                , span [ class [ FavoriteText ] ]
+                    [ text favoriteText ]
+                ]
+            ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -86,7 +109,10 @@ view model =
                 |> List.sortBy predictionInMinutes
                 |> List.map (viewPrediction model.routeId model.busStop)
     in
-        div [] items
+        div []
+            [ viewFavoriteControl model.isFavorited
+            , div [] items
+            ]
 
 
 { class, classList } =

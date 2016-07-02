@@ -56,4 +56,24 @@ styles =
             [ color (hex midGray)
             , fontSize (px 14)
             ]
+        , (.) ControlsContainer
+            [ borderBottom3 (px 1) solid (hex lightGray)
+            ]
+        , (.) FavoriteContainer
+            [ displayFlex
+            , property "align-items" "center"
+            , height (px 48)
+            , padding2 zero (px 32)
+            ]
+        , (.) FavoriteIcon
+            [ width (px 24)
+            , height (px 24)
+            , property "stroke" midGray
+            , property "fill" yellow
+            ]
+        , (.) FavoriteText
+            [ fontSize (px 16)
+            , textTransform uppercase
+            , padding2 zero (px 16)
+            ]
         ]

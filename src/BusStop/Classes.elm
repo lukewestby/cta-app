@@ -17,3 +17,7 @@ type Classes
     | NearPrediction
     | MediumPrediction
     | FarPrediction
+    | ControlsContainer
+    | FavoriteContainer
+    | FavoriteIcon
+    | FavoriteText

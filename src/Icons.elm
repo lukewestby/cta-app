@@ -18,6 +18,14 @@ star =
 </svg>"""
 
 
+starOutline : Html msg
+starOutline =
+    fromSvgString """
+<svg width="100%" height="100%" viewBox="-2 -2 28 28">
+    <polygon stroke-width="1" fill="none" points="24 9 14.8135179 9 12.0015536 0 9.18851786 9 0 9 7.44353571 14.582625 4.5 24 12 18 19.5 24 16.5574821 14.581875"></polygon>
+</svg>"""
+
+
 bus : Html msg
 bus =
     fromSvgString """

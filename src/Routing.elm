@@ -8,6 +8,7 @@ module Routing
         , title
         , isCacheable
         , subscriptions
+        , initialize
         )
 
 import Utils exposing (..)
@@ -137,6 +138,16 @@ title model =
 
         _ ->
             "Not Found"
+
+
+initialize : Page -> Cmd PageMsg
+initialize page =
+    case page of
+        BusStopPage _ _ _ ->
+            Cmd.map BusStopMsg BusStop.initialize
+
+        _ ->
+            Cmd.none
 
 
 subscriptions : PageModel -> Sub PageMsg
