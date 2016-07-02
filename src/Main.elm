@@ -161,7 +161,6 @@ view model =
             [ viewNavIcon model.currentPage Pages.NotFound Icons.star
             , viewNavIcon model.currentPage Pages.BusRoutesPage Icons.bus
             , viewNavIcon model.currentPage Pages.NotFound Icons.train
-            , viewNavIcon model.currentPage Pages.NotFound Icons.search
             ]
         , main' [ class [ PageContainer ] ]
             [ viewPage model

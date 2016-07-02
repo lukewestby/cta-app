@@ -36,7 +36,6 @@ styles =
             ]
         , (.) SearchBarContainer
             [ displayFlex
-            , marginBottom (px 16)
             , borderBottom3 (px 1) solid (hex lightGray)
             , property "align-items" "center"
             ]

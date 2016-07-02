@@ -40,6 +40,7 @@ styles =
             [ displayFlex
             , property "align-items" "center"
             , property "justify-content" "center"
+            , marginTop (px 16)
             ]
         , (.) DirectionButton
             [ width (pct 50)
