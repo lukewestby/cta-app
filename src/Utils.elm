@@ -1,6 +1,7 @@
 module Utils exposing (..)
 
 import Task exposing (Task)
+import Set
 import Process
 
 
@@ -83,3 +84,20 @@ delay : Float -> Task x a -> Task x a
 delay howLong task =
     Process.sleep howLong
         |> andThen (always task)
+
+
+listUniqueBy : (a -> comparable) -> List a -> List a
+listUniqueBy accessor list =
+    let
+        fold item memo =
+            let
+                id =
+                    accessor item
+            in
+                if Set.member id memo.ids then
+                    memo
+                else
+                    { memo | output = item :: memo.output, ids = Set.insert id memo.ids }
+    in
+        List.foldl fold { output = [], ids = Set.empty } list
+            |> .output

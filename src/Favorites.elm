@@ -1,6 +1,7 @@
 port module Favorites
     exposing
-        ( startFavoritesListen
+        ( FavoriteType(..)
+        , startFavoritesListen
         , favoritesUpdates
         , saveFavorite
         , removeFavorite
@@ -8,7 +9,26 @@ port module Favorites
 
 import Json.Decode as Decode exposing (..)
 import Json.Encode as Encode
-import Api exposing (Direction(..))
+
+
+type FavoriteType
+    = Bus
+    | Train
+
+
+decodeFavoriteType : Decoder FavoriteType
+decodeFavoriteType =
+    customDecoder string
+        <| \value ->
+            case value of
+                "Bus" ->
+                    Ok Bus
+
+                "Train" ->
+                    Ok Train
+
+                _ ->
+                    Err ("Unknown FavoriteType: " ++ value)
 
 
 port startFavoritesListenRaw : {} -> Cmd msg
@@ -32,11 +52,11 @@ extractUnsafe result =
             Debug.crash "couldn't extract result"
 
 
-favoritesUpdates : (List ( String, String, Direction ) -> msg) -> Sub msg
+favoritesUpdates : (List ( FavoriteType, String ) -> msg) -> Sub msg
 favoritesUpdates tagger =
     let
         decoder =
-            tuple3 (,,) string string (customDecoder string Api.parseDirection)
+            tuple2 (,) decodeFavoriteType string
                 |> list
 
         decode value =
@@ -54,27 +74,25 @@ port saveFavoriteRaw : Value -> Cmd msg
 port removeFavoriteRaw : Value -> Cmd msg
 
 
-saveFavorite : ( String, String, Direction ) -> Cmd msg
-saveFavorite ( routeId, stopId, direction ) =
+saveFavorite : ( FavoriteType, String ) -> Cmd msg
+saveFavorite ( favoriteType, stopId ) =
     let
         encoded =
             Encode.list
-                [ Encode.string routeId
+                [ Encode.string <| toString favoriteType
                 , Encode.string stopId
-                , Encode.string (toString direction)
                 ]
     in
         saveFavoriteRaw encoded
 
 
-removeFavorite : ( String, String, Direction ) -> Cmd msg
-removeFavorite ( routeId, stopId, direction ) =
+removeFavorite : ( FavoriteType, String ) -> Cmd msg
+removeFavorite ( favoriteType, stopId ) =
     let
         encoded =
             Encode.list
-                [ Encode.string routeId
+                [ Encode.string <| toString favoriteType
                 , Encode.string stopId
-                , Encode.string (toString direction)
                 ]
     in
         removeFavoriteRaw encoded

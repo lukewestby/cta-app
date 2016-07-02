@@ -9,7 +9,7 @@ import Navigation
 type Page
     = BusRoutesPage
     | BusRoutePage String
-    | BusStopPage String Direction String
+    | BusStopPage String String
     | NotFound
 
 
@@ -22,8 +22,8 @@ url page =
         BusRoutePage routeId ->
             "bus/routes/" ++ routeId
 
-        BusStopPage routeId direction stopId ->
-            "bus/routes/" ++ routeId ++ "/" ++ toString direction ++ "/" ++ stopId
+        BusStopPage routeId stopId ->
+            "bus/routes/" ++ routeId ++ "/stops/" ++ stopId
 
         _ ->
             "not-found"
@@ -42,7 +42,7 @@ redirectTo page =
 pageParser : Parser (Page -> a) a
 pageParser =
     oneOf
-        [ format BusStopPage (s "bus" </> s "routes" </> string </> custom "DIRECTION" Api.parseDirection </> string)
+        [ format BusStopPage (s "bus" </> s "routes" </> string </> s "stops" </> string)
         , format BusRoutePage (s "bus" </> s "routes" </> string)
         , format BusRoutesPage (s "bus" </> s "routes")
         ]

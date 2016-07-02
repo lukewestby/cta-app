@@ -68,7 +68,7 @@ viewPrediction routeId stop prediction =
             [ div [ class [ ItemIcon ] ] [ Icons.bus ]
             , div [ class [ PredictionDetails ] ]
                 [ div [ class [ RouteName ] ]
-                    [ text <| "Route " ++ routeId ++ " – " ++ viewDirection stop.direction ]
+                    [ text <| "Route " ++ routeId ]
                 , div [ class [ StopName ] ]
                     [ text stop.name ]
                 ]

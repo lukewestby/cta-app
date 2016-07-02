@@ -13,46 +13,24 @@ import Components.SearchBar as SearchBar
 import Icons
 
 
-filterStops : String -> Direction -> List BusStop -> List BusStop
-filterStops searchText selectedDirection stops =
+filterStops : String -> List BusStop -> List BusStop
+filterStops searchText stops =
     let
         lowerSearchText =
             String.toLower searchText
     in
         stops
-            |> List.filter (\stop -> (stop.direction == selectedDirection) && (String.contains lowerSearchText (String.toLower stop.name)))
+            |> List.filter (\stop -> String.contains lowerSearchText (String.toLower stop.name))
 
 
 viewStop : String -> BusStop -> Html Msg
 viewStop routeId stop =
     div
         [ class [ StopItem ]
-        , onClick <| NavigateTo (Pages.BusStopPage routeId stop.direction stop.id)
+        , onClick <| NavigateTo (Pages.BusStopPage routeId stop.id)
         ]
         [ div [ class [ StopName ] ] [ text stop.name ]
         , div [ class [ Chevron ] ] [ Icons.chevronRight ]
-        ]
-
-
-viewDirectionSelector : Direction -> ( Direction, Direction ) -> Html Msg
-viewDirectionSelector selectedDirection directions =
-    div [ class [ DirectionsSelector ] ]
-        [ button
-            [ classList
-                [ ( DirectionButton, True )
-                , ( ActiveDirectionButton, selectedDirection == fst directions )
-                ]
-            , onClick <| SelectDirection <| fst directions
-            ]
-            [ text <| toString <| fst directions ]
-        , button
-            [ classList
-                [ ( DirectionButton, True )
-                , ( ActiveDirectionButton, selectedDirection == snd directions )
-                ]
-            , onClick <| SelectDirection <| snd directions
-            ]
-            [ text <| toString <| snd directions ]
         ]
 
 
@@ -61,11 +39,10 @@ view model =
     div []
         [ div [ class [ ControlsContainer ] ]
             [ SearchBar.view model.searchModel SearchBarMsg
-            , viewDirectionSelector model.selectedDirection model.route.directions
             ]
         , div []
             <| (model.stops
-                    |> filterStops (SearchBar.getSearchValue model.searchModel) model.selectedDirection
+                    |> filterStops (SearchBar.getSearchValue model.searchModel)
                     |> List.map (viewStop model.route.id)
                )
         ]

@@ -11,19 +11,19 @@ type Msg
     = NoOp
     | ReloadPredictionsStart
     | ReloadPredictionsFinish (Result String (List BusPrediction))
-    | UpdateFavorites (List ( String, String, Direction ))
+    | UpdateFavorites (List ( Favorites.FavoriteType, String ))
     | SaveFavorite
     | RemoveFavorite
 
 
-load : String -> Direction -> String -> Task String Model
-load routeId direction stopId =
+load : String -> String -> Task String Model
+load routeId stopId =
     let
         stopToStopAndPredictions stop =
-            Api.getBusPredictions routeId direction stopId
+            Api.getBusPredictions routeId stopId
                 |> Task.map (\predictions -> ( stop, predictions ))
     in
-        Api.getBusStop routeId direction stopId
+        Api.getBusStop routeId stopId
             |> andThen stopToStopAndPredictions
             |> Task.map (\( stop, predictions ) -> Model.model stop predictions routeId)
 
@@ -41,7 +41,7 @@ update msg model =
 
         ReloadPredictionsStart ->
             ( model
-            , Api.getBusPredictions model.routeId model.busStop.direction model.busStop.id
+            , Api.getBusPredictions model.routeId model.busStop.id
                 |> performSucceed ReloadPredictionsFinish
             )
 
@@ -58,17 +58,17 @@ update msg model =
         UpdateFavorites favorites ->
             ( { model
                 | isFavorited =
-                    List.any ((==) ( model.routeId, model.busStop.id, model.busStop.direction )) favorites
+                    List.any ((==) ( Favorites.Bus, model.busStop.id )) favorites
               }
             , Cmd.none
             )
 
         SaveFavorite ->
             ( model
-            , Favorites.saveFavorite ( model.routeId, model.busStop.id, model.busStop.direction )
+            , Favorites.saveFavorite ( Favorites.Bus, model.busStop.id )
             )
 
         RemoveFavorite ->
             ( model
-            , Favorites.removeFavorite ( model.routeId, model.busStop.id, model.busStop.direction )
+            , Favorites.removeFavorite ( Favorites.Bus, model.busStop.id )
             )

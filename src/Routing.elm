@@ -85,8 +85,8 @@ load page =
         BusRoutePage routeId ->
             BusRoute.load routeId |> Task.map BusRouteModel
 
-        BusStopPage routeId direction stopId ->
-            BusStop.load routeId direction stopId |> Task.map BusStopModel
+        BusStopPage routeId stopId ->
+            BusStop.load routeId stopId |> Task.map BusStopModel
 
         _ ->
             Task.succeed NoneModel
@@ -117,7 +117,7 @@ isCacheable page =
         BusRoutePage _ ->
             True
 
-        BusStopPage _ _ _ ->
+        BusStopPage _ _ ->
             False
 
         NotFound ->
@@ -134,7 +134,7 @@ title model =
             "Bus Route " ++ model.route.id ++ " – " ++ model.route.name
 
         BusStopModel model ->
-            model.busStop.name ++ " - " ++ toString model.busStop.direction
+            model.busStop.name
 
         _ ->
             "Not Found"
@@ -143,7 +143,7 @@ title model =
 initialize : Page -> Cmd PageMsg
 initialize page =
     case page of
-        BusStopPage _ _ _ ->
+        BusStopPage _ _ ->
             Cmd.map BusStopMsg BusStop.initialize
 
         _ ->

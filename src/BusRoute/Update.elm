@@ -17,23 +17,17 @@ type Msg
 load : String -> Task String Model
 load routeId =
     let
-        routeToFirstDirection route =
-            Api.getBusStops route.id (fst route.directions)
-                |> Task.map (\stops -> { route = route, stops = stops })
+        routeToStops route =
+            Api.getBusStops route.id
+                |> Task.map (\stops -> ( route, stops ))
 
-        routeAndFirstToSecond { route, stops } =
-            Api.getBusStops route.id (snd route.directions)
-                |> Task.map
-                    (\sndStops ->
-                        { route = route
-                        , stops = stops ++ sndStops
-                        }
-                    )
+        filteredStops ( route, stops ) =
+            ( route, listUniqueBy .name stops )
     in
         Api.getBusRoute routeId
-            |> andThen routeToFirstDirection
-            |> andThen routeAndFirstToSecond
-            |> Task.map (\{ route, stops } -> Model.model route stops)
+            |> andThen routeToStops
+            |> Task.map filteredStops
+            |> Task.map (\( route, stops ) -> Model.model route stops)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

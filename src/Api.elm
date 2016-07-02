@@ -139,44 +139,42 @@ type alias BusStop =
     , name : String
     , latitude : Float
     , longitude : Float
-    , direction : Direction
     }
 
 
-busStopDecoder : Direction -> Decoder BusStop
-busStopDecoder direction =
+busStopDecoder : Decoder BusStop
+busStopDecoder =
     decode BusStop
         |> required "id" string
         |> required "name" string
         |> required "latitude" float
         |> required "longitude" float
-        |> hardcoded direction
 
 
-busStopsReader : Direction -> BodyReader (List BusStop)
-busStopsReader direction =
-    busStopDecoder direction |> list |> jsonReader
+busStopsReader : BodyReader (List BusStop)
+busStopsReader =
+    busStopDecoder |> list |> jsonReader
 
 
-busStopReader : Direction -> BodyReader BusStop
-busStopReader direction =
-    busStopDecoder direction |> jsonReader
+busStopReader : BodyReader BusStop
+busStopReader =
+    busStopDecoder |> jsonReader
 
 
-getBusStops : String -> Direction -> Task String (List BusStop)
-getBusStops id direction =
-    fullUrl ("/bus/routes/" ++ id ++ "/stops/" ++ (toString direction))
+getBusStops : String -> Task String (List BusStop)
+getBusStops routeId =
+    fullUrl ("/bus/routes/" ++ routeId ++ "/stops")
         |> get
-        |> send (busStopsReader direction) stringReader
+        |> send busStopsReader stringReader
         |> Task.map .data
         |> Task.mapError trackError
 
 
-getBusStop : String -> Direction -> String -> Task String BusStop
-getBusStop routeId direction stopId =
-    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ (toString direction) ++ "/" ++ stopId)
+getBusStop : String -> String -> Task String BusStop
+getBusStop routeId stopId =
+    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ stopId)
         |> get
-        |> send (busStopReader direction) stringReader
+        |> send busStopReader stringReader
         |> Task.map .data
         |> Task.mapError trackError
 
@@ -276,9 +274,9 @@ busPredictionsReader =
     jsonReader busPredictionsDecoder
 
 
-getBusPredictions : String -> Direction -> String -> Task String (List BusPrediction)
-getBusPredictions routeId direction stopId =
-    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ toString direction ++ "/" ++ stopId ++ "/predictions")
+getBusPredictions : String -> String -> Task String (List BusPrediction)
+getBusPredictions routeId stopId =
+    fullUrl ("/bus/routes/" ++ routeId ++ "/stops/" ++ stopId ++ "/predictions")
         |> get
         |> send busPredictionsReader stringReader
         |> Task.map .data
