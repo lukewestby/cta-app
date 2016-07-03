@@ -10294,7 +10294,7 @@ var _user$project$Utils$loadStateMap = F2(
 	});
 
 var _user$project$Api$fullUrl = function (relative) {
-	return A2(_elm_lang$core$Basics_ops['++'], 'http://localhost:1337', relative);
+	return A2(_elm_lang$core$Basics_ops['++'], 'https://cta-json-api.herokuapp.com', relative);
 };
 var _user$project$Api$dateDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _elm_lang$core$Date$fromString);
 var _user$project$Api$trackError = function (error) {
