@@ -1,98 +1,85 @@
-port module Favorites
+module Favorites
     exposing
-        ( FavoriteType(..)
-        , startFavoritesListen
-        , favoritesUpdates
+        ( Favorite(..)
+        , getFavorites
         , saveFavorite
         , removeFavorite
         )
 
+import Utils exposing (..)
+import Task exposing (Task)
 import Json.Decode as Decode exposing (..)
 import Json.Encode as Encode
+import LocalStorage
 
 
-type FavoriteType
-    = Bus
+type Favorite
+    = Bus String
     | Train
 
 
-decodeFavoriteType : Decoder FavoriteType
-decodeFavoriteType =
-    customDecoder string
+favoriteDecoder : Decoder Favorite
+favoriteDecoder =
+    customDecoder (list string)
         <| \value ->
             case value of
-                "Bus" ->
-                    Ok Bus
+                "Bus" :: ids :: [] ->
+                    Ok (Bus ids)
 
-                "Train" ->
+                "Train" :: [] ->
                     Ok Train
 
                 _ ->
-                    Err ("Unknown FavoriteType: " ++ value)
+                    Err "Can't decode favorite"
 
 
-port startFavoritesListenRaw : {} -> Cmd msg
-
-
-startFavoritesListen : Cmd msg
-startFavoritesListen =
-    startFavoritesListenRaw {}
-
-
-port favoritesUpdatesRaw : (Value -> msg) -> Sub msg
-
-
-extractUnsafe : Result x a -> a
-extractUnsafe result =
-    case result of
-        Ok thing ->
-            thing
-
-        Err _ ->
-            Debug.crash "couldn't extract result"
-
-
-favoritesUpdates : (List ( FavoriteType, String ) -> msg) -> Sub msg
-favoritesUpdates tagger =
-    let
-        decoder =
-            tuple2 (,) decodeFavoriteType string
-                |> list
-
-        decode value =
-            value
-                |> decodeValue decoder
-                |> extractUnsafe
-    in
-        favoritesUpdatesRaw decode
-            |> Sub.map tagger
-
-
-port saveFavoriteRaw : Value -> Cmd msg
-
-
-port removeFavoriteRaw : Value -> Cmd msg
-
-
-saveFavorite : ( FavoriteType, String ) -> Cmd msg
-saveFavorite ( favoriteType, stopId ) =
-    let
-        encoded =
+favoriteEncoder : Favorite -> Encode.Value
+favoriteEncoder favorite =
+    case favorite of
+        Bus ids ->
             Encode.list
-                [ Encode.string <| toString favoriteType
-                , Encode.string stopId
+                [ Encode.string "Bus"
+                , Encode.string ids
                 ]
-    in
-        saveFavoriteRaw encoded
 
-
-removeFavorite : ( FavoriteType, String ) -> Cmd msg
-removeFavorite ( favoriteType, stopId ) =
-    let
-        encoded =
+        Train ->
             Encode.list
-                [ Encode.string <| toString favoriteType
-                , Encode.string stopId
+                [ Encode.string "Train"
                 ]
+
+
+getFavorites : Task String (List Favorite)
+getFavorites =
+    let
+        parse result =
+            result
+                |> (flip Result.andThen) (Decode.decodeString (list favoriteDecoder))
     in
-        removeFavoriteRaw encoded
+        LocalStorage.get "favorites"
+            |> Task.mapError (always "Couldn't fetch favorites from LocalStorage")
+            |> Task.map (Maybe.withDefault "")
+            |> Task.toResult
+            |> Task.map parse
+            |> (flip Task.andThen) Task.fromResult
+
+
+set : String -> String -> Task String ()
+set l r =
+    LocalStorage.set l r
+        |> Task.mapError (always "Couldn't save value to LocalStorage")
+
+
+saveFavorite : Favorite -> Task String ()
+saveFavorite favorite =
+    getFavorites
+        |> Task.map (\favorites -> favorite :: favorites)
+        |> Task.map (\favorites -> Encode.list (List.map favoriteEncoder favorites))
+        |> Utils.andThen (\jsValue -> set "favorites" (Encode.encode 0 jsValue))
+
+
+removeFavorite : Favorite -> Task String ()
+removeFavorite favorite =
+    getFavorites
+        |> Task.map (List.filter ((/=) favorite))
+        |> Task.map (\favorites -> Encode.list (List.map favoriteEncoder favorites))
+        |> Utils.andThen (\jsValue -> set "favorites" (Encode.encode 0 jsValue))

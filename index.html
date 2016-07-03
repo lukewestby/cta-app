@@ -11,40 +11,6 @@
     <script src="build/main.js"></script>
     <script>
       var app = Elm.Main.fullscreen();
-
-      var fetchFavorites = function () {
-        var favoritesString = localStorage.getItem('favorites');
-        return favoritesString ? JSON.parse(favoritesString) : [];
-      };
-
-      var unequalFavorites = function (left) {
-        return function (right) {
-          return left[0] !== right[0]
-            || left[1] !== right[1]
-            || left[2] !== right[2];
-        };
-      };
-
-      app.ports.startFavoritesListenRaw.subscribe(function () {
-        var favorites = fetchFavorites();
-        setTimeout(function () {
-          app.ports.favoritesUpdatesRaw.send(favorites);
-        }, 0);
-      });
-
-      app.ports.saveFavoriteRaw.subscribe(function (favorite) {
-        var favorites = fetchFavorites();
-        favorites.push(favorite);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        app.ports.favoritesUpdatesRaw.send(favorites);
-      });
-
-      app.ports.removeFavoriteRaw.subscribe(function (favorite) {
-        var favorites = fetchFavorites();
-        var filtered = favorites.filter(unequalFavorites(favorite));
-        localStorage.setItem('favorites', JSON.stringify(filtered));
-        app.ports.favoritesUpdatesRaw.send(filtered);
-      });
     </script>
   </body>
 </html>

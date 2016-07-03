@@ -11,6 +11,6 @@ type alias Model =
     }
 
 
-model : List BusStop -> List BusPrediction -> String -> Model
+model : Bool -> List BusStop -> List BusPrediction -> String -> Model
 model =
-    Model False
+    Model

@@ -1,7 +1,7 @@
-port module BusStop.Update exposing (Msg(..), load, update, initialize)
+port module BusStop.Update exposing (Msg(..), load, update)
 
 import String
-import Set
+import Task
 import Utils exposing (..)
 import Task exposing (Task)
 import Api exposing (BusPrediction, BusStop, Direction)
@@ -13,9 +13,10 @@ type Msg
     = NoOp
     | ReloadPredictionsStart
     | ReloadPredictionsFinish (Result String (List BusPrediction))
-    | UpdateFavorites (List ( Favorites.FavoriteType, String ))
     | SaveFavorite
+    | SaveFavoriteSucceed
     | RemoveFavorite
+    | RemoveFavoriteSucceed
 
 
 load : String -> String -> Task String Model
@@ -35,10 +36,16 @@ load routeId stopGroupIds =
                 |> Task.sequence
                 |> Task.map List.concat
                 |> Task.map (\predictions -> ( stops, predictions ))
+
+        stopsPredictionsToFavorites ( stops, predictions ) =
+            Favorites.getFavorites
+                |> Task.map (List.member (Favorites.Bus stopGroupIds))
+                |> Task.map (\isFavorited -> ( stops, predictions, isFavorited ))
     in
         stopsTask
             |> andThen stopsToPredictions
-            |> Task.map (\( stops, predictions ) -> Model.model stops predictions routeId)
+            |> andThen stopsPredictionsToFavorites
+            |> Task.map (\( stops, predictions, isFavorited ) -> Model.model isFavorited stops predictions routeId)
 
 
 sortedIdList : List BusStop -> List String
@@ -54,11 +61,6 @@ getPredictionsForStops routeId stops =
         |> List.map (.id >> (Api.getBusPredictions routeId))
         |> Task.sequence
         |> Task.map List.concat
-
-
-initialize : Cmd Msg
-initialize =
-    Favorites.startFavoritesListen
 
 
 groupStopIds : List BusStop -> String
@@ -91,28 +93,24 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        UpdateFavorites favorites ->
-            let
-                favoriteIdLists =
-                    favorites
-                        |> List.filter (fst >> (==) Favorites.Bus)
-                        |> List.map snd
-
-                isFavorited =
-                    List.any ((==) (groupStopIds model.busStops)) favoriteIdLists
-            in
-                ( { model
-                    | isFavorited = isFavorited
-                  }
-                , Cmd.none
-                )
-
         SaveFavorite ->
             ( model
-            , Favorites.saveFavorite ( Favorites.Bus, groupStopIds model.busStops )
+            , Favorites.saveFavorite (Favorites.Bus (groupStopIds model.busStops))
+                |> Task.perform (always NoOp) (always SaveFavoriteSucceed)
+            )
+
+        SaveFavoriteSucceed ->
+            ( { model | isFavorited = True }
+            , Cmd.none
             )
 
         RemoveFavorite ->
             ( model
-            , Favorites.removeFavorite ( Favorites.Bus, groupStopIds model.busStops )
+            , Favorites.removeFavorite (Favorites.Bus (groupStopIds model.busStops))
+                |> Task.perform (always NoOp) (always RemoveFavoriteSucceed)
+            )
+
+        RemoveFavoriteSucceed ->
+            ( { model | isFavorited = False }
+            , Cmd.none
             )
