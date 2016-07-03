@@ -52,7 +52,7 @@ parser : Navigation.Parser Page
 parser =
     Navigation.makeParser
         (.pathname
-            >> String.dropLeft 1
+            >> String.dropLeft 9
             >> UrlParser.parse identity pageParser
             >> Result.withDefault NotFound
         )

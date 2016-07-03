@@ -10882,7 +10882,7 @@ var _user$project$Pages$parser = _elm_lang$navigation$Navigation$makeParser(
 				_user$project$Pages$pageParser,
 				A2(
 					_elm_lang$core$String$dropLeft,
-					1,
+					9,
 					function (_) {
 						return _.pathname;
 					}(_p1))));
