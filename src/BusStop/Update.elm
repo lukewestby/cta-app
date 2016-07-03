@@ -1,4 +1,4 @@
-port module BusStop.Update exposing (Msg(..), load, update)
+module BusStop.Update exposing (Msg(..), load, update)
 
 import String
 import Task
@@ -46,13 +46,6 @@ load routeId stopGroupIds =
             |> andThen stopsToPredictions
             |> andThen stopsPredictionsToFavorites
             |> Task.map (\( stops, predictions, isFavorited ) -> Model.model isFavorited stops predictions routeId)
-
-
-sortedIdList : List BusStop -> List String
-sortedIdList stops =
-    stops
-        |> List.map .id
-        |> List.sort
 
 
 getPredictionsForStops : String -> List BusStop -> Task String (List BusPrediction)

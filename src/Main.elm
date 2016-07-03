@@ -3,7 +3,6 @@ module Main exposing (..)
 import Dict exposing (Dict)
 import Utils exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.App as HtmlApp
 import Navigation
