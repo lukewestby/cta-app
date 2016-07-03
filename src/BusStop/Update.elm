@@ -1,5 +1,7 @@
 port module BusStop.Update exposing (Msg(..), load, update, initialize)
 
+import String
+import Set
 import Utils exposing (..)
 import Task exposing (Task)
 import Api exposing (BusPrediction, BusStop, Direction)
@@ -17,20 +19,54 @@ type Msg
 
 
 load : String -> String -> Task String Model
-load routeId stopId =
+load routeId stopGroupIds =
     let
-        stopToStopAndPredictions stop =
-            Api.getBusPredictions routeId stopId
-                |> Task.map (\predictions -> ( stop, predictions ))
+        stopIds =
+            String.split "-" stopGroupIds
+
+        stopsTask =
+            stopIds
+                |> List.map (Api.getBusStop routeId)
+                |> Task.sequence
+
+        stopsToPredictions stops =
+            stopIds
+                |> List.map (Api.getBusPredictions routeId)
+                |> Task.sequence
+                |> Task.map List.concat
+                |> Task.map (\predictions -> ( stops, predictions ))
     in
-        Api.getBusStop routeId stopId
-            |> andThen stopToStopAndPredictions
-            |> Task.map (\( stop, predictions ) -> Model.model stop predictions routeId)
+        stopsTask
+            |> andThen stopsToPredictions
+            |> Task.map (\( stops, predictions ) -> Model.model stops predictions routeId)
+
+
+sortedIdList : List BusStop -> List String
+sortedIdList stops =
+    stops
+        |> List.map .id
+        |> List.sort
+
+
+getPredictionsForStops : String -> List BusStop -> Task String (List BusPrediction)
+getPredictionsForStops routeId stops =
+    stops
+        |> List.map (.id >> (Api.getBusPredictions routeId))
+        |> Task.sequence
+        |> Task.map List.concat
 
 
 initialize : Cmd Msg
 initialize =
     Favorites.startFavoritesListen
+
+
+groupStopIds : List BusStop -> String
+groupStopIds stops =
+    stops
+        |> List.map .id
+        |> List.sort
+        |> String.join "-"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -41,7 +77,7 @@ update msg model =
 
         ReloadPredictionsStart ->
             ( model
-            , Api.getBusPredictions model.routeId model.busStop.id
+            , getPredictionsForStops model.routeId model.busStops
                 |> performSucceed ReloadPredictionsFinish
             )
 
@@ -56,19 +92,27 @@ update msg model =
                     ( model, Cmd.none )
 
         UpdateFavorites favorites ->
-            ( { model
-                | isFavorited =
-                    List.any ((==) ( Favorites.Bus, model.busStop.id )) favorites
-              }
-            , Cmd.none
-            )
+            let
+                favoriteIdLists =
+                    favorites
+                        |> List.filter (fst >> (==) Favorites.Bus)
+                        |> List.map snd
+
+                isFavorited =
+                    List.any ((==) (groupStopIds model.busStops)) favoriteIdLists
+            in
+                ( { model
+                    | isFavorited = isFavorited
+                  }
+                , Cmd.none
+                )
 
         SaveFavorite ->
             ( model
-            , Favorites.saveFavorite ( Favorites.Bus, model.busStop.id )
+            , Favorites.saveFavorite ( Favorites.Bus, groupStopIds model.busStops )
             )
 
         RemoveFavorite ->
             ( model
-            , Favorites.removeFavorite ( Favorites.Bus, model.busStop.id )
+            , Favorites.removeFavorite ( Favorites.Bus, groupStopIds model.busStops )
             )

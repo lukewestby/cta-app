@@ -76,4 +76,11 @@ styles =
             , textTransform uppercase
             , padding2 zero (px 16)
             ]
+        , (.) DirectionLabel
+            [ fontSize (px 16)
+            , color (hex midGray)
+            , textTransform uppercase
+            , padding4 (px 24) (px 32) (px 8) (px 32)
+            , borderBottom3 (px 1) solid (hex lightGray)
+            ]
         ]

@@ -5,12 +5,12 @@ import Api exposing (BusStop, BusPrediction)
 
 type alias Model =
     { isFavorited : Bool
-    , busStop : BusStop
+    , busStops : List BusStop
     , predictions : List BusPrediction
     , routeId : String
     }
 
 
-model : BusStop -> List BusPrediction -> String -> Model
+model : List BusStop -> List BusPrediction -> String -> Model
 model =
     Model False

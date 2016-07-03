@@ -1,6 +1,8 @@
 module BusStop.View exposing (view)
 
 import Date
+import Dict
+import Dict.Extra as Dict
 import String
 import Html exposing (..)
 import Html.Events exposing (..)
@@ -79,6 +81,18 @@ viewPrediction routeId stop prediction =
             ]
 
 
+viewPredictionGroup : String -> BusStop -> ( String, List BusPrediction ) -> Html Msg
+viewPredictionGroup routeId stop ( direction, predictions ) =
+    div []
+        [ div [ class [ DirectionLabel ] ] [ text direction ]
+        , div []
+            (predictions
+                |> List.sortBy predictionInMinutes
+                |> List.map (viewPrediction routeId stop)
+            )
+        ]
+
+
 viewFavoriteControl : Bool -> Html Msg
 viewFavoriteControl isFavorited =
     let
@@ -104,16 +118,21 @@ viewFavoriteControl isFavorited =
 view : Model -> Html Msg
 view model =
     let
-        items =
+        items busStop =
             model.predictions
-                |> Debug.log "prediction"
-                |> List.sortBy predictionInMinutes
-                |> List.map (viewPrediction model.routeId model.busStop)
+                |> Dict.groupBy (.routeDirection >> toString)
+                |> Dict.toList
+                |> List.map (viewPredictionGroup model.routeId busStop)
     in
-        div []
-            [ viewFavoriteControl model.isFavorited
-            , div [] items
-            ]
+        case List.head model.busStops of
+            Just busStop ->
+                div []
+                    [ viewFavoriteControl model.isFavorited
+                    , div [] (items busStop)
+                    ]
+
+            Nothing ->
+                div [] []
 
 
 { class, classList } =

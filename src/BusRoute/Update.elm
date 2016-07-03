@@ -9,8 +9,7 @@ import Components.SearchBar as SearchBar
 
 
 type Msg
-    = SelectDirection Direction
-    | NavigateTo Pages.Page
+    = NavigateTo Pages.Page
     | SearchBarMsg SearchBar.Msg
 
 
@@ -20,24 +19,15 @@ load routeId =
         routeToStops route =
             Api.getBusStops route.id
                 |> Task.map (\stops -> ( route, stops ))
-
-        filteredStops ( route, stops ) =
-            ( route, listUniqueBy .name stops )
     in
         Api.getBusRoute routeId
             |> andThen routeToStops
-            |> Task.map filteredStops
             |> Task.map (\( route, stops ) -> Model.model route stops)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SelectDirection direction ->
-            ( { model | selectedDirection = direction }
-            , Cmd.none
-            )
-
         NavigateTo page ->
             ( model, Pages.navigateTo page )
 

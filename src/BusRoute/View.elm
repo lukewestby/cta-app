@@ -1,5 +1,6 @@
 module BusRoute.View exposing (view)
 
+import Dict
 import String
 import Html exposing (..)
 import Html.Events exposing (..)
@@ -13,23 +14,30 @@ import Components.SearchBar as SearchBar
 import Icons
 
 
-filterStops : String -> List BusStop -> List BusStop
-filterStops searchText stops =
+filterStops : String -> List ( String, List BusStop ) -> List ( String, List BusStop )
+filterStops searchText stopGroups =
     let
         lowerSearchText =
             String.toLower searchText
     in
-        stops
-            |> List.filter (\stop -> String.contains lowerSearchText (String.toLower stop.name))
+        stopGroups
+            |> List.filter (\( name, _ ) -> String.contains lowerSearchText (String.toLower name))
 
 
-viewStop : String -> BusStop -> Html Msg
-viewStop routeId stop =
+groupId : List BusStop -> String
+groupId busStops =
+    busStops
+        |> List.map .id
+        |> String.join "-"
+
+
+viewStop : String -> ( String, List BusStop ) -> Html Msg
+viewStop routeId ( name, stops ) =
     div
         [ class [ StopItem ]
-        , onClick <| NavigateTo (Pages.BusStopPage routeId stop.id)
+        , onClick <| NavigateTo (Pages.BusStopPage routeId (groupId stops))
         ]
-        [ div [ class [ StopName ] ] [ text stop.name ]
+        [ div [ class [ StopName ] ] [ text name ]
         , div [ class [ Chevron ] ] [ Icons.chevronRight ]
         ]
 
@@ -42,8 +50,9 @@ view model =
             ]
         , div []
             <| (model.stops
+                    |> Dict.toList
                     |> filterStops (SearchBar.getSearchValue model.searchModel)
-                    |> List.sortBy .name
+                    |> List.sortBy fst
                     |> List.map (viewStop model.route.id)
                )
         ]

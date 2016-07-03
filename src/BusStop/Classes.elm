@@ -21,3 +21,4 @@ type Classes
     | FavoriteContainer
     | FavoriteIcon
     | FavoriteText
+    | DirectionLabel

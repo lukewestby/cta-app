@@ -134,7 +134,9 @@ title model =
             "Bus Route " ++ model.route.id ++ " – " ++ model.route.name
 
         BusStopModel model ->
-            model.busStop.name
+            List.head model.busStops
+                |> Maybe.map .name
+                |> Maybe.withDefault ""
 
         _ ->
             "Not Found"
