@@ -43,6 +43,7 @@ view model =
         , div []
             <| (model.stops
                     |> filterStops (SearchBar.getSearchValue model.searchModel)
+                    |> List.sortBy .name
                     |> List.map (viewStop model.route.id)
                )
         ]

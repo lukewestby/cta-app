@@ -106,6 +106,7 @@ view model =
     let
         items =
             model.predictions
+                |> Debug.log "prediction"
                 |> List.sortBy predictionInMinutes
                 |> List.map (viewPrediction model.routeId model.busStop)
     in
