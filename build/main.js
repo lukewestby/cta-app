@@ -11306,7 +11306,7 @@ var _user$project$Favorites$getFavorites = function () {
 			_elm_lang$core$Task$toResult(
 				A2(
 					_elm_lang$core$Task$map,
-					_elm_lang$core$Maybe$withDefault(''),
+					_elm_lang$core$Maybe$withDefault('[]'),
 					A2(
 						_elm_lang$core$Task$mapError,
 						_elm_lang$core$Basics$always('Couldn\'t fetch favorites from LocalStorage'),
