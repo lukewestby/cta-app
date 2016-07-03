@@ -57,7 +57,7 @@ getFavorites =
     in
         LocalStorage.get "favorites"
             |> Task.mapError (always "Couldn't fetch favorites from LocalStorage")
-            |> Task.map (Maybe.withDefault "")
+            |> Task.map (Maybe.withDefault "[]")
             |> Task.toResult
             |> Task.map parse
             |> (flip Task.andThen) Task.fromResult
