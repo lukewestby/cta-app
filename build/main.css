@@ -45,9 +45,14 @@ a {
     display: inline-block;
     fill: #8899A6;
     transition: transform 0.15s;
+    touch-action: none;
 }
 
 .elm-cta-appHeaderNavIcon:active {
+    transform: scale(1.2);
+}
+
+.elm-cta-appHeaderNavIcon:active:hover {
     transform: scale(1.2);
 }
 
