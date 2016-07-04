@@ -29,16 +29,13 @@ css =
                     , height (pct 100)
                     , property "font-family" "Helvetica Neue"
                     , property "-webkit-font-smoothing" "antialiased"
-                    , overflow hidden
                     , descendants
                         [ everything [ boxSizing borderBox ]
                         ]
                     ]
                 , (.) AppContainer
                     [ maxWidth (px 768)
-                    , height (pct 100)
                     , margin2 zero auto
-                    , property "box-shadow" "0px 0px 24px -4px black"
                     , position relative
                     ]
                 , (.) HeaderNav
@@ -50,6 +47,8 @@ css =
                     , padding2 zero (px 32)
                     , width (pct 100)
                     , backgroundColor (hex "#fff")
+                    , position fixed
+                    , property "z-index" "3"
                     ]
                 , (.) HeaderNavIcon
                     [ width (px 24)
@@ -63,10 +62,9 @@ css =
                         ]
                     ]
                 , (.) PageContainer
-                    [ overflowY auto
-                    , property "height" "calc(100% - 52px)"
+                    [ height (pct 100)
+                    , paddingTop (px 52)
                     , position relative
-                    , property "-webkit-overflow-scrolling" "touch"
                     ]
                 , (.) HeaderNavIconActive
                     [ property "fill" primaryColor ]
