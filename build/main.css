@@ -296,6 +296,65 @@ body  * {
     border-bottom: 1px solid #E1E8ED;
 }
 
+.FavoritesFavoriteItem {
+    border-bottom: 1px solid #E1E8ED;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+}
+
+.FavoritesItemIcon {
+    height: 32px;
+    width: 32px;
+    fill: #8899A6;
+    display: inline-block;
+}
+
+.FavoritesListTitle {
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 16px 32px 8px 32px;
+    color: #8899A6;
+    border-bottom: 1px solid #E1E8ED;
+}
+
+.FavoritesFavoriteDetails {
+    padding: 0 16px;
+    width: calc(100% - 52px);
+}
+
+.FavoritesRouteName {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.FavoritesStopName {
+    color: #8899A6;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.FavoritesChevron {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    fill: #8899A6;
+}
+
+.FavoritesEmptyMessage {
+    padding: 32px;
+    font-size: 20px;
+    color: #8899A6;
+}
+
+.FavoritesEmptyMessageLink {
+    color: #1DA1F2;
+}
+
 .ComponentsLoadingContainer {
     display: flex;
     justify-content: center;

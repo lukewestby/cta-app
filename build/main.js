@@ -10294,7 +10294,7 @@ var _user$project$Utils$loadStateMap = F2(
 	});
 
 var _user$project$Api$fullUrl = function (relative) {
-	return A2(_elm_lang$core$Basics_ops['++'], 'https://cta-json-api.herokuapp.com', relative);
+	return A2(_elm_lang$core$Basics_ops['++'], 'http://localhost:1337', relative);
 };
 var _user$project$Api$dateDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _elm_lang$core$Date$fromString);
 var _user$project$Api$trackError = function (error) {
@@ -10801,6 +10801,8 @@ var _user$project$BusRoute_Model$Model = F3(
 var _user$project$Pages$url = function (page) {
 	var _p0 = page;
 	switch (_p0.ctor) {
+		case 'FavoritesPage':
+			return '';
 		case 'BusRoutesPage':
 			return 'bus/routes';
 		case 'BusRoutePage':
@@ -10826,6 +10828,7 @@ var _user$project$Pages$redirectTo = function (page) {
 		_user$project$Pages$url(page));
 };
 var _user$project$Pages$NotFound = {ctor: 'NotFound'};
+var _user$project$Pages$FavoritesPage = {ctor: 'FavoritesPage'};
 var _user$project$Pages$BusStopPage = F2(
 	function (a, b) {
 		return {ctor: 'BusStopPage', _0: a, _1: b};
@@ -10837,6 +10840,10 @@ var _user$project$Pages$BusRoutesPage = {ctor: 'BusRoutesPage'};
 var _user$project$Pages$pageParser = _evancz$url_parser$UrlParser$oneOf(
 	_elm_lang$core$Native_List.fromArray(
 		[
+			A2(
+			_evancz$url_parser$UrlParser$format,
+			_user$project$Pages$FavoritesPage,
+			_evancz$url_parser$UrlParser$s('')),
 			A2(
 			_evancz$url_parser$UrlParser$format,
 			_user$project$Pages$BusStopPage,
@@ -11238,62 +11245,52 @@ var _user$project$Favorites$set = F2(
 			_elm_lang$core$Basics$always('Couldn\'t save value to LocalStorage'),
 			A2(_fredcy$localstorage$LocalStorage$set, l, r));
 	});
-var _user$project$Favorites$favoriteEncoder = function (favorite) {
-	var _p0 = favorite;
-	if (_p0.ctor === 'Bus') {
-		return _elm_lang$core$Json_Encode$list(
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$core$Json_Encode$string('Bus'),
-					_elm_lang$core$Json_Encode$string(_p0._0)
-				]));
-	} else {
-		return _elm_lang$core$Json_Encode$list(
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$core$Json_Encode$string('Train')
-				]));
-	}
-};
-var _user$project$Favorites$Train = {ctor: 'Train'};
-var _user$project$Favorites$Bus = function (a) {
-	return {ctor: 'Bus', _0: a};
-};
-var _user$project$Favorites$favoriteDecoder = A2(
-	_elm_lang$core$Json_Decode$customDecoder,
-	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
-	function (value) {
-		var _p1 = value;
-		_v1_2:
-		do {
-			if (_p1.ctor === '::') {
-				if (_p1._1.ctor === '::') {
-					if ((_p1._0 === 'Bus') && (_p1._1._1.ctor === '[]')) {
-						return _elm_lang$core$Result$Ok(
-							_user$project$Favorites$Bus(_p1._1._0));
-					} else {
-						break _v1_2;
-					}
-				} else {
-					if (_p1._0 === 'Train') {
-						return _elm_lang$core$Result$Ok(_user$project$Favorites$Train);
-					} else {
-						break _v1_2;
-					}
-				}
-			} else {
-				break _v1_2;
+var _user$project$Favorites$busStopSummaryEncoder = function (summary) {
+	return _elm_lang$core$Json_Encode$object(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: 'name',
+				_1: _elm_lang$core$Json_Encode$string(summary.name)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'routeId',
+				_1: _elm_lang$core$Json_Encode$string(summary.routeId)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'stopIds',
+				_1: _elm_lang$core$Json_Encode$list(
+					A2(_elm_lang$core$List$map, _elm_lang$core$Json_Encode$string, summary.stopIds))
 			}
-		} while(false);
-		return _elm_lang$core$Result$Err('Can\'t decode favorite');
+			]));
+};
+var _user$project$Favorites$BusStopSummary = F3(
+	function (a, b, c) {
+		return {name: a, routeId: b, stopIds: c};
 	});
-var _user$project$Favorites$getFavorites = function () {
+var _user$project$Favorites$busStopSummaryDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'stopIds',
+	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string),
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'routeId',
+		_elm_lang$core$Json_Decode$string,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'name',
+			_elm_lang$core$Json_Decode$string,
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Favorites$BusStopSummary))));
+var _user$project$Favorites$getBusFavorites = function () {
 	var parse = function (result) {
 		return A3(
 			_elm_lang$core$Basics$flip,
 			_elm_lang$core$Result$andThen,
 			_elm_lang$core$Json_Decode$decodeString(
-				_elm_lang$core$Json_Decode$list(_user$project$Favorites$favoriteDecoder)),
+				_elm_lang$core$Json_Decode$list(_user$project$Favorites$busStopSummaryDecoder)),
 			result);
 	};
 	return A3(
@@ -11310,44 +11307,44 @@ var _user$project$Favorites$getFavorites = function () {
 					A2(
 						_elm_lang$core$Task$mapError,
 						_elm_lang$core$Basics$always('Couldn\'t fetch favorites from LocalStorage'),
-						_fredcy$localstorage$LocalStorage$get('favorites'))))));
+						_fredcy$localstorage$LocalStorage$get('busFavorites'))))));
 }();
-var _user$project$Favorites$saveFavorite = function (favorite) {
+var _user$project$Favorites$saveBusFavorite = function (summary) {
 	return A2(
 		_user$project$Utils$andThen,
 		function (jsValue) {
 			return A2(
 				_user$project$Favorites$set,
-				'favorites',
+				'busFavorites',
 				A2(_elm_lang$core$Json_Encode$encode, 0, jsValue));
 		},
 		A2(
 			_elm_lang$core$Task$map,
 			function (favorites) {
 				return _elm_lang$core$Json_Encode$list(
-					A2(_elm_lang$core$List$map, _user$project$Favorites$favoriteEncoder, favorites));
+					A2(_elm_lang$core$List$map, _user$project$Favorites$busStopSummaryEncoder, favorites));
 			},
 			A2(
 				_elm_lang$core$Task$map,
 				function (favorites) {
-					return A2(_elm_lang$core$List_ops['::'], favorite, favorites);
+					return A2(_elm_lang$core$List_ops['::'], summary, favorites);
 				},
-				_user$project$Favorites$getFavorites)));
+				_user$project$Favorites$getBusFavorites)));
 };
-var _user$project$Favorites$removeFavorite = function (favorite) {
+var _user$project$Favorites$removeBusFavorite = function (summary) {
 	return A2(
 		_user$project$Utils$andThen,
 		function (jsValue) {
 			return A2(
 				_user$project$Favorites$set,
-				'favorites',
+				'busFavorites',
 				A2(_elm_lang$core$Json_Encode$encode, 0, jsValue));
 		},
 		A2(
 			_elm_lang$core$Task$map,
 			function (favorites) {
 				return _elm_lang$core$Json_Encode$list(
-					A2(_elm_lang$core$List$map, _user$project$Favorites$favoriteEncoder, favorites));
+					A2(_elm_lang$core$List$map, _user$project$Favorites$busStopSummaryEncoder, favorites));
 			},
 			A2(
 				_elm_lang$core$Task$map,
@@ -11355,10 +11352,31 @@ var _user$project$Favorites$removeFavorite = function (favorite) {
 					F2(
 						function (x, y) {
 							return !_elm_lang$core$Native_Utils.eq(x, y);
-						})(favorite)),
-				_user$project$Favorites$getFavorites)));
+						})(summary)),
+				_user$project$Favorites$getBusFavorites)));
 };
 
+var _user$project$BusStop_Update$toBusStopSummary = F2(
+	function (routeId, busStops) {
+		return {
+			name: A2(
+				_elm_lang$core$Maybe$withDefault,
+				'',
+				A2(
+					_elm_lang$core$Maybe$map,
+					function (_) {
+						return _.name;
+					},
+					_elm_lang$core$List$head(busStops))),
+			stopIds: A2(
+				_elm_lang$core$List$map,
+				function (_) {
+					return _.id;
+				},
+				busStops),
+			routeId: routeId
+		};
+	});
 var _user$project$BusStop_Update$groupStopIds = function (stops) {
 	return A2(
 		_elm_lang$core$String$join,
@@ -11393,16 +11411,17 @@ var _user$project$BusStop_Update$load = F2(
 	function (routeId, stopGroupIds) {
 		var stopsPredictionsToFavorites = function (_p1) {
 			var _p2 = _p1;
+			var _p3 = _p2._0;
 			return A2(
 				_elm_lang$core$Task$map,
 				function (isFavorited) {
-					return {ctor: '_Tuple3', _0: _p2._0, _1: _p2._1, _2: isFavorited};
+					return {ctor: '_Tuple3', _0: _p3, _1: _p2._1, _2: isFavorited};
 				},
 				A2(
 					_elm_lang$core$Task$map,
 					_elm_lang$core$List$member(
-						_user$project$Favorites$Bus(stopGroupIds)),
-					_user$project$Favorites$getFavorites));
+						A2(_user$project$BusStop_Update$toBusStopSummary, routeId, _p3)),
+					_user$project$Favorites$getBusFavorites));
 		};
 		var stopIds = A2(_elm_lang$core$String$split, '-', stopGroupIds);
 		var stopsTask = _elm_lang$core$Task$sequence(
@@ -11427,9 +11446,9 @@ var _user$project$BusStop_Update$load = F2(
 		};
 		return A2(
 			_elm_lang$core$Task$map,
-			function (_p3) {
-				var _p4 = _p3;
-				return A4(_user$project$BusStop_Model$model, _p4._2, _p4._0, _p4._1, routeId);
+			function (_p4) {
+				var _p5 = _p4;
+				return A4(_user$project$BusStop_Model$model, _p5._2, _p5._0, _p5._1, routeId);
 			},
 			A2(
 				_user$project$Utils$andThen,
@@ -11447,8 +11466,8 @@ var _user$project$BusStop_Update$ReloadPredictionsStart = {ctor: 'ReloadPredicti
 var _user$project$BusStop_Update$NoOp = {ctor: 'NoOp'};
 var _user$project$BusStop_Update$update = F2(
 	function (msg, model) {
-		var _p5 = msg;
-		switch (_p5.ctor) {
+		var _p6 = msg;
+		switch (_p6.ctor) {
 			case 'NoOp':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'ReloadPredictionsStart':
@@ -11461,13 +11480,13 @@ var _user$project$BusStop_Update$update = F2(
 						A2(_user$project$BusStop_Update$getPredictionsForStops, model.routeId, model.busStops))
 				};
 			case 'ReloadPredictionsFinish':
-				var _p6 = _p5._0;
-				if (_p6.ctor === 'Ok') {
+				var _p7 = _p6._0;
+				if (_p7.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{predictions: _p6._0}),
+							{predictions: _p7._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -11481,9 +11500,8 @@ var _user$project$BusStop_Update$update = F2(
 						_elm_lang$core$Task$perform,
 						_elm_lang$core$Basics$always(_user$project$BusStop_Update$NoOp),
 						_elm_lang$core$Basics$always(_user$project$BusStop_Update$SaveFavoriteSucceed),
-						_user$project$Favorites$saveFavorite(
-							_user$project$Favorites$Bus(
-								_user$project$BusStop_Update$groupStopIds(model.busStops))))
+						_user$project$Favorites$saveBusFavorite(
+							A2(_user$project$BusStop_Update$toBusStopSummary, model.routeId, model.busStops)))
 				};
 			case 'SaveFavoriteSucceed':
 				return {
@@ -11501,9 +11519,8 @@ var _user$project$BusStop_Update$update = F2(
 						_elm_lang$core$Task$perform,
 						_elm_lang$core$Basics$always(_user$project$BusStop_Update$NoOp),
 						_elm_lang$core$Basics$always(_user$project$BusStop_Update$RemoveFavoriteSucceed),
-						_user$project$Favorites$removeFavorite(
-							_user$project$Favorites$Bus(
-								_user$project$BusStop_Update$groupStopIds(model.busStops))))
+						_user$project$Favorites$removeBusFavorite(
+							A2(_user$project$BusStop_Update$toBusStopSummary, model.routeId, model.busStops)))
 				};
 			default:
 				return {
@@ -11823,6 +11840,234 @@ var _user$project$Components_Loading$view = A2(
 				[_user$project$Icons$loading]))
 		]));
 
+var _user$project$Favorites_Classes$cssNamespace = 'Favorites';
+var _user$project$Favorites_Classes$EmptyMessageLink = {ctor: 'EmptyMessageLink'};
+var _user$project$Favorites_Classes$EmptyMessage = {ctor: 'EmptyMessage'};
+var _user$project$Favorites_Classes$Chevron = {ctor: 'Chevron'};
+var _user$project$Favorites_Classes$StopName = {ctor: 'StopName'};
+var _user$project$Favorites_Classes$RouteName = {ctor: 'RouteName'};
+var _user$project$Favorites_Classes$FavoriteDetails = {ctor: 'FavoriteDetails'};
+var _user$project$Favorites_Classes$ItemIcon = {ctor: 'ItemIcon'};
+var _user$project$Favorites_Classes$ListTitle = {ctor: 'ListTitle'};
+var _user$project$Favorites_Classes$FavoriteItem = {ctor: 'FavoriteItem'};
+
+var _user$project$Favorites_Model$model = function (busFavorites) {
+	return {busFavorites: busFavorites};
+};
+var _user$project$Favorites_Model$Model = function (a) {
+	return {busFavorites: a};
+};
+
+var _user$project$Favorites_Load$load = A2(_elm_lang$core$Task$map, _user$project$Favorites_Model$model, _user$project$Favorites$getBusFavorites);
+
+var _user$project$Favorites_Update$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		return {
+			ctor: '_Tuple2',
+			_0: model,
+			_1: _user$project$Pages$navigateTo(_p0._0)
+		};
+	});
+var _user$project$Favorites_Update$NavigateTo = function (a) {
+	return {ctor: 'NavigateTo', _0: a};
+};
+
+var _user$project$Favorites_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Favorites_Classes$cssNamespace);
+var _user$project$Favorites_View$class = _user$project$Favorites_View$_p0.$class;
+var _user$project$Favorites_View$viewEmpty = A2(
+	_elm_lang$html$Html$div,
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_user$project$Favorites_View$class(
+			_elm_lang$core$Native_List.fromArray(
+				[_user$project$Favorites_Classes$EmptyMessage]))
+		]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Add some favorites by searching for ')
+				])),
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Favorites_View$class(
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$Favorites_Classes$EmptyMessageLink])),
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Favorites_Update$NavigateTo(_user$project$Pages$BusRoutesPage))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('bus stops')
+				])),
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(' or ')
+				])),
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Favorites_View$class(
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$Favorites_Classes$EmptyMessageLink])),
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Favorites_Update$NavigateTo(_user$project$Pages$NotFound))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('train station')
+				])),
+			A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(' that you take frequently.')
+				]))
+		]));
+var _user$project$Favorites_View$viewBusPage = function (summary) {
+	return A2(
+		_user$project$Pages$BusStopPage,
+		summary.routeId,
+		A2(_elm_lang$core$String$join, '-', summary.stopIds));
+};
+var _user$project$Favorites_View$viewBusItem = function (summary) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Favorites_View$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Favorites_Classes$FavoriteItem])),
+				_elm_lang$html$Html_Events$onClick(
+				_user$project$Favorites_Update$NavigateTo(
+					_user$project$Favorites_View$viewBusPage(summary)))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Favorites_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Favorites_Classes$ItemIcon]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Icons$bus])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Favorites_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Favorites_Classes$FavoriteDetails]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Favorites_View$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$Favorites_Classes$RouteName]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								A2(_elm_lang$core$Basics_ops['++'], 'Route ', summary.routeId))
+							])),
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Favorites_View$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$Favorites_Classes$StopName]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(summary.name)
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Favorites_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Favorites_Classes$Chevron]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Icons$chevronRight]))
+			]));
+};
+var _user$project$Favorites_View$viewBusFavorites = function (summaries) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Favorites_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Favorites_Classes$ListTitle]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Buses')
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(_elm_lang$core$List$map, _user$project$Favorites_View$viewBusItem, summaries))
+			]));
+};
+var _user$project$Favorites_View$view = function (model) {
+	var children = function () {
+		var _p1 = {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$List$isEmpty(model.busFavorites),
+			_1: _elm_lang$core$List$isEmpty(
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+		};
+		if (((_p1.ctor === '_Tuple2') && (_p1._0 === false)) && (_p1._1 === true)) {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Favorites_View$viewBusFavorites(model.busFavorites)
+				]);
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[_user$project$Favorites_View$viewEmpty]);
+		}
+	}();
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		children);
+};
+
 var _user$project$Routing$title = function (model) {
 	var _p0 = model;
 	switch (_p0.ctor) {
@@ -11847,6 +12092,8 @@ var _user$project$Routing$title = function (model) {
 						return _.name;
 					},
 					_elm_lang$core$List$head(_p0._0.busStops)));
+		case 'FavoritesModel':
+			return 'Favorites';
 		default:
 			return 'Not Found';
 	}
@@ -11860,11 +12107,16 @@ var _user$project$Routing$isCacheable = function (page) {
 			return true;
 		case 'BusStopPage':
 			return false;
+		case 'FavoritesPage':
+			return false;
 		default:
 			return false;
 	}
 };
 var _user$project$Routing$NoneModel = {ctor: 'NoneModel'};
+var _user$project$Routing$FavoritesModel = function (a) {
+	return {ctor: 'FavoritesModel', _0: a};
+};
 var _user$project$Routing$BusStopModel = function (a) {
 	return {ctor: 'BusStopModel', _0: a};
 };
@@ -11889,11 +12141,16 @@ var _user$project$Routing$load = function (page) {
 				_elm_lang$core$Task$map,
 				_user$project$Routing$BusStopModel,
 				A2(_user$project$BusStop_Update$load, _p3._0, _p3._1));
+		case 'FavoritesPage':
+			return A2(_elm_lang$core$Task$map, _user$project$Routing$FavoritesModel, _user$project$Favorites_Load$load);
 		default:
 			return _elm_lang$core$Task$succeed(_user$project$Routing$NoneModel);
 	}
 };
 var _user$project$Routing$NoneMsg = {ctor: 'NoneMsg'};
+var _user$project$Routing$FavoritesMsg = function (a) {
+	return {ctor: 'FavoritesMsg', _0: a};
+};
 var _user$project$Routing$BusStopMsg = function (a) {
 	return {ctor: 'BusStopMsg', _0: a};
 };
@@ -11917,7 +12174,7 @@ var _user$project$Routing$BusRouteMsg = function (a) {
 var _user$project$Routing$update = F2(
 	function (msg, model) {
 		var _p5 = {ctor: '_Tuple2', _0: msg, _1: model};
-		_v4_3:
+		_v4_4:
 		do {
 			if (_p5.ctor === '_Tuple2') {
 				switch (_p5._0.ctor) {
@@ -11932,7 +12189,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
 						}
 					case 'BusRoutesMsg':
 						if (_p5._1.ctor === 'BusRoutesModel') {
@@ -11945,7 +12202,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
 						}
 					case 'BusStopMsg':
 						if (_p5._1.ctor === 'BusStopModel') {
@@ -11958,35 +12215,53 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusStopMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
+						}
+					case 'FavoritesMsg':
+						if (_p5._1.ctor === 'FavoritesModel') {
+							var _p9 = A2(_user$project$Favorites_Update$update, _p5._0._0, _p5._1._0);
+							var newModel = _p9._0;
+							var subCmd = _p9._1;
+							return {
+								ctor: '_Tuple2',
+								_0: _user$project$Routing$FavoritesModel(newModel),
+								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$FavoritesMsg, subCmd)
+							};
+						} else {
+							break _v4_4;
 						}
 					default:
-						break _v4_3;
+						break _v4_4;
 				}
 			} else {
-				break _v4_3;
+				break _v4_4;
 			}
 		} while(false);
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Routing$view = function (pageModel) {
-	var _p9 = pageModel;
-	switch (_p9.ctor) {
+	var _p10 = pageModel;
+	switch (_p10.ctor) {
 		case 'BusRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRouteMsg,
-				_user$project$BusRoute_View$view(_p9._0));
+				_user$project$BusRoute_View$view(_p10._0));
 		case 'BusRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRoutesMsg,
-				_user$project$BusRoutes_View$view(_p9._0));
+				_user$project$BusRoutes_View$view(_p10._0));
 		case 'BusStopModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusStopMsg,
-				_user$project$BusStop_View$view(_p9._0));
+				_user$project$BusStop_View$view(_p10._0));
+		case 'FavoritesModel':
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Routing$FavoritesMsg,
+				_user$project$Favorites_View$view(_p10._0));
 		default:
 			return _elm_lang$html$Html$text('');
 	}
@@ -12257,7 +12532,7 @@ var _user$project$Main$view = function (model) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$NotFound, _user$project$Icons$star),
+						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$FavoritesPage, _user$project$Icons$star),
 						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$BusRoutesPage, _user$project$Icons$bus),
 						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$NotFound, _user$project$Icons$train)
 					])),
