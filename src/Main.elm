@@ -156,7 +156,7 @@ view : Model -> Html Msg
 view model =
     div [ class [ AppContainer ] ]
         [ header [ class [ HeaderNav ] ]
-            [ viewNavIcon model.currentPage Pages.NotFound Icons.star
+            [ viewNavIcon model.currentPage Pages.FavoritesPage Icons.star
             , viewNavIcon model.currentPage Pages.BusRoutesPage Icons.bus
             , viewNavIcon model.currentPage Pages.NotFound Icons.train
             ]

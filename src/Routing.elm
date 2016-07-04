@@ -25,12 +25,17 @@ import BusStop.Model as BusStop
 import BusStop.Update as BusStop
 import BusStop.View as BusStop
 import BusStop.Subscriptions as BusStop
+import Favorites.Model as Favorites
+import Favorites.Update as Favorites
+import Favorites.Load as Favorites
+import Favorites.View as Favorites
 
 
 type PageModel
     = BusRouteModel BusRoute.Model
     | BusRoutesModel BusRoutes.Model
     | BusStopModel BusStop.Model
+    | FavoritesModel Favorites.Model
     | NoneModel
 
 
@@ -38,6 +43,7 @@ type PageMsg
     = BusRouteMsg BusRoute.Msg
     | BusRoutesMsg BusRoutes.Msg
     | BusStopMsg BusStop.Msg
+    | FavoritesMsg Favorites.Msg
     | NoneMsg
 
 
@@ -71,6 +77,15 @@ update msg model =
                 , Cmd.map BusStopMsg subCmd
                 )
 
+        ( FavoritesMsg subMsg, FavoritesModel subModel ) ->
+            let
+                ( newModel, subCmd ) =
+                    Favorites.update subMsg subModel
+            in
+                ( FavoritesModel newModel
+                , Cmd.map FavoritesMsg subCmd
+                )
+
         _ ->
             ( model, Cmd.none )
 
@@ -86,6 +101,9 @@ load page =
 
         BusStopPage routeId stopId ->
             BusStop.load routeId stopId |> Task.map BusStopModel
+
+        FavoritesPage ->
+            Favorites.load |> Task.map FavoritesModel
 
         _ ->
             Task.succeed NoneModel
@@ -103,6 +121,9 @@ view pageModel =
         BusStopModel model ->
             HtmlApp.map BusStopMsg <| BusStop.view model
 
+        FavoritesModel model ->
+            HtmlApp.map FavoritesMsg <| Favorites.view model
+
         _ ->
             Html.text ""
 
@@ -117,6 +138,9 @@ isCacheable page =
             True
 
         BusStopPage _ _ ->
+            False
+
+        FavoritesPage ->
             False
 
         NotFound ->
@@ -136,6 +160,9 @@ title model =
             List.head model.busStops
                 |> Maybe.map .name
                 |> Maybe.withDefault ""
+
+        FavoritesModel _ ->
+            "Favorites"
 
         _ ->
             "Not Found"
