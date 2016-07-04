@@ -62,9 +62,9 @@ css =
                     , display inlineBlock
                     , property "fill" midGray
                     , property "transition" "transform 0.15s"
-                    , active
-                        [ transforms [ scale 1.2 ]
-                        ]
+                    , property "touch-action" "none"
+                    , active [ transforms [ scale 1.2 ] ]
+                    , hover [ transforms [ scale 1.2 ] ]
                     ]
                 , (.) PageContainer
                     [ height (pct 100)
