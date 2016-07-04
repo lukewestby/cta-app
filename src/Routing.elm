@@ -26,7 +26,6 @@ import BusStop.Update as BusStop
 import BusStop.View as BusStop
 import BusStop.Subscriptions as BusStop
 import Favorites.Model as Favorites
-import Favorites.Update as Favorites
 import Favorites.Load as Favorites
 import Favorites.View as Favorites
 
@@ -43,7 +42,6 @@ type PageMsg
     = BusRouteMsg BusRoute.Msg
     | BusRoutesMsg BusRoutes.Msg
     | BusStopMsg BusStop.Msg
-    | FavoritesMsg Favorites.Msg
     | NoneMsg
 
 
@@ -75,15 +73,6 @@ update msg model =
             in
                 ( BusStopModel newModel
                 , Cmd.map BusStopMsg subCmd
-                )
-
-        ( FavoritesMsg subMsg, FavoritesModel subModel ) ->
-            let
-                ( newModel, subCmd ) =
-                    Favorites.update subMsg subModel
-            in
-                ( FavoritesModel newModel
-                , Cmd.map FavoritesMsg subCmd
                 )
 
         _ ->
@@ -122,7 +111,7 @@ view pageModel =
             HtmlApp.map BusStopMsg <| BusStop.view model
 
         FavoritesModel model ->
-            HtmlApp.map FavoritesMsg <| Favorites.view model
+            Favorites.view model
 
         _ ->
             Html.text ""

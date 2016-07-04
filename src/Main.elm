@@ -3,6 +3,7 @@ module Main exposing (..)
 import Dict exposing (Dict)
 import Utils exposing (..)
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.App as HtmlApp
 import Navigation
@@ -32,7 +33,6 @@ type Msg
     = PageMsg Pages.Page Routing.PageMsg
     | LoadPageFinish Bool (Result String Routing.PageModel)
     | RetryLoad
-    | NavigateTo Pages.Page
 
 
 init : Pages.Page -> ( Model, Cmd Msg )
@@ -96,11 +96,6 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        NavigateTo page ->
-            ( model
-            , Pages.navigateTo page
-            )
-
 
 
 -- VIEW
@@ -113,7 +108,7 @@ viewNavIcon currentPage pageForIcon icon =
             [ ( HeaderNavIcon, True )
             , ( HeaderNavIconActive, currentPage == pageForIcon )
             ]
-        , onClick <| NavigateTo pageForIcon
+        , href <| Pages.url pageForIcon
         ]
         [ icon ]
 

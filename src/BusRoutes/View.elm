@@ -2,7 +2,7 @@ module BusRoutes.View exposing (view)
 
 import String
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Pages
 import Api exposing (BusRouteSummary)
@@ -21,9 +21,9 @@ viewRouteIdLabel routeId color =
 
 viewRoute : BusRouteSummary -> Html Msg
 viewRoute summary =
-    div
+    a
         [ class [ RouteItem ]
-        , onClick (NavigateTo (Pages.BusRoutePage summary.id))
+        , href <| Pages.url (Pages.BusRoutePage summary.id)
         ]
         [ viewRouteIdLabel summary.id summary.color
         , div [ class [ RouteName ] ] [ text summary.name ]

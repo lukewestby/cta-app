@@ -3,7 +3,7 @@ module BusRoute.View exposing (view)
 import Dict
 import String
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Pages
 import Api exposing (BusStop, Direction)
@@ -33,9 +33,9 @@ groupId busStops =
 
 viewStop : String -> ( String, List BusStop ) -> Html Msg
 viewStop routeId ( name, stops ) =
-    div
+    a
         [ class [ StopItem ]
-        , onClick <| NavigateTo (Pages.BusStopPage routeId (groupId stops))
+        , href <| Pages.url (Pages.BusStopPage routeId (groupId stops))
         ]
         [ div [ class [ StopName ] ] [ text name ]
         , div [ class [ Chevron ] ] [ Icons.chevronRight ]

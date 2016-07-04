@@ -2,17 +2,16 @@ module Favorites.View exposing (view)
 
 import String
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Icons
 import Pages exposing (Page)
 import Favorites exposing (BusStopSummary)
 import Favorites.Classes exposing (..)
 import Favorites.Model exposing (Model)
-import Favorites.Update exposing (Msg(..))
 
 
-viewBusFavorites : List BusStopSummary -> Html Msg
+viewBusFavorites : List BusStopSummary -> Html msg
 viewBusFavorites summaries =
     div []
         [ div [ class [ ListTitle ] ] [ text "Buses" ]
@@ -20,11 +19,11 @@ viewBusFavorites summaries =
         ]
 
 
-viewBusItem : BusStopSummary -> Html Msg
+viewBusItem : BusStopSummary -> Html msg
 viewBusItem summary =
-    div
+    a
         [ class [ FavoriteItem ]
-        , onClick (NavigateTo (viewBusPage summary))
+        , href <| Pages.url (viewBusPage summary)
         ]
         [ div [ class [ ItemIcon ] ] [ Icons.bus ]
         , div [ class [ FavoriteDetails ] ]
@@ -43,21 +42,21 @@ viewBusPage summary =
         (summary.stopIds |> String.join "-")
 
 
-viewEmpty : Html Msg
+viewEmpty : Html msg
 viewEmpty =
     div [ class [ EmptyMessage ] ]
         [ span []
             [ text "Add some favorites by searching for " ]
-        , span
+        , a
             [ class [ EmptyMessageLink ]
-            , onClick (NavigateTo Pages.BusRoutesPage)
+            , href <| Pages.url Pages.BusRoutesPage
             ]
             [ text "bus stops" ]
         , span []
             [ text " or " ]
-        , span
+        , a
             [ class [ EmptyMessageLink ]
-            , onClick (NavigateTo Pages.NotFound)
+            , href <| Pages.url Pages.NotFound
             ]
             [ text "train station" ]
         , span []
@@ -65,7 +64,7 @@ viewEmpty =
         ]
 
 
-view : Model -> Html Msg
+view : Model -> Html msg
 view model =
     let
         children =
