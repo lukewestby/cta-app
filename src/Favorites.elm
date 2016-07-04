@@ -1,61 +1,51 @@
 module Favorites
     exposing
-        ( Favorite(..)
-        , getFavorites
-        , saveFavorite
-        , removeFavorite
+        ( BusStopSummary
+        , getBusFavorites
+        , saveBusFavorite
+        , removeBusFavorite
         )
 
 import Utils exposing (..)
 import Task exposing (Task)
 import Json.Decode as Decode exposing (..)
+import Json.Decode.Pipeline exposing (..)
 import Json.Encode as Encode
 import LocalStorage
 
 
-type Favorite
-    = Bus String
-    | Train
+type alias BusStopSummary =
+    { name : String
+    , routeId : String
+    , stopIds : List String
+    }
 
 
-favoriteDecoder : Decoder Favorite
-favoriteDecoder =
-    customDecoder (list string)
-        <| \value ->
-            case value of
-                "Bus" :: ids :: [] ->
-                    Ok (Bus ids)
-
-                "Train" :: [] ->
-                    Ok Train
-
-                _ ->
-                    Err "Can't decode favorite"
+busStopSummaryDecoder : Decoder BusStopSummary
+busStopSummaryDecoder =
+    decode BusStopSummary
+        |> required "name" string
+        |> required "routeId" string
+        |> required "stopIds" (list string)
 
 
-favoriteEncoder : Favorite -> Encode.Value
-favoriteEncoder favorite =
-    case favorite of
-        Bus ids ->
-            Encode.list
-                [ Encode.string "Bus"
-                , Encode.string ids
-                ]
-
-        Train ->
-            Encode.list
-                [ Encode.string "Train"
-                ]
+busStopSummaryEncoder : BusStopSummary -> Encode.Value
+busStopSummaryEncoder summary =
+    Encode.object
+        [ ( "name", Encode.string summary.name )
+        , ( "routeId", Encode.string summary.routeId )
+        , ( "stopIds", Encode.list <| List.map Encode.string summary.stopIds )
+        ]
 
 
-getFavorites : Task String (List Favorite)
-getFavorites =
+getBusFavorites : Task String (List BusStopSummary)
+getBusFavorites =
     let
         parse result =
             result
-                |> (flip Result.andThen) (Decode.decodeString (list favoriteDecoder))
+                |> (flip Result.andThen) (Decode.decodeString (list busStopSummaryDecoder))
     in
-        LocalStorage.get "favorites"
+        LocalStorage.get "busFavorites"
             |> Task.mapError (always "Couldn't fetch favorites from LocalStorage")
             |> Task.map (Maybe.withDefault "[]")
             |> Task.toResult
@@ -69,17 +59,17 @@ set l r =
         |> Task.mapError (always "Couldn't save value to LocalStorage")
 
 
-saveFavorite : Favorite -> Task String ()
-saveFavorite favorite =
-    getFavorites
-        |> Task.map (\favorites -> favorite :: favorites)
-        |> Task.map (\favorites -> Encode.list (List.map favoriteEncoder favorites))
-        |> Utils.andThen (\jsValue -> set "favorites" (Encode.encode 0 jsValue))
+saveBusFavorite : BusStopSummary -> Task String ()
+saveBusFavorite summary =
+    getBusFavorites
+        |> Task.map (\favorites -> summary :: favorites)
+        |> Task.map (\favorites -> Encode.list (List.map busStopSummaryEncoder favorites))
+        |> Utils.andThen (\jsValue -> set "busFavorites" (Encode.encode 0 jsValue))
 
 
-removeFavorite : Favorite -> Task String ()
-removeFavorite favorite =
-    getFavorites
-        |> Task.map (List.filter ((/=) favorite))
-        |> Task.map (\favorites -> Encode.list (List.map favoriteEncoder favorites))
-        |> Utils.andThen (\jsValue -> set "favorites" (Encode.encode 0 jsValue))
+removeBusFavorite : BusStopSummary -> Task String ()
+removeBusFavorite summary =
+    getBusFavorites
+        |> Task.map (List.filter ((/=) summary))
+        |> Task.map (\favorites -> Encode.list (List.map busStopSummaryEncoder favorites))
+        |> Utils.andThen (\jsValue -> set "busFavorites" (Encode.encode 0 jsValue))

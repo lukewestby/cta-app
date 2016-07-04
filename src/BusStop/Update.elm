@@ -38,8 +38,8 @@ load routeId stopGroupIds =
                 |> Task.map (\predictions -> ( stops, predictions ))
 
         stopsPredictionsToFavorites ( stops, predictions ) =
-            Favorites.getFavorites
-                |> Task.map (List.member (Favorites.Bus stopGroupIds))
+            Favorites.getBusFavorites
+                |> Task.map (List.member (toBusStopSummary routeId stops))
                 |> Task.map (\isFavorited -> ( stops, predictions, isFavorited ))
     in
         stopsTask
@@ -62,6 +62,14 @@ groupStopIds stops =
         |> List.map .id
         |> List.sort
         |> String.join "-"
+
+
+toBusStopSummary : String -> List BusStop -> Favorites.BusStopSummary
+toBusStopSummary routeId busStops =
+    { name = List.head busStops |> Maybe.map .name |> Maybe.withDefault ""
+    , stopIds = List.map .id busStops
+    , routeId = routeId
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -88,7 +96,7 @@ update msg model =
 
         SaveFavorite ->
             ( model
-            , Favorites.saveFavorite (Favorites.Bus (groupStopIds model.busStops))
+            , Favorites.saveBusFavorite (toBusStopSummary model.routeId model.busStops)
                 |> Task.perform (always NoOp) (always SaveFavoriteSucceed)
             )
 
@@ -99,7 +107,7 @@ update msg model =
 
         RemoveFavorite ->
             ( model
-            , Favorites.removeFavorite (Favorites.Bus (groupStopIds model.busStops))
+            , Favorites.removeBusFavorite (toBusStopSummary model.routeId model.busStops)
                 |> Task.perform (always NoOp) (always RemoveFavoriteSucceed)
             )
 

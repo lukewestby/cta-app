@@ -48,7 +48,7 @@ dateDecoder =
 
 fullUrl : String -> String
 fullUrl relative =
-    "https://cta-json-api.herokuapp.com" ++ relative
+    "http://localhost:1337" ++ relative
 
 
 type alias BusRouteSummary =
