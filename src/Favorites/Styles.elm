@@ -34,14 +34,14 @@ styles =
             , property "width" "calc(100% - 52px)"
             ]
         , (.) RouteName
-            [ whiteSpace noWrap
+            [ color (hex midGray)
+            , fontSize (px 14)
+            , whiteSpace noWrap
             , overflowX hidden
             , textOverflow ellipsis
             ]
         , (.) StopName
-            [ color (hex midGray)
-            , fontSize (px 14)
-            , whiteSpace noWrap
+            [ whiteSpace noWrap
             , overflowX hidden
             , textOverflow ellipsis
             ]
