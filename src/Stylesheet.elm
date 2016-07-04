@@ -33,6 +33,10 @@ css =
                         [ everything [ boxSizing borderBox ]
                         ]
                     ]
+                , a
+                    [ textDecoration none
+                    , property "color" "inherit"
+                    ]
                 , (.) AppContainer
                     [ maxWidth (px 768)
                     , margin2 zero auto
@@ -49,6 +53,7 @@ css =
                     , backgroundColor (hex "#fff")
                     , position fixed
                     , property "z-index" "3"
+                    , maxWidth (px 768)
                     ]
                 , (.) HeaderNavIcon
                     [ width (px 24)

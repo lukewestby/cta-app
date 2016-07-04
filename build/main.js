@@ -10798,26 +10798,69 @@ var _user$project$BusRoute_Model$Model = F3(
 		return {searchModel: a, route: b, stops: c};
 	});
 
+var _user$project$BusRoute_Update$load = function (routeId) {
+	var routeToStops = function (route) {
+		return A2(
+			_elm_lang$core$Task$map,
+			function (stops) {
+				return {ctor: '_Tuple2', _0: route, _1: stops};
+			},
+			_user$project$Api$getBusStops(route.id));
+	};
+	return A2(
+		_elm_lang$core$Task$map,
+		function (_p0) {
+			var _p1 = _p0;
+			return A2(_user$project$BusRoute_Model$model, _p1._0, _p1._1);
+		},
+		A2(
+			_user$project$Utils$andThen,
+			routeToStops,
+			_user$project$Api$getBusRoute(routeId)));
+};
+var _user$project$BusRoute_Update$SearchBarMsg = function (a) {
+	return {ctor: 'SearchBarMsg', _0: a};
+};
+var _user$project$BusRoute_Update$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		var _p3 = A2(_user$project$Components_SearchBar$update, _p2._0, model.searchModel);
+		var subModel = _p3._0;
+		var subCmd = _p3._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{searchModel: subModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$BusRoute_Update$SearchBarMsg, subCmd)
+		};
+	});
+
 var _user$project$Pages$url = function (page) {
-	var _p0 = page;
-	switch (_p0.ctor) {
-		case 'FavoritesPage':
-			return '';
-		case 'BusRoutesPage':
-			return 'bus/routes';
-		case 'BusRoutePage':
-			return A2(_elm_lang$core$Basics_ops['++'], 'bus/routes/', _p0._0);
-		case 'BusStopPage':
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				'bus/routes/',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_p0._0,
-					A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
-		default:
-			return 'not-found';
-	}
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'#/',
+		function () {
+			var _p0 = page;
+			switch (_p0.ctor) {
+				case 'FavoritesPage':
+					return '';
+				case 'BusRoutesPage':
+					return 'bus/routes';
+				case 'BusRoutePage':
+					return A2(_elm_lang$core$Basics_ops['++'], 'bus/routes/', _p0._0);
+				case 'BusStopPage':
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						'bus/routes/',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_p0._0,
+							A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
+				default:
+					return 'not-found';
+			}
+		}());
 };
 var _user$project$Pages$navigateTo = function (page) {
 	return _elm_lang$navigation$Navigation$newUrl(
@@ -10889,60 +10932,11 @@ var _user$project$Pages$parser = _elm_lang$navigation$Navigation$makeParser(
 				_user$project$Pages$pageParser,
 				A2(
 					_elm_lang$core$String$dropLeft,
-					9,
+					2,
 					function (_) {
-						return _.pathname;
+						return _.hash;
 					}(_p1))));
 	});
-
-var _user$project$BusRoute_Update$load = function (routeId) {
-	var routeToStops = function (route) {
-		return A2(
-			_elm_lang$core$Task$map,
-			function (stops) {
-				return {ctor: '_Tuple2', _0: route, _1: stops};
-			},
-			_user$project$Api$getBusStops(route.id));
-	};
-	return A2(
-		_elm_lang$core$Task$map,
-		function (_p0) {
-			var _p1 = _p0;
-			return A2(_user$project$BusRoute_Model$model, _p1._0, _p1._1);
-		},
-		A2(
-			_user$project$Utils$andThen,
-			routeToStops,
-			_user$project$Api$getBusRoute(routeId)));
-};
-var _user$project$BusRoute_Update$SearchBarMsg = function (a) {
-	return {ctor: 'SearchBarMsg', _0: a};
-};
-var _user$project$BusRoute_Update$update = F2(
-	function (msg, model) {
-		var _p2 = msg;
-		if (_p2.ctor === 'NavigateTo') {
-			return {
-				ctor: '_Tuple2',
-				_0: model,
-				_1: _user$project$Pages$navigateTo(_p2._0)
-			};
-		} else {
-			var _p3 = A2(_user$project$Components_SearchBar$update, _p2._0, model.searchModel);
-			var subModel = _p3._0;
-			var subCmd = _p3._1;
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{searchModel: subModel}),
-				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$BusRoute_Update$SearchBarMsg, subCmd)
-			};
-		}
-	});
-var _user$project$BusRoute_Update$NavigateTo = function (a) {
-	return {ctor: 'NavigateTo', _0: a};
-};
 
 var _user$project$BusRoute_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$BusRoute_Classes$cssNamespace);
 var _user$project$BusRoute_View$class = _user$project$BusRoute_View$_p0.$class;
@@ -10962,14 +10956,14 @@ var _user$project$BusRoute_View$viewStop = F2(
 	function (routeId, _p1) {
 		var _p2 = _p1;
 		return A2(
-			_elm_lang$html$Html$div,
+			_elm_lang$html$Html$a,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_user$project$BusRoute_View$class(
 					_elm_lang$core$Native_List.fromArray(
 						[_user$project$BusRoute_Classes$StopItem])),
-					_elm_lang$html$Html_Events$onClick(
-					_user$project$BusRoute_Update$NavigateTo(
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(
 						A2(
 							_user$project$Pages$BusStopPage,
 							routeId,
@@ -11075,28 +11069,17 @@ var _user$project$BusRoutes_Update$SearchBarMsg = function (a) {
 var _user$project$BusRoutes_Update$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		if (_p0.ctor === 'NavigateTo') {
-			return {
-				ctor: '_Tuple2',
-				_0: model,
-				_1: _user$project$Pages$navigateTo(_p0._0)
-			};
-		} else {
-			var _p1 = A2(_user$project$Components_SearchBar$update, _p0._0, model.searchModel);
-			var subModel = _p1._0;
-			var subCmd = _p1._1;
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{searchModel: subModel}),
-				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$BusRoutes_Update$SearchBarMsg, subCmd)
-			};
-		}
+		var _p1 = A2(_user$project$Components_SearchBar$update, _p0._0, model.searchModel);
+		var subModel = _p1._0;
+		var subCmd = _p1._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{searchModel: subModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$BusRoutes_Update$SearchBarMsg, subCmd)
+		};
 	});
-var _user$project$BusRoutes_Update$NavigateTo = function (a) {
-	return {ctor: 'NavigateTo', _0: a};
-};
 
 var _user$project$BusRoutes_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$BusRoutes_Classes$cssNamespace);
 var _user$project$BusRoutes_View$class = _user$project$BusRoutes_View$_p0.$class;
@@ -11148,14 +11131,14 @@ var _user$project$BusRoutes_View$viewRouteIdLabel = F2(
 	});
 var _user$project$BusRoutes_View$viewRoute = function (summary) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$a,
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_user$project$BusRoutes_View$class(
 				_elm_lang$core$Native_List.fromArray(
 					[_user$project$BusRoutes_Classes$RouteItem])),
-				_elm_lang$html$Html_Events$onClick(
-				_user$project$BusRoutes_Update$NavigateTo(
+				_elm_lang$html$Html_Attributes$href(
+				_user$project$Pages$url(
 					_user$project$Pages$BusRoutePage(summary.id)))
 			]),
 		_elm_lang$core$Native_List.fromArray(
@@ -11860,19 +11843,6 @@ var _user$project$Favorites_Model$Model = function (a) {
 
 var _user$project$Favorites_Load$load = A2(_elm_lang$core$Task$map, _user$project$Favorites_Model$model, _user$project$Favorites$getBusFavorites);
 
-var _user$project$Favorites_Update$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		return {
-			ctor: '_Tuple2',
-			_0: model,
-			_1: _user$project$Pages$navigateTo(_p0._0)
-		};
-	});
-var _user$project$Favorites_Update$NavigateTo = function (a) {
-	return {ctor: 'NavigateTo', _0: a};
-};
-
 var _user$project$Favorites_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Favorites_Classes$cssNamespace);
 var _user$project$Favorites_View$class = _user$project$Favorites_View$_p0.$class;
 var _user$project$Favorites_View$viewEmpty = A2(
@@ -11894,14 +11864,14 @@ var _user$project$Favorites_View$viewEmpty = A2(
 					_elm_lang$html$Html$text('Add some favorites by searching for ')
 				])),
 			A2(
-			_elm_lang$html$Html$span,
+			_elm_lang$html$Html$a,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_user$project$Favorites_View$class(
 					_elm_lang$core$Native_List.fromArray(
 						[_user$project$Favorites_Classes$EmptyMessageLink])),
-					_elm_lang$html$Html_Events$onClick(
-					_user$project$Favorites_Update$NavigateTo(_user$project$Pages$BusRoutesPage))
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(_user$project$Pages$BusRoutesPage))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -11916,14 +11886,14 @@ var _user$project$Favorites_View$viewEmpty = A2(
 					_elm_lang$html$Html$text(' or ')
 				])),
 			A2(
-			_elm_lang$html$Html$span,
+			_elm_lang$html$Html$a,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_user$project$Favorites_View$class(
 					_elm_lang$core$Native_List.fromArray(
 						[_user$project$Favorites_Classes$EmptyMessageLink])),
-					_elm_lang$html$Html_Events$onClick(
-					_user$project$Favorites_Update$NavigateTo(_user$project$Pages$NotFound))
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(_user$project$Pages$NotFound))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -11946,14 +11916,14 @@ var _user$project$Favorites_View$viewBusPage = function (summary) {
 };
 var _user$project$Favorites_View$viewBusItem = function (summary) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$a,
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_user$project$Favorites_View$class(
 				_elm_lang$core$Native_List.fromArray(
 					[_user$project$Favorites_Classes$FavoriteItem])),
-				_elm_lang$html$Html_Events$onClick(
-				_user$project$Favorites_Update$NavigateTo(
+				_elm_lang$html$Html_Attributes$href(
+				_user$project$Pages$url(
 					_user$project$Favorites_View$viewBusPage(summary)))
 			]),
 		_elm_lang$core$Native_List.fromArray(
@@ -12148,9 +12118,6 @@ var _user$project$Routing$load = function (page) {
 	}
 };
 var _user$project$Routing$NoneMsg = {ctor: 'NoneMsg'};
-var _user$project$Routing$FavoritesMsg = function (a) {
-	return {ctor: 'FavoritesMsg', _0: a};
-};
 var _user$project$Routing$BusStopMsg = function (a) {
 	return {ctor: 'BusStopMsg', _0: a};
 };
@@ -12174,7 +12141,7 @@ var _user$project$Routing$BusRouteMsg = function (a) {
 var _user$project$Routing$update = F2(
 	function (msg, model) {
 		var _p5 = {ctor: '_Tuple2', _0: msg, _1: model};
-		_v4_4:
+		_v4_3:
 		do {
 			if (_p5.ctor === '_Tuple2') {
 				switch (_p5._0.ctor) {
@@ -12189,7 +12156,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_3;
 						}
 					case 'BusRoutesMsg':
 						if (_p5._1.ctor === 'BusRoutesModel') {
@@ -12202,7 +12169,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_3;
 						}
 					case 'BusStopMsg':
 						if (_p5._1.ctor === 'BusStopModel') {
@@ -12215,53 +12182,37 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusStopMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
-						}
-					case 'FavoritesMsg':
-						if (_p5._1.ctor === 'FavoritesModel') {
-							var _p9 = A2(_user$project$Favorites_Update$update, _p5._0._0, _p5._1._0);
-							var newModel = _p9._0;
-							var subCmd = _p9._1;
-							return {
-								ctor: '_Tuple2',
-								_0: _user$project$Routing$FavoritesModel(newModel),
-								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$FavoritesMsg, subCmd)
-							};
-						} else {
-							break _v4_4;
+							break _v4_3;
 						}
 					default:
-						break _v4_4;
+						break _v4_3;
 				}
 			} else {
-				break _v4_4;
+				break _v4_3;
 			}
 		} while(false);
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Routing$view = function (pageModel) {
-	var _p10 = pageModel;
-	switch (_p10.ctor) {
+	var _p9 = pageModel;
+	switch (_p9.ctor) {
 		case 'BusRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRouteMsg,
-				_user$project$BusRoute_View$view(_p10._0));
+				_user$project$BusRoute_View$view(_p9._0));
 		case 'BusRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRoutesMsg,
-				_user$project$BusRoutes_View$view(_p10._0));
+				_user$project$BusRoutes_View$view(_p9._0));
 		case 'BusStopModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusStopMsg,
-				_user$project$BusStop_View$view(_p10._0));
+				_user$project$BusStop_View$view(_p9._0));
 		case 'FavoritesModel':
-			return A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Routing$FavoritesMsg,
-				_user$project$Favorites_View$view(_p10._0));
+			return _user$project$Favorites_View$view(_p9._0);
 		default:
 			return _elm_lang$html$Html$text('');
 	}
@@ -12270,13 +12221,6 @@ var _user$project$Routing$view = function (pageModel) {
 var _user$project$Main$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Classes$appNamespace);
 var _user$project$Main$class = _user$project$Main$_p0.$class;
 var _user$project$Main$classList = _user$project$Main$_p0.classList;
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {pageModel: a, currentPage: b, cache: c};
-	});
-var _user$project$Main$NavigateTo = function (a) {
-	return {ctor: 'NavigateTo', _0: a};
-};
 var _user$project$Main$viewNavIcon = F3(
 	function (currentPage, pageForIcon, icon) {
 		return A2(
@@ -12293,11 +12237,15 @@ var _user$project$Main$viewNavIcon = F3(
 							_1: _elm_lang$core$Native_Utils.eq(currentPage, pageForIcon)
 						}
 						])),
-					_elm_lang$html$Html_Events$onClick(
-					_user$project$Main$NavigateTo(pageForIcon))
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(pageForIcon))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[icon]));
+	});
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {pageModel: a, currentPage: b, cache: c};
 	});
 var _user$project$Main$RetryLoad = {ctor: 'RetryLoad'};
 var _user$project$Main$viewFailure = A2(
@@ -12432,7 +12380,7 @@ var _user$project$Main$update = F2(
 				}
 			case 'RetryLoad':
 				return _user$project$Main$init(model.currentPage);
-			case 'PageMsg':
+			default:
 				var _p5 = {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.eq(_p2._0, model.currentPage),
@@ -12457,12 +12405,6 @@ var _user$project$Main$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Pages$navigateTo(_p2._0)
-				};
 		}
 	});
 var _user$project$Main$viewPage = function (model) {

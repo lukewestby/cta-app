@@ -15,21 +15,22 @@ type Page
 
 url : Page -> String
 url page =
-    case page of
-        FavoritesPage ->
-            ""
+    "#/"
+        ++ case page of
+            FavoritesPage ->
+                ""
 
-        BusRoutesPage ->
-            "bus/routes"
+            BusRoutesPage ->
+                "bus/routes"
 
-        BusRoutePage routeId ->
-            "bus/routes/" ++ routeId
+            BusRoutePage routeId ->
+                "bus/routes/" ++ routeId
 
-        BusStopPage routeId stopId ->
-            "bus/routes/" ++ routeId ++ "/stops/" ++ stopId
+            BusStopPage routeId stopId ->
+                "bus/routes/" ++ routeId ++ "/stops/" ++ stopId
 
-        _ ->
-            "not-found"
+            _ ->
+                "not-found"
 
 
 navigateTo : Page -> Cmd msg
@@ -55,8 +56,8 @@ pageParser =
 parser : Navigation.Parser Page
 parser =
     Navigation.makeParser
-        (.pathname
-            >> String.dropLeft 9
+        (.hash
+            >> String.dropLeft 2
             >> UrlParser.parse identity pageParser
             >> Result.withDefault NotFound
         )
