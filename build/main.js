@@ -11954,12 +11954,11 @@ var _user$project$Favorites_View$viewBusItem = function (summary) {
 							[
 								_user$project$Favorites_View$class(
 								_elm_lang$core$Native_List.fromArray(
-									[_user$project$Favorites_Classes$RouteName]))
+									[_user$project$Favorites_Classes$StopName]))
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text(
-								A2(_elm_lang$core$Basics_ops['++'], 'Route ', summary.routeId))
+								_elm_lang$html$Html$text(summary.name)
 							])),
 						A2(
 						_elm_lang$html$Html$div,
@@ -11967,11 +11966,12 @@ var _user$project$Favorites_View$viewBusItem = function (summary) {
 							[
 								_user$project$Favorites_View$class(
 								_elm_lang$core$Native_List.fromArray(
-									[_user$project$Favorites_Classes$StopName]))
+									[_user$project$Favorites_Classes$RouteName]))
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text(summary.name)
+								_elm_lang$html$Html$text(
+								A2(_elm_lang$core$Basics_ops['++'], 'Route ', summary.routeId))
 							]))
 					])),
 				A2(

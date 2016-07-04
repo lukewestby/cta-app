@@ -334,14 +334,14 @@ a {
 }
 
 .FavoritesRouteName {
+    color: #8899A6;
+    font-size: 14px;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
 }
 
 .FavoritesStopName {
-    color: #8899A6;
-    font-size: 14px;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
