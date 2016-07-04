@@ -7,7 +7,6 @@ body {
     height: 100%;
     font-family: Helvetica Neue;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
 }
 
 body  * {
@@ -16,9 +15,7 @@ body  * {
 
 .elm-cta-appAppContainer {
     max-width: 768px;
-    height: 100%;
     margin: 0 auto;
-    box-shadow: 0px 0px 24px -4px black;
     position: relative;
 }
 
@@ -31,6 +28,8 @@ body  * {
     padding: 0 32px;
     width: 100%;
     background-color: #fff;
+    position: fixed;
+    z-index: 3;
 }
 
 .elm-cta-appHeaderNavIcon {
@@ -47,10 +46,9 @@ body  * {
 }
 
 .elm-cta-appPageContainer {
-    overflow-y: auto;
-    height: calc(100% - 52px);
+    height: 100%;
+    padding-top: 52px;
     position: relative;
-    -webkit-overflow-scrolling: touch;
 }
 
 .elm-cta-appHeaderNavIconActive {
