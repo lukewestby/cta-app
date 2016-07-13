@@ -15,7 +15,7 @@ import HttpBuilder exposing (..)
 
 fullUrl : String -> String
 fullUrl relative =
-    "http://localhost:1337" ++ relative
+    "https://cta-json-api.herokuapp.com" ++ relative
 
 
 type alias TrainRoute =
