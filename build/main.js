@@ -10192,112 +10192,11 @@ var _rtfeldman$elm_css_helpers$Html_CssHelpers$Namespace = F4(
 		return {$class: a, classList: b, id: c, name: d};
 	});
 
-var _user$project$Utils$listUniqueBy = F2(
-	function (accessor, list) {
-		var fold = F2(
-			function (item, memo) {
-				var id = accessor(item);
-				return A2(_elm_lang$core$Set$member, id, memo.ids) ? memo : _elm_lang$core$Native_Utils.update(
-					memo,
-					{
-						output: A2(_elm_lang$core$List_ops['::'], item, memo.output),
-						ids: A2(_elm_lang$core$Set$insert, id, memo.ids)
-					});
-			});
-		return function (_) {
-			return _.output;
-		}(
-			A3(
-				_elm_lang$core$List$foldl,
-				fold,
-				{
-					output: _elm_lang$core$Native_List.fromArray(
-						[]),
-					ids: _elm_lang$core$Set$empty
-				},
-				list));
-	});
-var _user$project$Utils$flatten = _elm_lang$core$List$filterMap(
-	function (_p0) {
-		var _p1 = _p0;
-		return _p1._0 ? _elm_lang$core$Maybe$Just(_p1._1) : _elm_lang$core$Maybe$Nothing;
-	});
-var _user$project$Utils$never = function (a) {
-	never:
-	while (true) {
-		var _v1 = a;
-		a = _v1;
-		continue never;
-	}
-};
-var _user$project$Utils$performSucceed = F2(
-	function (onFinished, task) {
-		return A3(
-			_elm_lang$core$Task$perform,
-			_user$project$Utils$never,
-			onFinished,
-			_elm_lang$core$Task$toResult(task));
-	});
-var _user$project$Utils$constant = function (msg) {
-	return A2(
-		_user$project$Utils$performSucceed,
-		_elm_lang$core$Basics$always(msg),
-		_elm_lang$core$Task$succeed(
-			{ctor: '_Tuple0'}));
-};
-var _user$project$Utils$andThen = _elm_lang$core$Basics$flip(_elm_lang$core$Task$andThen);
-var _user$project$Utils$delay = F2(
-	function (howLong, task) {
-		return A2(
-			_user$project$Utils$andThen,
-			_elm_lang$core$Basics$always(task),
-			_elm_lang$core$Process$sleep(howLong));
-	});
-var _user$project$Utils$loadStateToMaybe = function (loadState) {
-	var _p2 = loadState;
-	if (_p2.ctor === 'Success') {
-		return _elm_lang$core$Maybe$Just(_p2._0);
-	} else {
-		return _elm_lang$core$Maybe$Nothing;
-	}
-};
-var _user$project$Utils$Failure = function (a) {
-	return {ctor: 'Failure', _0: a};
-};
-var _user$project$Utils$Success = function (a) {
-	return {ctor: 'Success', _0: a};
-};
-var _user$project$Utils$loadStateFromResult = function (result) {
-	var _p3 = result;
-	if (_p3.ctor === 'Ok') {
-		return _user$project$Utils$Success(_p3._0);
-	} else {
-		return _user$project$Utils$Failure(_p3._0);
-	}
-};
-var _user$project$Utils$Loading = {ctor: 'Loading'};
-var _user$project$Utils$Initial = {ctor: 'Initial'};
-var _user$project$Utils$loadStateMap = F2(
-	function (tagger, loadState) {
-		var _p4 = loadState;
-		switch (_p4.ctor) {
-			case 'Success':
-				return _user$project$Utils$Success(
-					tagger(_p4._0));
-			case 'Failure':
-				return _user$project$Utils$Failure(_p4._0);
-			case 'Loading':
-				return _user$project$Utils$Loading;
-			default:
-				return _user$project$Utils$Initial;
-		}
-	});
-
-var _user$project$Api$fullUrl = function (relative) {
+var _user$project$Api_Bus$fullUrl = function (relative) {
 	return A2(_elm_lang$core$Basics_ops['++'], 'https://cta-json-api.herokuapp.com', relative);
 };
-var _user$project$Api$dateDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _elm_lang$core$Date$fromString);
-var _user$project$Api$trackError = function (error) {
+var _user$project$Api_Bus$dateDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _elm_lang$core$Date$fromString);
+var _user$project$Api_Bus$trackError = function (error) {
 	var _p0 = error;
 	switch (_p0.ctor) {
 		case 'UnexpectedPayload':
@@ -10310,11 +10209,11 @@ var _user$project$Api$trackError = function (error) {
 			return _p0._0.data;
 	}
 };
-var _user$project$Api$BusRouteSummary = F3(
+var _user$project$Api_Bus$BusRouteSummary = F3(
 	function (a, b, c) {
 		return {id: a, name: b, color: c};
 	});
-var _user$project$Api$busRouteSummariesReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+var _user$project$Api_Bus$busRouteSummariesReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
 	_elm_lang$core$Json_Decode$list(
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
@@ -10328,10 +10227,10 @@ var _user$project$Api$busRouteSummariesReader = _lukewestby$elm_http_builder$Htt
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 					'id',
 					_elm_lang$core$Json_Decode$string,
-					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api$BusRouteSummary))))));
-var _user$project$Api$getBusRoutes = A2(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Bus$BusRouteSummary))))));
+var _user$project$Api_Bus$getBusRoutes = A2(
 	_elm_lang$core$Task$mapError,
-	_user$project$Api$trackError,
+	_user$project$Api_Bus$trackError,
 	A2(
 		_elm_lang$core$Task$map,
 		function (_) {
@@ -10339,19 +10238,19 @@ var _user$project$Api$getBusRoutes = A2(
 		},
 		A3(
 			_lukewestby$elm_http_builder$HttpBuilder$send,
-			_user$project$Api$busRouteSummariesReader,
+			_user$project$Api_Bus$busRouteSummariesReader,
 			_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 			_lukewestby$elm_http_builder$HttpBuilder$get(
-				_user$project$Api$fullUrl('/bus/routes')))));
-var _user$project$Api$BusRoute = F4(
+				_user$project$Api_Bus$fullUrl('/bus/routes')))));
+var _user$project$Api_Bus$BusRoute = F4(
 	function (a, b, c, d) {
 		return {id: a, name: b, color: c, directions: d};
 	});
-var _user$project$Api$BusStop = F4(
+var _user$project$Api_Bus$BusStop = F4(
 	function (a, b, c, d) {
 		return {id: a, name: b, latitude: c, longitude: d};
 	});
-var _user$project$Api$busStopDecoder = A3(
+var _user$project$Api_Bus$busStopDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'longitude',
 	_elm_lang$core$Json_Decode$float,
@@ -10367,13 +10266,13 @@ var _user$project$Api$busStopDecoder = A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 				'id',
 				_elm_lang$core$Json_Decode$string,
-				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api$BusStop)))));
-var _user$project$Api$busStopsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
-	_elm_lang$core$Json_Decode$list(_user$project$Api$busStopDecoder));
-var _user$project$Api$getBusStops = function (routeId) {
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Bus$BusStop)))));
+var _user$project$Api_Bus$busStopsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+	_elm_lang$core$Json_Decode$list(_user$project$Api_Bus$busStopDecoder));
+var _user$project$Api_Bus$getBusStops = function (routeId) {
 	return A2(
 		_elm_lang$core$Task$mapError,
-		_user$project$Api$trackError,
+		_user$project$Api_Bus$trackError,
 		A2(
 			_elm_lang$core$Task$map,
 			function (_) {
@@ -10381,21 +10280,21 @@ var _user$project$Api$getBusStops = function (routeId) {
 			},
 			A3(
 				_lukewestby$elm_http_builder$HttpBuilder$send,
-				_user$project$Api$busStopsReader,
+				_user$project$Api_Bus$busStopsReader,
 				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 				_lukewestby$elm_http_builder$HttpBuilder$get(
-					_user$project$Api$fullUrl(
+					_user$project$Api_Bus$fullUrl(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'/bus/routes/',
 							A2(_elm_lang$core$Basics_ops['++'], routeId, '/stops')))))));
 };
-var _user$project$Api$busStopReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api$busStopDecoder);
-var _user$project$Api$getBusStop = F2(
+var _user$project$Api_Bus$busStopReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api_Bus$busStopDecoder);
+var _user$project$Api_Bus$getBusStop = F2(
 	function (routeId, stopId) {
 		return A2(
 			_elm_lang$core$Task$mapError,
-			_user$project$Api$trackError,
+			_user$project$Api_Bus$trackError,
 			A2(
 				_elm_lang$core$Task$map,
 				function (_) {
@@ -10403,10 +10302,10 @@ var _user$project$Api$getBusStop = F2(
 				},
 				A3(
 					_lukewestby$elm_http_builder$HttpBuilder$send,
-					_user$project$Api$busStopReader,
+					_user$project$Api_Bus$busStopReader,
 					_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 					_lukewestby$elm_http_builder$HttpBuilder$get(
-						_user$project$Api$fullUrl(
+						_user$project$Api_Bus$fullUrl(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								'/bus/routes/',
@@ -10415,11 +10314,11 @@ var _user$project$Api$getBusStop = F2(
 									routeId,
 									A2(_elm_lang$core$Basics_ops['++'], '/stops/', stopId))))))));
 	});
-var _user$project$Api$BusVehicle = F9(
+var _user$project$Api_Bus$BusVehicle = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {id: a, updatedAt: b, latitude: c, longitude: d, heading: e, patternId: f, patternDistance: g, routeId: h, destination: i};
 	});
-var _user$project$Api$busVehiclesReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+var _user$project$Api_Bus$busVehiclesReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
 	_elm_lang$core$Json_Decode$list(
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
@@ -10452,16 +10351,16 @@ var _user$project$Api$busVehiclesReader = _lukewestby$elm_http_builder$HttpBuild
 									A3(
 										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 										'updatedAt',
-										_user$project$Api$dateDecoder,
+										_user$project$Api_Bus$dateDecoder,
 										A3(
 											_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 											'id',
 											_elm_lang$core$Json_Decode$string,
-											_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api$BusVehicle))))))))))));
-var _user$project$Api$getBusVehicles = function (routeId) {
+											_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Bus$BusVehicle))))))))))));
+var _user$project$Api_Bus$getBusVehicles = function (routeId) {
 	return A2(
 		_elm_lang$core$Task$mapError,
-		_user$project$Api$trackError,
+		_user$project$Api_Bus$trackError,
 		A2(
 			_elm_lang$core$Task$map,
 			function (_) {
@@ -10469,16 +10368,16 @@ var _user$project$Api$getBusVehicles = function (routeId) {
 			},
 			A3(
 				_lukewestby$elm_http_builder$HttpBuilder$send,
-				_user$project$Api$busVehiclesReader,
+				_user$project$Api_Bus$busVehiclesReader,
 				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 				_lukewestby$elm_http_builder$HttpBuilder$get(
-					_user$project$Api$fullUrl(
+					_user$project$Api_Bus$fullUrl(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'/bus/routes/',
 							A2(_elm_lang$core$Basics_ops['++'], routeId, '/vehicles')))))));
 };
-var _user$project$Api$BusPrediction = function (a) {
+var _user$project$Api_Bus$BusPrediction = function (a) {
 	return function (b) {
 		return function (c) {
 			return function (d) {
@@ -10501,28 +10400,28 @@ var _user$project$Api$BusPrediction = function (a) {
 		};
 	};
 };
-var _user$project$Api$Westbound = {ctor: 'Westbound'};
-var _user$project$Api$Eastbound = {ctor: 'Eastbound'};
-var _user$project$Api$Southbound = {ctor: 'Southbound'};
-var _user$project$Api$Northbound = {ctor: 'Northbound'};
-var _user$project$Api$parseDirection = function (value) {
+var _user$project$Api_Bus$Westbound = {ctor: 'Westbound'};
+var _user$project$Api_Bus$Eastbound = {ctor: 'Eastbound'};
+var _user$project$Api_Bus$Southbound = {ctor: 'Southbound'};
+var _user$project$Api_Bus$Northbound = {ctor: 'Northbound'};
+var _user$project$Api_Bus$parseDirection = function (value) {
 	var _p1 = value;
 	switch (_p1) {
 		case 'Northbound':
-			return _elm_lang$core$Result$Ok(_user$project$Api$Northbound);
+			return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Northbound);
 		case 'Southbound':
-			return _elm_lang$core$Result$Ok(_user$project$Api$Southbound);
+			return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Southbound);
 		case 'Eastbound':
-			return _elm_lang$core$Result$Ok(_user$project$Api$Eastbound);
+			return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Eastbound);
 		case 'Westbound':
-			return _elm_lang$core$Result$Ok(_user$project$Api$Westbound);
+			return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Westbound);
 		default:
 			return _elm_lang$core$Result$Err(
 				A2(_elm_lang$core$Basics_ops['++'], 'Unknown direction ', value));
 	}
 };
-var _user$project$Api$directionDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _user$project$Api$parseDirection);
-var _user$project$Api$busRouteReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+var _user$project$Api_Bus$directionDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _user$project$Api_Bus$parseDirection);
+var _user$project$Api_Bus$busRouteReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
 	A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'directions',
@@ -10532,8 +10431,8 @@ var _user$project$Api$busRouteReader = _lukewestby$elm_http_builder$HttpBuilder$
 				function (v0, v1) {
 					return {ctor: '_Tuple2', _0: v0, _1: v1};
 				}),
-			_user$project$Api$directionDecoder,
-			_user$project$Api$directionDecoder),
+			_user$project$Api_Bus$directionDecoder,
+			_user$project$Api_Bus$directionDecoder),
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 			'color',
@@ -10546,11 +10445,11 @@ var _user$project$Api$busRouteReader = _lukewestby$elm_http_builder$HttpBuilder$
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 					'id',
 					_elm_lang$core$Json_Decode$string,
-					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api$BusRoute))))));
-var _user$project$Api$getBusRoute = function (id) {
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Bus$BusRoute))))));
+var _user$project$Api_Bus$getBusRoute = function (id) {
 	return A2(
 		_elm_lang$core$Task$mapError,
-		_user$project$Api$trackError,
+		_user$project$Api_Bus$trackError,
 		A2(
 			_elm_lang$core$Task$map,
 			function (_) {
@@ -10558,30 +10457,30 @@ var _user$project$Api$getBusRoute = function (id) {
 			},
 			A3(
 				_lukewestby$elm_http_builder$HttpBuilder$send,
-				_user$project$Api$busRouteReader,
+				_user$project$Api_Bus$busRouteReader,
 				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 				_lukewestby$elm_http_builder$HttpBuilder$get(
-					_user$project$Api$fullUrl(
+					_user$project$Api_Bus$fullUrl(
 						A2(_elm_lang$core$Basics_ops['++'], '/bus/routes/', id))))));
 };
-var _user$project$Api$Departing = {ctor: 'Departing'};
-var _user$project$Api$Arriving = {ctor: 'Arriving'};
-var _user$project$Api$approachDecoder = A2(
+var _user$project$Api_Bus$Departing = {ctor: 'Departing'};
+var _user$project$Api_Bus$Arriving = {ctor: 'Arriving'};
+var _user$project$Api_Bus$approachDecoder = A2(
 	_elm_lang$core$Json_Decode$customDecoder,
 	_elm_lang$core$Json_Decode$string,
 	function (value) {
 		var _p2 = value;
 		switch (_p2) {
 			case 'Arriving':
-				return _elm_lang$core$Result$Ok(_user$project$Api$Arriving);
+				return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Arriving);
 			case 'Departing':
-				return _elm_lang$core$Result$Ok(_user$project$Api$Departing);
+				return _elm_lang$core$Result$Ok(_user$project$Api_Bus$Departing);
 			default:
 				return _elm_lang$core$Result$Err(
 					A2(_elm_lang$core$Basics_ops['++'], 'Unknown approach ', value));
 		}
 	});
-var _user$project$Api$busPredictionsDecoder = _elm_lang$core$Json_Decode$list(
+var _user$project$Api_Bus$busPredictionsDecoder = _elm_lang$core$Json_Decode$list(
 	A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'isDelayed',
@@ -10589,7 +10488,7 @@ var _user$project$Api$busPredictionsDecoder = _elm_lang$core$Json_Decode$list(
 		A3(
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 			'predictedTime',
-			_user$project$Api$dateDecoder,
+			_user$project$Api_Bus$dateDecoder,
 			A3(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 				'vehicleDestination',
@@ -10597,7 +10496,7 @@ var _user$project$Api$busPredictionsDecoder = _elm_lang$core$Json_Decode$list(
 				A3(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 					'routeDirection',
-					_user$project$Api$directionDecoder,
+					_user$project$Api_Bus$directionDecoder,
 					A3(
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 						'routeId',
@@ -10621,18 +10520,18 @@ var _user$project$Api$busPredictionsDecoder = _elm_lang$core$Json_Decode$list(
 										A3(
 											_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 											'approach',
-											_user$project$Api$approachDecoder,
+											_user$project$Api_Bus$approachDecoder,
 											A3(
 												_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 												'timestamp',
-												_user$project$Api$dateDecoder,
-												_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api$BusPrediction)))))))))))));
-var _user$project$Api$busPredictionsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api$busPredictionsDecoder);
-var _user$project$Api$getBusPredictions = F2(
+												_user$project$Api_Bus$dateDecoder,
+												_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Bus$BusPrediction)))))))))))));
+var _user$project$Api_Bus$busPredictionsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api_Bus$busPredictionsDecoder);
+var _user$project$Api_Bus$getBusPredictions = F2(
 	function (routeId, stopId) {
 		return A2(
 			_elm_lang$core$Task$mapError,
-			_user$project$Api$trackError,
+			_user$project$Api_Bus$trackError,
 			A2(
 				_elm_lang$core$Task$map,
 				function (_) {
@@ -10640,10 +10539,10 @@ var _user$project$Api$getBusPredictions = F2(
 				},
 				A3(
 					_lukewestby$elm_http_builder$HttpBuilder$send,
-					_user$project$Api$busPredictionsReader,
+					_user$project$Api_Bus$busPredictionsReader,
 					_lukewestby$elm_http_builder$HttpBuilder$stringReader,
 					_lukewestby$elm_http_builder$HttpBuilder$get(
-						_user$project$Api$fullUrl(
+						_user$project$Api_Bus$fullUrl(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								'/bus/routes/',
@@ -10655,6 +10554,118 @@ var _user$project$Api$getBusPredictions = F2(
 										'/stops/',
 										A2(_elm_lang$core$Basics_ops['++'], stopId, '/predictions')))))))));
 	});
+
+var _user$project$Api_Train$fullUrl = function (relative) {
+	return A2(_elm_lang$core$Basics_ops['++'], 'https://cta-json-api.herokuapp.com', relative);
+};
+var _user$project$Api_Train$TrainRoute = F4(
+	function (a, b, c, d) {
+		return {id: a, name: b, color: c, textColor: d};
+	});
+var _user$project$Api_Train$trainRouteDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'textColor',
+	_elm_lang$core$Json_Decode$string,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'color',
+		_elm_lang$core$Json_Decode$string,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'name',
+			_elm_lang$core$Json_Decode$string,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'id',
+				_elm_lang$core$Json_Decode$string,
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Train$TrainRoute)))));
+var _user$project$Api_Train$trainRoutesReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+	_elm_lang$core$Json_Decode$list(_user$project$Api_Train$trainRouteDecoder));
+var _user$project$Api_Train$getTrainRoutes = A2(
+	_elm_lang$core$Task$mapError,
+	function (_p0) {
+		return 'Could not fetch train routes';
+	},
+	A2(
+		_elm_lang$core$Task$map,
+		function (_) {
+			return _.data;
+		},
+		A3(
+			_lukewestby$elm_http_builder$HttpBuilder$send,
+			_user$project$Api_Train$trainRoutesReader,
+			_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+			_lukewestby$elm_http_builder$HttpBuilder$get(
+				_user$project$Api_Train$fullUrl('/train/routes')))));
+var _user$project$Api_Train$trainRouteReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api_Train$trainRouteDecoder);
+var _user$project$Api_Train$getTrainRoute = function (routeId) {
+	return A2(
+		_elm_lang$core$Task$mapError,
+		function (_p1) {
+			return A2(_elm_lang$core$Basics_ops['++'], 'Could not fetch train route ', routeId);
+		},
+		A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_user$project$Api_Train$trainRouteReader,
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(
+					_user$project$Api_Train$fullUrl(
+						A2(_elm_lang$core$Basics_ops['++'], '/train/routes/', routeId))))));
+};
+var _user$project$Api_Train$TrainStop = F5(
+	function (a, b, c, d, e) {
+		return {id: a, name: b, latitude: c, longitude: d, isAccessible: e};
+	});
+var _user$project$Api_Train$trainStopDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'isAccessible',
+	_elm_lang$core$Json_Decode$bool,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'longitude',
+		_elm_lang$core$Json_Decode$float,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'latitude',
+			_elm_lang$core$Json_Decode$float,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'name',
+				_elm_lang$core$Json_Decode$string,
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+					'id',
+					_elm_lang$core$Json_Decode$string,
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Train$TrainStop))))));
+var _user$project$Api_Train$trainStopsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+	_elm_lang$core$Json_Decode$list(_user$project$Api_Train$trainStopDecoder));
+var _user$project$Api_Train$getTrainStops = function (routeId) {
+	return A2(
+		_elm_lang$core$Task$mapError,
+		function (_p2) {
+			return A2(_elm_lang$core$Basics_ops['++'], 'Could not fetch stops for train route ', routeId);
+		},
+		A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_user$project$Api_Train$trainStopsReader,
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(
+					_user$project$Api_Train$fullUrl(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'/train/routes/',
+							A2(_elm_lang$core$Basics_ops['++'], routeId, '/stops')))))));
+};
 
 var _user$project$BusRoute_Classes$cssNamespace = 'BusRoute';
 var _user$project$BusRoute_Classes$ActiveDirectionButton = {ctor: 'ActiveDirectionButton'};
@@ -10798,6 +10809,107 @@ var _user$project$BusRoute_Model$Model = F3(
 		return {searchModel: a, route: b, stops: c};
 	});
 
+var _user$project$Utils$listUniqueBy = F2(
+	function (accessor, list) {
+		var fold = F2(
+			function (item, memo) {
+				var id = accessor(item);
+				return A2(_elm_lang$core$Set$member, id, memo.ids) ? memo : _elm_lang$core$Native_Utils.update(
+					memo,
+					{
+						output: A2(_elm_lang$core$List_ops['::'], item, memo.output),
+						ids: A2(_elm_lang$core$Set$insert, id, memo.ids)
+					});
+			});
+		return function (_) {
+			return _.output;
+		}(
+			A3(
+				_elm_lang$core$List$foldl,
+				fold,
+				{
+					output: _elm_lang$core$Native_List.fromArray(
+						[]),
+					ids: _elm_lang$core$Set$empty
+				},
+				list));
+	});
+var _user$project$Utils$flatten = _elm_lang$core$List$filterMap(
+	function (_p0) {
+		var _p1 = _p0;
+		return _p1._0 ? _elm_lang$core$Maybe$Just(_p1._1) : _elm_lang$core$Maybe$Nothing;
+	});
+var _user$project$Utils$never = function (a) {
+	never:
+	while (true) {
+		var _v1 = a;
+		a = _v1;
+		continue never;
+	}
+};
+var _user$project$Utils$performSucceed = F2(
+	function (onFinished, task) {
+		return A3(
+			_elm_lang$core$Task$perform,
+			_user$project$Utils$never,
+			onFinished,
+			_elm_lang$core$Task$toResult(task));
+	});
+var _user$project$Utils$constant = function (msg) {
+	return A2(
+		_user$project$Utils$performSucceed,
+		_elm_lang$core$Basics$always(msg),
+		_elm_lang$core$Task$succeed(
+			{ctor: '_Tuple0'}));
+};
+var _user$project$Utils$andThen = _elm_lang$core$Basics$flip(_elm_lang$core$Task$andThen);
+var _user$project$Utils$delay = F2(
+	function (howLong, task) {
+		return A2(
+			_user$project$Utils$andThen,
+			_elm_lang$core$Basics$always(task),
+			_elm_lang$core$Process$sleep(howLong));
+	});
+var _user$project$Utils$loadStateToMaybe = function (loadState) {
+	var _p2 = loadState;
+	if (_p2.ctor === 'Success') {
+		return _elm_lang$core$Maybe$Just(_p2._0);
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _user$project$Utils$Failure = function (a) {
+	return {ctor: 'Failure', _0: a};
+};
+var _user$project$Utils$Success = function (a) {
+	return {ctor: 'Success', _0: a};
+};
+var _user$project$Utils$loadStateFromResult = function (result) {
+	var _p3 = result;
+	if (_p3.ctor === 'Ok') {
+		return _user$project$Utils$Success(_p3._0);
+	} else {
+		return _user$project$Utils$Failure(_p3._0);
+	}
+};
+var _user$project$Utils$Loading = {ctor: 'Loading'};
+var _user$project$Utils$Initial = {ctor: 'Initial'};
+var _user$project$Utils$loadStateMap = F2(
+	function (tagger, loadState) {
+		var _p4 = loadState;
+		switch (_p4.ctor) {
+			case 'Success':
+				return _user$project$Utils$Success(
+					tagger(_p4._0));
+			case 'Failure':
+				return _user$project$Utils$Failure(_p4._0);
+			case 'Loading':
+				return _user$project$Utils$Loading;
+			default:
+				return _user$project$Utils$Initial;
+		}
+	});
+
 var _user$project$BusRoute_Update$load = function (routeId) {
 	var routeToStops = function (route) {
 		return A2(
@@ -10805,7 +10917,7 @@ var _user$project$BusRoute_Update$load = function (routeId) {
 			function (stops) {
 				return {ctor: '_Tuple2', _0: route, _1: stops};
 			},
-			_user$project$Api$getBusStops(route.id));
+			_user$project$Api_Bus$getBusStops(route.id));
 	};
 	return A2(
 		_elm_lang$core$Task$map,
@@ -10816,7 +10928,7 @@ var _user$project$BusRoute_Update$load = function (routeId) {
 		A2(
 			_user$project$Utils$andThen,
 			routeToStops,
-			_user$project$Api$getBusRoute(routeId)));
+			_user$project$Api_Bus$getBusRoute(routeId)));
 };
 var _user$project$BusRoute_Update$SearchBarMsg = function (a) {
 	return {ctor: 'SearchBarMsg', _0: a};
@@ -10857,6 +10969,8 @@ var _user$project$Pages$url = function (page) {
 							_elm_lang$core$Basics_ops['++'],
 							_p0._0,
 							A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
+				case 'TrainRoutesPage':
+					return 'train/routes';
 				default:
 					return 'not-found';
 			}
@@ -10872,6 +10986,7 @@ var _user$project$Pages$redirectTo = function (page) {
 };
 var _user$project$Pages$NotFound = {ctor: 'NotFound'};
 var _user$project$Pages$FavoritesPage = {ctor: 'FavoritesPage'};
+var _user$project$Pages$TrainRoutesPage = {ctor: 'TrainRoutesPage'};
 var _user$project$Pages$BusStopPage = F2(
 	function (a, b) {
 		return {ctor: 'BusStopPage', _0: a, _1: b};
@@ -10919,6 +11034,13 @@ var _user$project$Pages$pageParser = _evancz$url_parser$UrlParser$oneOf(
 			A2(
 				_evancz$url_parser$UrlParser_ops['</>'],
 				_evancz$url_parser$UrlParser$s('bus'),
+				_evancz$url_parser$UrlParser$s('routes'))),
+			A2(
+			_evancz$url_parser$UrlParser$format,
+			_user$project$Pages$TrainRoutesPage,
+			A2(
+				_evancz$url_parser$UrlParser_ops['</>'],
+				_evancz$url_parser$UrlParser$s('train'),
 				_evancz$url_parser$UrlParser$s('routes')))
 		]));
 var _user$project$Pages$parser = _elm_lang$navigation$Navigation$makeParser(
@@ -11062,7 +11184,7 @@ var _user$project$BusRoutes_Model$Model = F2(
 		return {routes: a, searchModel: b};
 	});
 
-var _user$project$BusRoutes_Update$load = A2(_elm_lang$core$Task$map, _user$project$BusRoutes_Model$model, _user$project$Api$getBusRoutes);
+var _user$project$BusRoutes_Update$load = A2(_elm_lang$core$Task$map, _user$project$BusRoutes_Model$model, _user$project$Api_Bus$getBusRoutes);
 var _user$project$BusRoutes_Update$SearchBarMsg = function (a) {
 	return {ctor: 'SearchBarMsg', _0: a};
 };
@@ -11382,7 +11504,7 @@ var _user$project$BusStop_Update$getPredictionsForStops = F2(
 					_elm_lang$core$List$map,
 					function (_p0) {
 						return A2(
-							_user$project$Api$getBusPredictions,
+							_user$project$Api_Bus$getBusPredictions,
 							routeId,
 							function (_) {
 								return _.id;
@@ -11410,7 +11532,7 @@ var _user$project$BusStop_Update$load = F2(
 		var stopsTask = _elm_lang$core$Task$sequence(
 			A2(
 				_elm_lang$core$List$map,
-				_user$project$Api$getBusStop(routeId),
+				_user$project$Api_Bus$getBusStop(routeId),
 				stopIds));
 		var stopsToPredictions = function (stops) {
 			return A2(
@@ -11424,7 +11546,7 @@ var _user$project$BusStop_Update$load = F2(
 					_elm_lang$core$Task$sequence(
 						A2(
 							_elm_lang$core$List$map,
-							_user$project$Api$getBusPredictions(routeId),
+							_user$project$Api_Bus$getBusPredictions(routeId),
 							stopIds))));
 		};
 		return A2(
@@ -12038,6 +12160,171 @@ var _user$project$Favorites_View$view = function (model) {
 		children);
 };
 
+var _user$project$TrainRoutes_Model$model = function (routes) {
+	return {routes: routes, searchModel: _user$project$Components_SearchBar$model};
+};
+var _user$project$TrainRoutes_Model$Model = F2(
+	function (a, b) {
+		return {routes: a, searchModel: b};
+	});
+
+var _user$project$TrainRoutes_Update$load = A2(_elm_lang$core$Task$map, _user$project$TrainRoutes_Model$model, _user$project$Api_Train$getTrainRoutes);
+var _user$project$TrainRoutes_Update$SearchBarMsg = function (a) {
+	return {ctor: 'SearchBarMsg', _0: a};
+};
+var _user$project$TrainRoutes_Update$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		var _p1 = A2(_user$project$Components_SearchBar$update, _p0._0, model.searchModel);
+		var subModel = _p1._0;
+		var subCmd = _p1._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{searchModel: subModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TrainRoutes_Update$SearchBarMsg, subCmd)
+		};
+	});
+
+var _user$project$TrainRoutes_Classes$cssNamespace = 'TrainRoutes';
+var _user$project$TrainRoutes_Classes$ControlsContainer = {ctor: 'ControlsContainer'};
+var _user$project$TrainRoutes_Classes$ReloadingContainer = {ctor: 'ReloadingContainer'};
+var _user$project$TrainRoutes_Classes$RouteName = {ctor: 'RouteName'};
+var _user$project$TrainRoutes_Classes$RouteNameContainer = {ctor: 'RouteNameContainer'};
+var _user$project$TrainRoutes_Classes$Chevron = {ctor: 'Chevron'};
+var _user$project$TrainRoutes_Classes$RouteIconContainer = {ctor: 'RouteIconContainer'};
+var _user$project$TrainRoutes_Classes$RouteIcon = {ctor: 'RouteIcon'};
+var _user$project$TrainRoutes_Classes$RouteItem = {ctor: 'RouteItem'};
+
+var _user$project$TrainRoutes_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$TrainRoutes_Classes$cssNamespace);
+var _user$project$TrainRoutes_View$class = _user$project$TrainRoutes_View$_p0.$class;
+var _user$project$TrainRoutes_View$classList = _user$project$TrainRoutes_View$_p0.classList;
+var _user$project$TrainRoutes_View$fieldMatches = F3(
+	function (searchText, accessor, summary) {
+		return A2(
+			_elm_lang$core$String$contains,
+			searchText,
+			_elm_lang$core$String$toLower(
+				accessor(summary)));
+	});
+var _user$project$TrainRoutes_View$filteredRoutes = function (model) {
+	var lowerSearchText = _elm_lang$core$String$toLower(
+		_user$project$Components_SearchBar$getSearchValue(model.searchModel));
+	return A2(
+		_elm_lang$core$List$filter,
+		function (s) {
+			return A3(
+				_user$project$TrainRoutes_View$fieldMatches,
+				lowerSearchText,
+				function (_) {
+					return _.id;
+				},
+				s) || A3(
+				_user$project$TrainRoutes_View$fieldMatches,
+				lowerSearchText,
+				function (_) {
+					return _.name;
+				},
+				s);
+		},
+		model.routes);
+};
+var _user$project$TrainRoutes_View$viewRouteIdLabel = F2(
+	function (routeId, color) {
+		return A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$TrainRoutes_View$class(
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$TrainRoutes_Classes$RouteIconContainer])),
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'background-color', _1: color}
+						]))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainRoutes_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainRoutes_Classes$RouteIcon]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$Icons$train]))
+				]));
+	});
+var _user$project$TrainRoutes_View$viewRoute = function (route) {
+	return A2(
+		_elm_lang$html$Html$a,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$TrainRoutes_View$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$TrainRoutes_Classes$RouteItem]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(_user$project$TrainRoutes_View$viewRouteIdLabel, route.id, route.color),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$TrainRoutes_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$TrainRoutes_Classes$RouteName]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(route.name)
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$TrainRoutes_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$TrainRoutes_Classes$Chevron]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Icons$chevronRight]))
+			]));
+};
+var _user$project$TrainRoutes_View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$TrainRoutes_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$TrainRoutes_Classes$ControlsContainer]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(_user$project$Components_SearchBar$view, model.searchModel, _user$project$TrainRoutes_Update$SearchBarMsg)
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$TrainRoutes_View$viewRoute,
+					_user$project$TrainRoutes_View$filteredRoutes(model)))
+			]));
+};
+
 var _user$project$Routing$title = function (model) {
 	var _p0 = model;
 	switch (_p0.ctor) {
@@ -12062,6 +12349,8 @@ var _user$project$Routing$title = function (model) {
 						return _.name;
 					},
 					_elm_lang$core$List$head(_p0._0.busStops)));
+		case 'TrainRoutesModel':
+			return 'Train Routes';
 		case 'FavoritesModel':
 			return 'Favorites';
 		default:
@@ -12077,6 +12366,8 @@ var _user$project$Routing$isCacheable = function (page) {
 			return true;
 		case 'BusStopPage':
 			return false;
+		case 'TrainRoutesPage':
+			return true;
 		case 'FavoritesPage':
 			return false;
 		default:
@@ -12086,6 +12377,9 @@ var _user$project$Routing$isCacheable = function (page) {
 var _user$project$Routing$NoneModel = {ctor: 'NoneModel'};
 var _user$project$Routing$FavoritesModel = function (a) {
 	return {ctor: 'FavoritesModel', _0: a};
+};
+var _user$project$Routing$TrainRoutesModel = function (a) {
+	return {ctor: 'TrainRoutesModel', _0: a};
 };
 var _user$project$Routing$BusStopModel = function (a) {
 	return {ctor: 'BusStopModel', _0: a};
@@ -12111,6 +12405,8 @@ var _user$project$Routing$load = function (page) {
 				_elm_lang$core$Task$map,
 				_user$project$Routing$BusStopModel,
 				A2(_user$project$BusStop_Update$load, _p3._0, _p3._1));
+		case 'TrainRoutesPage':
+			return A2(_elm_lang$core$Task$map, _user$project$Routing$TrainRoutesModel, _user$project$TrainRoutes_Update$load);
 		case 'FavoritesPage':
 			return A2(_elm_lang$core$Task$map, _user$project$Routing$FavoritesModel, _user$project$Favorites_Load$load);
 		default:
@@ -12118,6 +12414,9 @@ var _user$project$Routing$load = function (page) {
 	}
 };
 var _user$project$Routing$NoneMsg = {ctor: 'NoneMsg'};
+var _user$project$Routing$TrainRoutesMsg = function (a) {
+	return {ctor: 'TrainRoutesMsg', _0: a};
+};
 var _user$project$Routing$BusStopMsg = function (a) {
 	return {ctor: 'BusStopMsg', _0: a};
 };
@@ -12141,7 +12440,7 @@ var _user$project$Routing$BusRouteMsg = function (a) {
 var _user$project$Routing$update = F2(
 	function (msg, model) {
 		var _p5 = {ctor: '_Tuple2', _0: msg, _1: model};
-		_v4_3:
+		_v4_4:
 		do {
 			if (_p5.ctor === '_Tuple2') {
 				switch (_p5._0.ctor) {
@@ -12156,7 +12455,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
 						}
 					case 'BusRoutesMsg':
 						if (_p5._1.ctor === 'BusRoutesModel') {
@@ -12169,7 +12468,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
 						}
 					case 'BusStopMsg':
 						if (_p5._1.ctor === 'BusStopModel') {
@@ -12182,37 +12481,55 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusStopMsg, subCmd)
 							};
 						} else {
-							break _v4_3;
+							break _v4_4;
+						}
+					case 'TrainRoutesMsg':
+						if (_p5._1.ctor === 'TrainRoutesModel') {
+							var _p9 = A2(_user$project$TrainRoutes_Update$update, _p5._0._0, _p5._1._0);
+							var newModel = _p9._0;
+							var subCmd = _p9._1;
+							return {
+								ctor: '_Tuple2',
+								_0: _user$project$Routing$TrainRoutesModel(newModel),
+								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainRoutesMsg, subCmd)
+							};
+						} else {
+							break _v4_4;
 						}
 					default:
-						break _v4_3;
+						break _v4_4;
 				}
 			} else {
-				break _v4_3;
+				break _v4_4;
 			}
 		} while(false);
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Routing$view = function (pageModel) {
-	var _p9 = pageModel;
-	switch (_p9.ctor) {
+	var _p10 = pageModel;
+	switch (_p10.ctor) {
 		case 'BusRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRouteMsg,
-				_user$project$BusRoute_View$view(_p9._0));
+				_user$project$BusRoute_View$view(_p10._0));
 		case 'BusRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRoutesMsg,
-				_user$project$BusRoutes_View$view(_p9._0));
+				_user$project$BusRoutes_View$view(_p10._0));
 		case 'BusStopModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusStopMsg,
-				_user$project$BusStop_View$view(_p9._0));
+				_user$project$BusStop_View$view(_p10._0));
+		case 'TrainRoutesModel':
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Routing$TrainRoutesMsg,
+				_user$project$TrainRoutes_View$view(_p10._0));
 		case 'FavoritesModel':
-			return _user$project$Favorites_View$view(_p9._0);
+			return _user$project$Favorites_View$view(_p10._0);
 		default:
 			return _elm_lang$html$Html$text('');
 	}
@@ -12476,7 +12793,7 @@ var _user$project$Main$view = function (model) {
 					[
 						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$FavoritesPage, _user$project$Icons$star),
 						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$BusRoutesPage, _user$project$Icons$bus),
-						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$NotFound, _user$project$Icons$train)
+						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$TrainRoutesPage, _user$project$Icons$train)
 					])),
 				A2(
 				_elm_lang$html$Html$main$,

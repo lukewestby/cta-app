@@ -305,6 +305,58 @@ a {
     border-bottom: 1px solid #E1E8ED;
 }
 
+.TrainRoutesRouteItem {
+    padding: 0 32px;
+    height: 64px;
+    border-bottom: 1px solid #E1E8ED;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.TrainRoutesRouteIconContainer {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.TrainRoutesRouteIcon {
+    fill: #fff;
+    width: 24px;
+    height: 24px;
+}
+
+.TrainRoutesRouteName {
+    display: block;
+    width: calc(100% - 60px);
+    padding: 0 16px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 18px;
+}
+
+.TrainRoutesChevron {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    fill: #8899A6;
+}
+
+.TrainRoutesReloadingContainer {
+    height: 64px;
+    position: absolute;
+    top: -64px;
+}
+
+.TrainRoutesControlsContainer {
+    padding: 16px 32px;
+    border-bottom: 1px solid #E1E8ED;
+}
+
 .FavoritesFavoriteItem {
     border-bottom: 1px solid #E1E8ED;
     height: 64px;
