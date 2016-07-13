@@ -1,7 +1,7 @@
 module BusRoute.Model exposing (Model, model)
 
 import String
-import Api exposing (BusRoute, BusStop, Direction)
+import Api.Bus exposing (BusRoute, BusStop, Direction)
 import Dict exposing (Dict)
 import Dict.Extra as Dict
 import Components.SearchBar as SearchBar

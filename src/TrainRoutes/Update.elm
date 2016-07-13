@@ -1,8 +1,8 @@
-module BusRoutes.Update exposing (Msg(..), load, update)
+module TrainRoutes.Update exposing (Msg(..), load, update)
 
 import Task exposing (Task)
-import Api.Bus as BusApi exposing (BusRouteSummary)
-import BusRoutes.Model as Model exposing (Model)
+import Api.Train as TrainApi exposing (TrainRoute)
+import TrainRoutes.Model as Model exposing (Model)
 import Components.SearchBar as SearchBar
 
 
@@ -12,7 +12,7 @@ type Msg
 
 load : Task String Model
 load =
-    BusApi.getBusRoutes
+    TrainApi.getTrainRoutes
         |> Task.map Model.model
 
 

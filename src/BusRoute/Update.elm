@@ -2,7 +2,7 @@ module BusRoute.Update exposing (Msg(..), load, update)
 
 import Task exposing (Task)
 import Utils exposing (..)
-import Api exposing (BusRoute, BusStop, Direction)
+import Api.Bus as BusApi exposing (BusRoute, BusStop, Direction)
 import BusRoute.Model as Model exposing (Model)
 import Components.SearchBar as SearchBar
 
@@ -15,10 +15,10 @@ load : String -> Task String Model
 load routeId =
     let
         routeToStops route =
-            Api.getBusStops route.id
+            BusApi.getBusStops route.id
                 |> Task.map (\stops -> ( route, stops ))
     in
-        Api.getBusRoute routeId
+        BusApi.getBusRoute routeId
             |> andThen routeToStops
             |> Task.map (\( route, stops ) -> Model.model route stops)
 

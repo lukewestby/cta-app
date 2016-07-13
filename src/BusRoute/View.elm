@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Pages
-import Api exposing (BusStop, Direction)
+import Api.Bus exposing (BusStop, Direction)
 import BusRoute.Model as Model exposing (Model)
 import BusRoute.Update as Update exposing (Msg(..))
 import BusRoute.Classes exposing (..)

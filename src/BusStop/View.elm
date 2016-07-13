@@ -8,7 +8,7 @@ import Html exposing (..)
 import Html.Events exposing (..)
 import Html.CssHelpers
 import BusStop.Classes exposing (..)
-import Api exposing (BusStop, BusPrediction, Direction)
+import Api.Bus exposing (BusStop, BusPrediction, Direction)
 import BusStop.Model as Model exposing (Model)
 import BusStop.Update exposing (Msg(..))
 import Icons

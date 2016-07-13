@@ -1,4 +1,4 @@
-module Api
+module Api.Bus
     exposing
         ( BusRouteSummary
         , getBusRoutes
@@ -16,8 +16,6 @@ module Api
         , getBusPredictions
         )
 
-import Time
-import Utils exposing (..)
 import Date exposing (Date)
 import Task exposing (Task)
 import HttpBuilder as Http exposing (..)
@@ -48,7 +46,7 @@ dateDecoder =
 
 fullUrl : String -> String
 fullUrl relative =
-    "http://localhost:1337" ++ relative
+    "https://cta-json-api.herokuapp.com" ++ relative
 
 
 type alias BusRouteSummary =

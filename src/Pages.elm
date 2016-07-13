@@ -9,6 +9,7 @@ type Page
     = BusRoutesPage
     | BusRoutePage String
     | BusStopPage String String
+    | TrainRoutesPage
     | FavoritesPage
     | NotFound
 
@@ -28,6 +29,9 @@ url page =
 
             BusStopPage routeId stopId ->
                 "bus/routes/" ++ routeId ++ "/stops/" ++ stopId
+
+            TrainRoutesPage ->
+                "train/routes"
 
             _ ->
                 "not-found"
@@ -50,6 +54,7 @@ pageParser =
         , format BusStopPage (s "bus" </> s "routes" </> string </> s "stops" </> string)
         , format BusRoutePage (s "bus" </> s "routes" </> string)
         , format BusRoutesPage (s "bus" </> s "routes")
+        , format TrainRoutesPage (s "train" </> s "routes")
         ]
 
 

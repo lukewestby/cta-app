@@ -4,7 +4,7 @@ import String
 import Task
 import Utils exposing (..)
 import Task exposing (Task)
-import Api exposing (BusPrediction, BusStop, Direction)
+import Api.Bus as BusApi exposing (BusPrediction, BusStop, Direction)
 import Favorites
 import BusStop.Model as Model exposing (Model)
 
@@ -27,12 +27,12 @@ load routeId stopGroupIds =
 
         stopsTask =
             stopIds
-                |> List.map (Api.getBusStop routeId)
+                |> List.map (BusApi.getBusStop routeId)
                 |> Task.sequence
 
         stopsToPredictions stops =
             stopIds
-                |> List.map (Api.getBusPredictions routeId)
+                |> List.map (BusApi.getBusPredictions routeId)
                 |> Task.sequence
                 |> Task.map List.concat
                 |> Task.map (\predictions -> ( stops, predictions ))
@@ -51,7 +51,7 @@ load routeId stopGroupIds =
 getPredictionsForStops : String -> List BusStop -> Task String (List BusPrediction)
 getPredictionsForStops routeId stops =
     stops
-        |> List.map (.id >> (Api.getBusPredictions routeId))
+        |> List.map (.id >> (BusApi.getBusPredictions routeId))
         |> Task.sequence
         |> Task.map List.concat
 

@@ -10,6 +10,7 @@ import Classes exposing (Classes(..), appNamespace)
 import BusRoutes.Stylesheet as BusRoutes
 import BusRoute.Stylesheet as BusRoute
 import BusStop.Stylesheet as BusStop
+import TrainRoutes.Stylesheet as TrainRoutes
 import Favorites.Styles as Favorites
 import Components.Stylesheet as Components
 import Colors exposing (..)
@@ -115,6 +116,7 @@ css =
             , BusRoutes.styles
             , BusRoute.styles
             , BusStop.styles
+            , TrainRoutes.styles
             , Favorites.styles
             , Components.styles
             ]
