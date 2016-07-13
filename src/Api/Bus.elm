@@ -1,4 +1,4 @@
-module Api
+module Api.Bus
     exposing
         ( BusRouteSummary
         , getBusRoutes
@@ -16,8 +16,6 @@ module Api
         , getBusPredictions
         )
 
-import Time
-import Utils exposing (..)
 import Date exposing (Date)
 import Task exposing (Task)
 import HttpBuilder as Http exposing (..)

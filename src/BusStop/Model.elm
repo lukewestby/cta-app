@@ -1,6 +1,6 @@
 module BusStop.Model exposing (Model, model)
 
-import Api exposing (BusStop, BusPrediction)
+import Api.Bus exposing (BusStop, BusPrediction)
 
 
 type alias Model =

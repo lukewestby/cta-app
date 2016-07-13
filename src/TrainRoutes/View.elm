@@ -1,42 +1,44 @@
-module BusRoutes.View exposing (view)
+module TrainRoutes.View exposing (view)
 
 import String
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Pages
-import Api.Bus exposing (BusRouteSummary)
-import BusRoutes.Model as Model exposing (Model)
-import BusRoutes.Update as Update exposing (Msg(..))
-import BusRoutes.Classes exposing (..)
+import Api.Train exposing (TrainRoute)
+import TrainRoutes.Model as Model exposing (Model)
+import TrainRoutes.Update as Update exposing (Msg(..))
+import TrainRoutes.Classes exposing (..)
 import Icons
 import Components.SearchBar as SearchBar
 
 
 viewRouteIdLabel : String -> String -> Html Msg
 viewRouteIdLabel routeId color =
-    span [ class [ RouteIdLabel ] ]
-        [ text routeId ]
+    span
+        [ class [ RouteIconContainer ]
+        , style [ ( "background-color", color ) ]
+        ]
+        [ span [ class [ RouteIcon ] ] [ Icons.train ] ]
 
 
-viewRoute : BusRouteSummary -> Html Msg
-viewRoute summary =
+viewRoute : TrainRoute -> Html Msg
+viewRoute route =
     a
         [ class [ RouteItem ]
-        , href <| Pages.url (Pages.BusRoutePage summary.id)
         ]
-        [ viewRouteIdLabel summary.id summary.color
-        , div [ class [ RouteName ] ] [ text summary.name ]
+        [ viewRouteIdLabel route.id route.color
+        , div [ class [ RouteName ] ] [ text route.name ]
         , div [ class [ Chevron ] ] [ Icons.chevronRight ]
         ]
 
 
-fieldMatches : String -> (BusRouteSummary -> String) -> BusRouteSummary -> Bool
+fieldMatches : String -> (TrainRoute -> String) -> TrainRoute -> Bool
 fieldMatches searchText accessor summary =
     String.contains searchText (String.toLower (accessor summary))
 
 
-filteredRoutes : Model -> List BusRouteSummary
+filteredRoutes : Model -> List TrainRoute
 filteredRoutes model =
     let
         lowerSearchText =

@@ -25,6 +25,9 @@ import BusStop.Model as BusStop
 import BusStop.Update as BusStop
 import BusStop.View as BusStop
 import BusStop.Subscriptions as BusStop
+import TrainRoutes.Model as TrainRoutes
+import TrainRoutes.Update as TrainRoutes
+import TrainRoutes.View as TrainRoutes
 import Favorites.Model as Favorites
 import Favorites.Load as Favorites
 import Favorites.View as Favorites
@@ -34,6 +37,7 @@ type PageModel
     = BusRouteModel BusRoute.Model
     | BusRoutesModel BusRoutes.Model
     | BusStopModel BusStop.Model
+    | TrainRoutesModel TrainRoutes.Model
     | FavoritesModel Favorites.Model
     | NoneModel
 
@@ -42,6 +46,7 @@ type PageMsg
     = BusRouteMsg BusRoute.Msg
     | BusRoutesMsg BusRoutes.Msg
     | BusStopMsg BusStop.Msg
+    | TrainRoutesMsg TrainRoutes.Msg
     | NoneMsg
 
 
@@ -75,6 +80,15 @@ update msg model =
                 , Cmd.map BusStopMsg subCmd
                 )
 
+        ( TrainRoutesMsg subMsg, TrainRoutesModel subModel ) ->
+            let
+                ( newModel, subCmd ) =
+                    TrainRoutes.update subMsg subModel
+            in
+                ( TrainRoutesModel newModel
+                , Cmd.map TrainRoutesMsg subCmd
+                )
+
         _ ->
             ( model, Cmd.none )
 
@@ -90,6 +104,9 @@ load page =
 
         BusStopPage routeId stopId ->
             BusStop.load routeId stopId |> Task.map BusStopModel
+
+        TrainRoutesPage ->
+            TrainRoutes.load |> Task.map TrainRoutesModel
 
         FavoritesPage ->
             Favorites.load |> Task.map FavoritesModel
@@ -110,6 +127,9 @@ view pageModel =
         BusStopModel model ->
             HtmlApp.map BusStopMsg <| BusStop.view model
 
+        TrainRoutesModel model ->
+            HtmlApp.map TrainRoutesMsg <| TrainRoutes.view model
+
         FavoritesModel model ->
             Favorites.view model
 
@@ -128,6 +148,9 @@ isCacheable page =
 
         BusStopPage _ _ ->
             False
+
+        TrainRoutesPage ->
+            True
 
         FavoritesPage ->
             False
@@ -149,6 +172,9 @@ title model =
             List.head model.busStops
                 |> Maybe.map .name
                 |> Maybe.withDefault ""
+
+        TrainRoutesModel _ ->
+            "Train Routes"
 
         FavoritesModel _ ->
             "Favorites"

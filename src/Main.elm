@@ -153,7 +153,7 @@ view model =
         [ header [ class [ HeaderNav ] ]
             [ viewNavIcon model.currentPage Pages.FavoritesPage Icons.star
             , viewNavIcon model.currentPage Pages.BusRoutesPage Icons.bus
-            , viewNavIcon model.currentPage Pages.NotFound Icons.train
+            , viewNavIcon model.currentPage Pages.TrainRoutesPage Icons.train
             ]
         , main' [ class [ PageContainer ] ]
             [ viewPage model
