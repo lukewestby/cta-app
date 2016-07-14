@@ -3,6 +3,13 @@ module Utils exposing (..)
 import Task exposing (Task)
 import Set
 import Process
+import Date exposing (Date)
+import Json.Decode as Decode exposing (..)
+
+
+dateDecoder : Decoder Date
+dateDecoder =
+    customDecoder string Date.fromString
 
 
 type LoadState x a

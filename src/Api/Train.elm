@@ -5,12 +5,17 @@ module Api.Train
         , getTrainRoute
         , TrainStop
         , getTrainStops
+        , getTrainStop
+        , TrainPrediction
+        , getTrainPredictions
         )
 
+import Date exposing (Date)
 import Task exposing (Task)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
 import HttpBuilder exposing (..)
+import Utils exposing (..)
 
 
 fullUrl : String -> String
@@ -90,9 +95,57 @@ trainStopsReader =
         |> jsonReader
 
 
+trainStopReader : BodyReader TrainStop
+trainStopReader =
+    trainStopDecoder
+        |> jsonReader
+
+
 getTrainStops : String -> Task String (List TrainStop)
 getTrainStops routeId =
     get (fullUrl ("/train/routes/" ++ routeId ++ "/stops"))
         |> send trainStopsReader stringReader
         |> Task.map .data
         |> Task.mapError (\_ -> "Could not fetch stops for train route " ++ routeId)
+
+
+getTrainStop : String -> String -> Task String TrainStop
+getTrainStop routeId stopId =
+    get (fullUrl ("/train/routes/" ++ routeId ++ "/stops/" ++ stopId))
+        |> send trainStopReader stringReader
+        |> Task.map .data
+        |> Task.mapError (\_ -> "Could not fetch stop " ++ stopId)
+
+
+type alias TrainPrediction =
+    { destination : String
+    , timestamp : Date
+    , predictedTime : Date
+    , isDelayed : Bool
+    , isDue : Bool
+    }
+
+
+trainPredictionDecoder : Decoder TrainPrediction
+trainPredictionDecoder =
+    decode TrainPrediction
+        |> required "destination" string
+        |> required "timestamp" dateDecoder
+        |> required "predictedTime" dateDecoder
+        |> required "isDelayed" bool
+        |> required "isDue" bool
+
+
+trainPredictionsReader : BodyReader (List TrainPrediction)
+trainPredictionsReader =
+    trainPredictionDecoder
+        |> list
+        |> jsonReader
+
+
+getTrainPredictions : String -> String -> Task String (List TrainPrediction)
+getTrainPredictions routeId stopId =
+    get (fullUrl ("/train/routes/" ++ routeId ++ "/stops/" ++ stopId ++ "/predictions"))
+        |> send trainPredictionsReader stringReader
+        |> Task.map .data
+        |> Task.mapError (\_ -> "Could not fetch predictions for stop " ++ stopId)
