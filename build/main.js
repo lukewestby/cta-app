@@ -10971,6 +10971,8 @@ var _user$project$Pages$url = function (page) {
 							A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
 				case 'TrainRoutesPage':
 					return 'train/routes';
+				case 'TrainRoutePage':
+					return A2(_elm_lang$core$Basics_ops['++'], 'train/routes/', _p0._0);
 				default:
 					return 'not-found';
 			}
@@ -10986,6 +10988,9 @@ var _user$project$Pages$redirectTo = function (page) {
 };
 var _user$project$Pages$NotFound = {ctor: 'NotFound'};
 var _user$project$Pages$FavoritesPage = {ctor: 'FavoritesPage'};
+var _user$project$Pages$TrainRoutePage = function (a) {
+	return {ctor: 'TrainRoutePage', _0: a};
+};
 var _user$project$Pages$TrainRoutesPage = {ctor: 'TrainRoutesPage'};
 var _user$project$Pages$BusStopPage = F2(
 	function (a, b) {
@@ -11035,6 +11040,16 @@ var _user$project$Pages$pageParser = _evancz$url_parser$UrlParser$oneOf(
 				_evancz$url_parser$UrlParser_ops['</>'],
 				_evancz$url_parser$UrlParser$s('bus'),
 				_evancz$url_parser$UrlParser$s('routes'))),
+			A2(
+			_evancz$url_parser$UrlParser$format,
+			_user$project$Pages$TrainRoutePage,
+			A2(
+				_evancz$url_parser$UrlParser_ops['</>'],
+				_evancz$url_parser$UrlParser$s('train'),
+				A2(
+					_evancz$url_parser$UrlParser_ops['</>'],
+					_evancz$url_parser$UrlParser$s('routes'),
+					_evancz$url_parser$UrlParser$string))),
 			A2(
 			_evancz$url_parser$UrlParser$format,
 			_user$project$Pages$TrainRoutesPage,
@@ -12161,31 +12176,19 @@ var _user$project$Favorites_View$view = function (model) {
 };
 
 var _user$project$TrainRoutes_Model$model = function (routes) {
-	return {routes: routes, searchModel: _user$project$Components_SearchBar$model};
+	return {routes: routes};
 };
-var _user$project$TrainRoutes_Model$Model = F2(
-	function (a, b) {
-		return {routes: a, searchModel: b};
-	});
+var _user$project$TrainRoutes_Model$Model = function (a) {
+	return {routes: a};
+};
 
-var _user$project$TrainRoutes_Update$load = A2(_elm_lang$core$Task$map, _user$project$TrainRoutes_Model$model, _user$project$Api_Train$getTrainRoutes);
-var _user$project$TrainRoutes_Update$SearchBarMsg = function (a) {
-	return {ctor: 'SearchBarMsg', _0: a};
-};
 var _user$project$TrainRoutes_Update$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		var _p1 = A2(_user$project$Components_SearchBar$update, _p0._0, model.searchModel);
-		var subModel = _p1._0;
-		var subCmd = _p1._1;
-		return {
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.update(
-				model,
-				{searchModel: subModel}),
-			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TrainRoutes_Update$SearchBarMsg, subCmd)
-		};
+		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
+var _user$project$TrainRoutes_Update$load = A2(_elm_lang$core$Task$map, _user$project$TrainRoutes_Model$model, _user$project$Api_Train$getTrainRoutes);
+var _user$project$TrainRoutes_Update$NoOp = {ctor: 'NoOp'};
 
 var _user$project$TrainRoutes_Classes$cssNamespace = 'TrainRoutes';
 var _user$project$TrainRoutes_Classes$ControlsContainer = {ctor: 'ControlsContainer'};
@@ -12200,65 +12203,34 @@ var _user$project$TrainRoutes_Classes$RouteItem = {ctor: 'RouteItem'};
 var _user$project$TrainRoutes_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$TrainRoutes_Classes$cssNamespace);
 var _user$project$TrainRoutes_View$class = _user$project$TrainRoutes_View$_p0.$class;
 var _user$project$TrainRoutes_View$classList = _user$project$TrainRoutes_View$_p0.classList;
-var _user$project$TrainRoutes_View$fieldMatches = F3(
-	function (searchText, accessor, summary) {
-		return A2(
-			_elm_lang$core$String$contains,
-			searchText,
-			_elm_lang$core$String$toLower(
-				accessor(summary)));
-	});
-var _user$project$TrainRoutes_View$filteredRoutes = function (model) {
-	var lowerSearchText = _elm_lang$core$String$toLower(
-		_user$project$Components_SearchBar$getSearchValue(model.searchModel));
+var _user$project$TrainRoutes_View$viewRouteIcon = function (color) {
 	return A2(
-		_elm_lang$core$List$filter,
-		function (s) {
-			return A3(
-				_user$project$TrainRoutes_View$fieldMatches,
-				lowerSearchText,
-				function (_) {
-					return _.id;
-				},
-				s) || A3(
-				_user$project$TrainRoutes_View$fieldMatches,
-				lowerSearchText,
-				function (_) {
-					return _.name;
-				},
-				s);
-		},
-		model.routes);
+		_elm_lang$html$Html$span,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$TrainRoutes_View$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$TrainRoutes_Classes$RouteIconContainer])),
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'background-color', _1: color}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$span,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$TrainRoutes_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$TrainRoutes_Classes$RouteIcon]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Icons$train]))
+			]));
 };
-var _user$project$TrainRoutes_View$viewRouteIdLabel = F2(
-	function (routeId, color) {
-		return A2(
-			_elm_lang$html$Html$span,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_user$project$TrainRoutes_View$class(
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$TrainRoutes_Classes$RouteIconContainer])),
-					_elm_lang$html$Html_Attributes$style(
-					_elm_lang$core$Native_List.fromArray(
-						[
-							{ctor: '_Tuple2', _0: 'background-color', _1: color}
-						]))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_user$project$TrainRoutes_View$class(
-							_elm_lang$core$Native_List.fromArray(
-								[_user$project$TrainRoutes_Classes$RouteIcon]))
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$Icons$train]))
-				]));
-	});
 var _user$project$TrainRoutes_View$viewRoute = function (route) {
 	return A2(
 		_elm_lang$html$Html$a,
@@ -12266,11 +12238,14 @@ var _user$project$TrainRoutes_View$viewRoute = function (route) {
 			[
 				_user$project$TrainRoutes_View$class(
 				_elm_lang$core$Native_List.fromArray(
-					[_user$project$TrainRoutes_Classes$RouteItem]))
+					[_user$project$TrainRoutes_Classes$RouteItem])),
+				_elm_lang$html$Html_Attributes$href(
+				_user$project$Pages$url(
+					_user$project$Pages$TrainRoutePage(route.id)))
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A2(_user$project$TrainRoutes_View$viewRouteIdLabel, route.id, route.color),
+				_user$project$TrainRoutes_View$viewRouteIcon(route.color),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -12300,19 +12275,135 @@ var _user$project$TrainRoutes_View$view = function (model) {
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
+		A2(_elm_lang$core$List$map, _user$project$TrainRoutes_View$viewRoute, model.routes));
+};
+
+var _user$project$TrainRoute_Model$model = F2(
+	function (route, stops) {
+		return {searchModel: _user$project$Components_SearchBar$model, route: route, stops: stops};
+	});
+var _user$project$TrainRoute_Model$Model = F3(
+	function (a, b, c) {
+		return {searchModel: a, route: b, stops: c};
+	});
+
+var _user$project$TrainRoute_Update$load = function (routeId) {
+	var routeToStops = function (route) {
+		return A2(
+			_elm_lang$core$Task$map,
+			function (stops) {
+				return {ctor: '_Tuple2', _0: route, _1: stops};
+			},
+			_user$project$Api_Train$getTrainStops(route.id));
+	};
+	return A2(
+		_elm_lang$core$Task$map,
+		function (_p0) {
+			var _p1 = _p0;
+			return A2(_user$project$TrainRoute_Model$model, _p1._0, _p1._1);
+		},
+		A2(
+			_user$project$Utils$andThen,
+			routeToStops,
+			_user$project$Api_Train$getTrainRoute(routeId)));
+};
+var _user$project$TrainRoute_Update$SearchBarMsg = function (a) {
+	return {ctor: 'SearchBarMsg', _0: a};
+};
+var _user$project$TrainRoute_Update$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		var _p3 = A2(_user$project$Components_SearchBar$update, _p2._0, model.searchModel);
+		var subModel = _p3._0;
+		var subCmd = _p3._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{searchModel: subModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$TrainRoute_Update$SearchBarMsg, subCmd)
+		};
+	});
+
+var _user$project$TrainRoute_Classes$cssNamespace = 'TrainRoute';
+var _user$project$TrainRoute_Classes$ActiveDirectionButton = {ctor: 'ActiveDirectionButton'};
+var _user$project$TrainRoute_Classes$ControlsContainer = {ctor: 'ControlsContainer'};
+var _user$project$TrainRoute_Classes$DirectionButton = {ctor: 'DirectionButton'};
+var _user$project$TrainRoute_Classes$DirectionsSelector = {ctor: 'DirectionsSelector'};
+var _user$project$TrainRoute_Classes$StopName = {ctor: 'StopName'};
+var _user$project$TrainRoute_Classes$Chevron = {ctor: 'Chevron'};
+var _user$project$TrainRoute_Classes$StopItem = {ctor: 'StopItem'};
+
+var _user$project$TrainRoute_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$TrainRoute_Classes$cssNamespace);
+var _user$project$TrainRoute_View$class = _user$project$TrainRoute_View$_p0.$class;
+var _user$project$TrainRoute_View$classList = _user$project$TrainRoute_View$_p0.classList;
+var _user$project$TrainRoute_View$viewStop = F2(
+	function (routeId, stop) {
+		return A2(
+			_elm_lang$html$Html$a,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$TrainRoute_View$class(
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$TrainRoute_Classes$StopItem]))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainRoute_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainRoute_Classes$StopName]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(stop.name)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainRoute_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainRoute_Classes$Chevron]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$Icons$chevronRight]))
+				]));
+	});
+var _user$project$TrainRoute_View$filterStops = F2(
+	function (searchText, stops) {
+		var lowerSearchText = _elm_lang$core$String$toLower(searchText);
+		return A2(
+			_elm_lang$core$List$filter,
+			function (stop) {
+				return A2(
+					_elm_lang$core$String$contains,
+					lowerSearchText,
+					_elm_lang$core$String$toLower(stop.name));
+			},
+			stops);
+	});
+var _user$project$TrainRoute_View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_user$project$TrainRoutes_View$class(
+						_user$project$TrainRoute_View$class(
 						_elm_lang$core$Native_List.fromArray(
-							[_user$project$TrainRoutes_Classes$ControlsContainer]))
+							[_user$project$TrainRoute_Classes$ControlsContainer]))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						A2(_user$project$Components_SearchBar$view, model.searchModel, _user$project$TrainRoutes_Update$SearchBarMsg)
+						A2(_user$project$Components_SearchBar$view, model.searchModel, _user$project$TrainRoute_Update$SearchBarMsg)
 					])),
 				A2(
 				_elm_lang$html$Html$div,
@@ -12320,8 +12411,16 @@ var _user$project$TrainRoutes_View$view = function (model) {
 					[]),
 				A2(
 					_elm_lang$core$List$map,
-					_user$project$TrainRoutes_View$viewRoute,
-					_user$project$TrainRoutes_View$filteredRoutes(model)))
+					_user$project$TrainRoute_View$viewStop(model.route.id),
+					A2(
+						_elm_lang$core$List$sortBy,
+						function (_) {
+							return _.name;
+						},
+						A2(
+							_user$project$TrainRoute_View$filterStops,
+							_user$project$Components_SearchBar$getSearchValue(model.searchModel),
+							model.stops))))
 			]));
 };
 
@@ -12351,6 +12450,8 @@ var _user$project$Routing$title = function (model) {
 					_elm_lang$core$List$head(_p0._0.busStops)));
 		case 'TrainRoutesModel':
 			return 'Train Routes';
+		case 'TrainRouteModel':
+			return _p0._0.route.name;
 		case 'FavoritesModel':
 			return 'Favorites';
 		default:
@@ -12368,6 +12469,8 @@ var _user$project$Routing$isCacheable = function (page) {
 			return false;
 		case 'TrainRoutesPage':
 			return true;
+		case 'TrainRoutePage':
+			return true;
 		case 'FavoritesPage':
 			return false;
 		default:
@@ -12377,6 +12480,9 @@ var _user$project$Routing$isCacheable = function (page) {
 var _user$project$Routing$NoneModel = {ctor: 'NoneModel'};
 var _user$project$Routing$FavoritesModel = function (a) {
 	return {ctor: 'FavoritesModel', _0: a};
+};
+var _user$project$Routing$TrainRouteModel = function (a) {
+	return {ctor: 'TrainRouteModel', _0: a};
 };
 var _user$project$Routing$TrainRoutesModel = function (a) {
 	return {ctor: 'TrainRoutesModel', _0: a};
@@ -12407,6 +12513,11 @@ var _user$project$Routing$load = function (page) {
 				A2(_user$project$BusStop_Update$load, _p3._0, _p3._1));
 		case 'TrainRoutesPage':
 			return A2(_elm_lang$core$Task$map, _user$project$Routing$TrainRoutesModel, _user$project$TrainRoutes_Update$load);
+		case 'TrainRoutePage':
+			return A2(
+				_elm_lang$core$Task$map,
+				_user$project$Routing$TrainRouteModel,
+				_user$project$TrainRoute_Update$load(_p3._0));
 		case 'FavoritesPage':
 			return A2(_elm_lang$core$Task$map, _user$project$Routing$FavoritesModel, _user$project$Favorites_Load$load);
 		default:
@@ -12414,6 +12525,9 @@ var _user$project$Routing$load = function (page) {
 	}
 };
 var _user$project$Routing$NoneMsg = {ctor: 'NoneMsg'};
+var _user$project$Routing$TrainRouteMsg = function (a) {
+	return {ctor: 'TrainRouteMsg', _0: a};
+};
 var _user$project$Routing$TrainRoutesMsg = function (a) {
 	return {ctor: 'TrainRoutesMsg', _0: a};
 };
@@ -12440,7 +12554,7 @@ var _user$project$Routing$BusRouteMsg = function (a) {
 var _user$project$Routing$update = F2(
 	function (msg, model) {
 		var _p5 = {ctor: '_Tuple2', _0: msg, _1: model};
-		_v4_4:
+		_v4_5:
 		do {
 			if (_p5.ctor === '_Tuple2') {
 				switch (_p5._0.ctor) {
@@ -12455,7 +12569,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_5;
 						}
 					case 'BusRoutesMsg':
 						if (_p5._1.ctor === 'BusRoutesModel') {
@@ -12468,7 +12582,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_5;
 						}
 					case 'BusStopMsg':
 						if (_p5._1.ctor === 'BusStopModel') {
@@ -12481,7 +12595,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusStopMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_5;
 						}
 					case 'TrainRoutesMsg':
 						if (_p5._1.ctor === 'TrainRoutesModel') {
@@ -12494,42 +12608,60 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_4;
+							break _v4_5;
+						}
+					case 'TrainRouteMsg':
+						if (_p5._1.ctor === 'TrainRouteModel') {
+							var _p10 = A2(_user$project$TrainRoute_Update$update, _p5._0._0, _p5._1._0);
+							var newModel = _p10._0;
+							var subCmd = _p10._1;
+							return {
+								ctor: '_Tuple2',
+								_0: _user$project$Routing$TrainRouteModel(newModel),
+								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainRouteMsg, subCmd)
+							};
+						} else {
+							break _v4_5;
 						}
 					default:
-						break _v4_4;
+						break _v4_5;
 				}
 			} else {
-				break _v4_4;
+				break _v4_5;
 			}
 		} while(false);
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Routing$view = function (pageModel) {
-	var _p10 = pageModel;
-	switch (_p10.ctor) {
+	var _p11 = pageModel;
+	switch (_p11.ctor) {
 		case 'BusRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRouteMsg,
-				_user$project$BusRoute_View$view(_p10._0));
+				_user$project$BusRoute_View$view(_p11._0));
 		case 'BusRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRoutesMsg,
-				_user$project$BusRoutes_View$view(_p10._0));
+				_user$project$BusRoutes_View$view(_p11._0));
 		case 'BusStopModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusStopMsg,
-				_user$project$BusStop_View$view(_p10._0));
+				_user$project$BusStop_View$view(_p11._0));
 		case 'TrainRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$TrainRoutesMsg,
-				_user$project$TrainRoutes_View$view(_p10._0));
+				_user$project$TrainRoutes_View$view(_p11._0));
+		case 'TrainRouteModel':
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Routing$TrainRouteMsg,
+				_user$project$TrainRoute_View$view(_p11._0));
 		case 'FavoritesModel':
-			return _user$project$Favorites_View$view(_p10._0);
+			return _user$project$Favorites_View$view(_p11._0);
 		default:
 			return _elm_lang$html$Html$text('');
 	}

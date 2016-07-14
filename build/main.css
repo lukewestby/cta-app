@@ -357,6 +357,64 @@ a {
     border-bottom: 1px solid #E1E8ED;
 }
 
+.TrainRouteStopItem {
+    padding: 0 32px;
+    height: 48px;
+    border-bottom: 1px solid #E1E8ED;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.TrainRouteStopName {
+    display: block;
+    width: calc(100% - 20px);
+    padding-right: 16px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 20px;
+}
+
+.TrainRouteChevron {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    fill: #8899A6;
+}
+
+.TrainRouteControlsContainer {
+    padding: 16px 32px;
+    border-bottom: 1px solid #E1E8ED;
+}
+
+.TrainRouteDirectionsSelector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.TrainRouteDirectionButton {
+    width: 50%;
+    border: 1px solid #1DA1F2;
+    background-color: #fff;
+    color: #1DA1F2;
+    font-size: 16px;
+    text-transform: uppercase;
+    outline: 0;
+    padding: 4px 0;
+}
+
+.TrainRouteDirectionButton:first-child {
+    border-right: 0;
+}
+
+.TrainRouteActiveDirectionButton {
+    background-color: #1DA1F2;
+    color: #fff;
+}
+
 .FavoritesFavoriteItem {
     border-bottom: 1px solid #E1E8ED;
     height: 64px;
