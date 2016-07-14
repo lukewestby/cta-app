@@ -11,6 +11,7 @@ import BusRoutes.Stylesheet as BusRoutes
 import BusRoute.Stylesheet as BusRoute
 import BusStop.Stylesheet as BusStop
 import TrainRoutes.Stylesheet as TrainRoutes
+import TrainRoute.Stylesheet as TrainRoute
 import Favorites.Styles as Favorites
 import Components.Stylesheet as Components
 import Colors exposing (..)
@@ -117,6 +118,7 @@ css =
             , BusRoute.styles
             , BusStop.styles
             , TrainRoutes.styles
+            , TrainRoute.styles
             , Favorites.styles
             , Components.styles
             ]

@@ -10,7 +10,6 @@ module Routing
         , subscriptions
         )
 
-import Utils exposing (..)
 import Task exposing (Task)
 import Html exposing (Html)
 import Html.App as HtmlApp
@@ -28,6 +27,9 @@ import BusStop.Subscriptions as BusStop
 import TrainRoutes.Model as TrainRoutes
 import TrainRoutes.Update as TrainRoutes
 import TrainRoutes.View as TrainRoutes
+import TrainRoute.Model as TrainRoute
+import TrainRoute.Update as TrainRoute
+import TrainRoute.View as TrainRoute
 import Favorites.Model as Favorites
 import Favorites.Load as Favorites
 import Favorites.View as Favorites
@@ -38,6 +40,7 @@ type PageModel
     | BusRoutesModel BusRoutes.Model
     | BusStopModel BusStop.Model
     | TrainRoutesModel TrainRoutes.Model
+    | TrainRouteModel TrainRoute.Model
     | FavoritesModel Favorites.Model
     | NoneModel
 
@@ -47,6 +50,7 @@ type PageMsg
     | BusRoutesMsg BusRoutes.Msg
     | BusStopMsg BusStop.Msg
     | TrainRoutesMsg TrainRoutes.Msg
+    | TrainRouteMsg TrainRoute.Msg
     | NoneMsg
 
 
@@ -89,6 +93,15 @@ update msg model =
                 , Cmd.map TrainRoutesMsg subCmd
                 )
 
+        ( TrainRouteMsg subMsg, TrainRouteModel subModel ) ->
+            let
+                ( newModel, subCmd ) =
+                    TrainRoute.update subMsg subModel
+            in
+                ( TrainRouteModel newModel
+                , Cmd.map TrainRouteMsg subCmd
+                )
+
         _ ->
             ( model, Cmd.none )
 
@@ -107,6 +120,9 @@ load page =
 
         TrainRoutesPage ->
             TrainRoutes.load |> Task.map TrainRoutesModel
+
+        TrainRoutePage routeId ->
+            TrainRoute.load routeId |> Task.map TrainRouteModel
 
         FavoritesPage ->
             Favorites.load |> Task.map FavoritesModel
@@ -130,6 +146,9 @@ view pageModel =
         TrainRoutesModel model ->
             HtmlApp.map TrainRoutesMsg <| TrainRoutes.view model
 
+        TrainRouteModel model ->
+            HtmlApp.map TrainRouteMsg <| TrainRoute.view model
+
         FavoritesModel model ->
             Favorites.view model
 
@@ -150,6 +169,9 @@ isCacheable page =
             False
 
         TrainRoutesPage ->
+            True
+
+        TrainRoutePage _ ->
             True
 
         FavoritesPage ->
@@ -175,6 +197,9 @@ title model =
 
         TrainRoutesModel _ ->
             "Train Routes"
+
+        TrainRouteModel model ->
+            model.route.name
 
         FavoritesModel _ ->
             "Favorites"
