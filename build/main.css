@@ -415,6 +415,95 @@ a {
     color: #fff;
 }
 
+.TrainStopItemIcon {
+    height: 32px;
+    width: 32px;
+    fill: #8899A6;
+    display: inline-block;
+}
+
+.TrainStopPredictionItem {
+    border-bottom: 1px solid #E1E8ED;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+}
+
+.TrainStopPredictionDetails {
+    padding: 0 16px;
+    width: calc(100% - 108px);
+}
+
+.TrainStopRouteName {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.TrainStopPredictionValue {
+    text-align: center;
+    text-transform: uppercase;
+    width: 76px;
+}
+
+.TrainStopStopName {
+    color: #8899A6;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.TrainStopNearPrediction {
+    color: #2DDE93;
+}
+
+.TrainStopMediumPrediction {
+    color: #F8E71C;
+}
+
+.TrainStopFarPrediction {
+    color: #D0021B;
+}
+
+.TrainStopPredictionLabel {
+    color: #8899A6;
+    font-size: 14px;
+}
+
+.TrainStopControlsContainer {
+    border-bottom: 1px solid #E1E8ED;
+}
+
+.TrainStopFavoriteContainer {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 32px;
+}
+
+.TrainStopFavoriteIcon {
+    width: 24px;
+    height: 24px;
+    stroke: #8899A6;
+    fill: #F8E71C;
+}
+
+.TrainStopFavoriteText {
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 0 16px;
+}
+
+.TrainStopDirectionLabel {
+    font-size: 16px;
+    color: #8899A6;
+    text-transform: uppercase;
+    padding: 24px 32px 8px 32px;
+    border-bottom: 1px solid #E1E8ED;
+}
+
 .FavoritesFavoriteItem {
     border-bottom: 1px solid #E1E8ED;
     height: 64px;

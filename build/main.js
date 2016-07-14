@@ -10555,6 +10555,108 @@ var _user$project$Api_Bus$getBusPredictions = F2(
 										A2(_elm_lang$core$Basics_ops['++'], stopId, '/predictions')))))))));
 	});
 
+var _user$project$Utils$listUniqueBy = F2(
+	function (accessor, list) {
+		var fold = F2(
+			function (item, memo) {
+				var id = accessor(item);
+				return A2(_elm_lang$core$Set$member, id, memo.ids) ? memo : _elm_lang$core$Native_Utils.update(
+					memo,
+					{
+						output: A2(_elm_lang$core$List_ops['::'], item, memo.output),
+						ids: A2(_elm_lang$core$Set$insert, id, memo.ids)
+					});
+			});
+		return function (_) {
+			return _.output;
+		}(
+			A3(
+				_elm_lang$core$List$foldl,
+				fold,
+				{
+					output: _elm_lang$core$Native_List.fromArray(
+						[]),
+					ids: _elm_lang$core$Set$empty
+				},
+				list));
+	});
+var _user$project$Utils$flatten = _elm_lang$core$List$filterMap(
+	function (_p0) {
+		var _p1 = _p0;
+		return _p1._0 ? _elm_lang$core$Maybe$Just(_p1._1) : _elm_lang$core$Maybe$Nothing;
+	});
+var _user$project$Utils$never = function (a) {
+	never:
+	while (true) {
+		var _v1 = a;
+		a = _v1;
+		continue never;
+	}
+};
+var _user$project$Utils$performSucceed = F2(
+	function (onFinished, task) {
+		return A3(
+			_elm_lang$core$Task$perform,
+			_user$project$Utils$never,
+			onFinished,
+			_elm_lang$core$Task$toResult(task));
+	});
+var _user$project$Utils$constant = function (msg) {
+	return A2(
+		_user$project$Utils$performSucceed,
+		_elm_lang$core$Basics$always(msg),
+		_elm_lang$core$Task$succeed(
+			{ctor: '_Tuple0'}));
+};
+var _user$project$Utils$andThen = _elm_lang$core$Basics$flip(_elm_lang$core$Task$andThen);
+var _user$project$Utils$delay = F2(
+	function (howLong, task) {
+		return A2(
+			_user$project$Utils$andThen,
+			_elm_lang$core$Basics$always(task),
+			_elm_lang$core$Process$sleep(howLong));
+	});
+var _user$project$Utils$loadStateToMaybe = function (loadState) {
+	var _p2 = loadState;
+	if (_p2.ctor === 'Success') {
+		return _elm_lang$core$Maybe$Just(_p2._0);
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _user$project$Utils$dateDecoder = A2(_elm_lang$core$Json_Decode$customDecoder, _elm_lang$core$Json_Decode$string, _elm_lang$core$Date$fromString);
+var _user$project$Utils$Failure = function (a) {
+	return {ctor: 'Failure', _0: a};
+};
+var _user$project$Utils$Success = function (a) {
+	return {ctor: 'Success', _0: a};
+};
+var _user$project$Utils$loadStateFromResult = function (result) {
+	var _p3 = result;
+	if (_p3.ctor === 'Ok') {
+		return _user$project$Utils$Success(_p3._0);
+	} else {
+		return _user$project$Utils$Failure(_p3._0);
+	}
+};
+var _user$project$Utils$Loading = {ctor: 'Loading'};
+var _user$project$Utils$Initial = {ctor: 'Initial'};
+var _user$project$Utils$loadStateMap = F2(
+	function (tagger, loadState) {
+		var _p4 = loadState;
+		switch (_p4.ctor) {
+			case 'Success':
+				return _user$project$Utils$Success(
+					tagger(_p4._0));
+			case 'Failure':
+				return _user$project$Utils$Failure(_p4._0);
+			case 'Loading':
+				return _user$project$Utils$Loading;
+			default:
+				return _user$project$Utils$Initial;
+		}
+	});
+
 var _user$project$Api_Train$fullUrl = function (relative) {
 	return A2(_elm_lang$core$Basics_ops['++'], 'https://cta-json-api.herokuapp.com', relative);
 };
@@ -10666,6 +10768,89 @@ var _user$project$Api_Train$getTrainStops = function (routeId) {
 							'/train/routes/',
 							A2(_elm_lang$core$Basics_ops['++'], routeId, '/stops')))))));
 };
+var _user$project$Api_Train$trainStopReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(_user$project$Api_Train$trainStopDecoder);
+var _user$project$Api_Train$getTrainStop = F2(
+	function (routeId, stopId) {
+		return A2(
+			_elm_lang$core$Task$mapError,
+			function (_p3) {
+				return A2(_elm_lang$core$Basics_ops['++'], 'Could not fetch stop ', stopId);
+			},
+			A2(
+				_elm_lang$core$Task$map,
+				function (_) {
+					return _.data;
+				},
+				A3(
+					_lukewestby$elm_http_builder$HttpBuilder$send,
+					_user$project$Api_Train$trainStopReader,
+					_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+					_lukewestby$elm_http_builder$HttpBuilder$get(
+						_user$project$Api_Train$fullUrl(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'/train/routes/',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									routeId,
+									A2(_elm_lang$core$Basics_ops['++'], '/stops/', stopId))))))));
+	});
+var _user$project$Api_Train$TrainPrediction = F5(
+	function (a, b, c, d, e) {
+		return {destination: a, timestamp: b, predictedTime: c, isDelayed: d, isDue: e};
+	});
+var _user$project$Api_Train$trainPredictionDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'isDue',
+	_elm_lang$core$Json_Decode$bool,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'isDelayed',
+		_elm_lang$core$Json_Decode$bool,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'predictedTime',
+			_user$project$Utils$dateDecoder,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'timestamp',
+				_user$project$Utils$dateDecoder,
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+					'destination',
+					_elm_lang$core$Json_Decode$string,
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Api_Train$TrainPrediction))))));
+var _user$project$Api_Train$trainPredictionsReader = _lukewestby$elm_http_builder$HttpBuilder$jsonReader(
+	_elm_lang$core$Json_Decode$list(_user$project$Api_Train$trainPredictionDecoder));
+var _user$project$Api_Train$getTrainPredictions = F2(
+	function (routeId, stopId) {
+		return A2(
+			_elm_lang$core$Task$mapError,
+			function (_p4) {
+				return A2(_elm_lang$core$Basics_ops['++'], 'Could not fetch predictions for stop ', stopId);
+			},
+			A2(
+				_elm_lang$core$Task$map,
+				function (_) {
+					return _.data;
+				},
+				A3(
+					_lukewestby$elm_http_builder$HttpBuilder$send,
+					_user$project$Api_Train$trainPredictionsReader,
+					_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+					_lukewestby$elm_http_builder$HttpBuilder$get(
+						_user$project$Api_Train$fullUrl(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'/train/routes/',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									routeId,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'/stops/',
+										A2(_elm_lang$core$Basics_ops['++'], stopId, '/predictions')))))))));
+	});
 
 var _user$project$BusRoute_Classes$cssNamespace = 'BusRoute';
 var _user$project$BusRoute_Classes$ActiveDirectionButton = {ctor: 'ActiveDirectionButton'};
@@ -10809,107 +10994,6 @@ var _user$project$BusRoute_Model$Model = F3(
 		return {searchModel: a, route: b, stops: c};
 	});
 
-var _user$project$Utils$listUniqueBy = F2(
-	function (accessor, list) {
-		var fold = F2(
-			function (item, memo) {
-				var id = accessor(item);
-				return A2(_elm_lang$core$Set$member, id, memo.ids) ? memo : _elm_lang$core$Native_Utils.update(
-					memo,
-					{
-						output: A2(_elm_lang$core$List_ops['::'], item, memo.output),
-						ids: A2(_elm_lang$core$Set$insert, id, memo.ids)
-					});
-			});
-		return function (_) {
-			return _.output;
-		}(
-			A3(
-				_elm_lang$core$List$foldl,
-				fold,
-				{
-					output: _elm_lang$core$Native_List.fromArray(
-						[]),
-					ids: _elm_lang$core$Set$empty
-				},
-				list));
-	});
-var _user$project$Utils$flatten = _elm_lang$core$List$filterMap(
-	function (_p0) {
-		var _p1 = _p0;
-		return _p1._0 ? _elm_lang$core$Maybe$Just(_p1._1) : _elm_lang$core$Maybe$Nothing;
-	});
-var _user$project$Utils$never = function (a) {
-	never:
-	while (true) {
-		var _v1 = a;
-		a = _v1;
-		continue never;
-	}
-};
-var _user$project$Utils$performSucceed = F2(
-	function (onFinished, task) {
-		return A3(
-			_elm_lang$core$Task$perform,
-			_user$project$Utils$never,
-			onFinished,
-			_elm_lang$core$Task$toResult(task));
-	});
-var _user$project$Utils$constant = function (msg) {
-	return A2(
-		_user$project$Utils$performSucceed,
-		_elm_lang$core$Basics$always(msg),
-		_elm_lang$core$Task$succeed(
-			{ctor: '_Tuple0'}));
-};
-var _user$project$Utils$andThen = _elm_lang$core$Basics$flip(_elm_lang$core$Task$andThen);
-var _user$project$Utils$delay = F2(
-	function (howLong, task) {
-		return A2(
-			_user$project$Utils$andThen,
-			_elm_lang$core$Basics$always(task),
-			_elm_lang$core$Process$sleep(howLong));
-	});
-var _user$project$Utils$loadStateToMaybe = function (loadState) {
-	var _p2 = loadState;
-	if (_p2.ctor === 'Success') {
-		return _elm_lang$core$Maybe$Just(_p2._0);
-	} else {
-		return _elm_lang$core$Maybe$Nothing;
-	}
-};
-var _user$project$Utils$Failure = function (a) {
-	return {ctor: 'Failure', _0: a};
-};
-var _user$project$Utils$Success = function (a) {
-	return {ctor: 'Success', _0: a};
-};
-var _user$project$Utils$loadStateFromResult = function (result) {
-	var _p3 = result;
-	if (_p3.ctor === 'Ok') {
-		return _user$project$Utils$Success(_p3._0);
-	} else {
-		return _user$project$Utils$Failure(_p3._0);
-	}
-};
-var _user$project$Utils$Loading = {ctor: 'Loading'};
-var _user$project$Utils$Initial = {ctor: 'Initial'};
-var _user$project$Utils$loadStateMap = F2(
-	function (tagger, loadState) {
-		var _p4 = loadState;
-		switch (_p4.ctor) {
-			case 'Success':
-				return _user$project$Utils$Success(
-					tagger(_p4._0));
-			case 'Failure':
-				return _user$project$Utils$Failure(_p4._0);
-			case 'Loading':
-				return _user$project$Utils$Loading;
-			default:
-				return _user$project$Utils$Initial;
-		}
-	});
-
 var _user$project$BusRoute_Update$load = function (routeId) {
 	var routeToStops = function (route) {
 		return A2(
@@ -10971,6 +11055,14 @@ var _user$project$Pages$url = function (page) {
 							A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
 				case 'TrainRoutesPage':
 					return 'train/routes';
+				case 'TrainStopPage':
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						'train/routes/',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_p0._0,
+							A2(_elm_lang$core$Basics_ops['++'], '/stops/', _p0._1)));
 				case 'TrainRoutePage':
 					return A2(_elm_lang$core$Basics_ops['++'], 'train/routes/', _p0._0);
 				default:
@@ -10988,6 +11080,10 @@ var _user$project$Pages$redirectTo = function (page) {
 };
 var _user$project$Pages$NotFound = {ctor: 'NotFound'};
 var _user$project$Pages$FavoritesPage = {ctor: 'FavoritesPage'};
+var _user$project$Pages$TrainStopPage = F2(
+	function (a, b) {
+		return {ctor: 'TrainStopPage', _0: a, _1: b};
+	});
 var _user$project$Pages$TrainRoutePage = function (a) {
 	return {ctor: 'TrainRoutePage', _0: a};
 };
@@ -11040,6 +11136,22 @@ var _user$project$Pages$pageParser = _evancz$url_parser$UrlParser$oneOf(
 				_evancz$url_parser$UrlParser_ops['</>'],
 				_evancz$url_parser$UrlParser$s('bus'),
 				_evancz$url_parser$UrlParser$s('routes'))),
+			A2(
+			_evancz$url_parser$UrlParser$format,
+			_user$project$Pages$TrainStopPage,
+			A2(
+				_evancz$url_parser$UrlParser_ops['</>'],
+				_evancz$url_parser$UrlParser$s('train'),
+				A2(
+					_evancz$url_parser$UrlParser_ops['</>'],
+					_evancz$url_parser$UrlParser$s('routes'),
+					A2(
+						_evancz$url_parser$UrlParser_ops['</>'],
+						_evancz$url_parser$UrlParser$string,
+						A2(
+							_evancz$url_parser$UrlParser_ops['</>'],
+							_evancz$url_parser$UrlParser$s('stops'),
+							_evancz$url_parser$UrlParser$string))))),
 			A2(
 			_evancz$url_parser$UrlParser$format,
 			_user$project$Pages$TrainRoutePage,
@@ -12345,7 +12457,10 @@ var _user$project$TrainRoute_View$viewStop = F2(
 				[
 					_user$project$TrainRoute_View$class(
 					_elm_lang$core$Native_List.fromArray(
-						[_user$project$TrainRoute_Classes$StopItem]))
+						[_user$project$TrainRoute_Classes$StopItem])),
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(
+						A2(_user$project$Pages$TrainStopPage, routeId, stop.id)))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -12424,6 +12539,333 @@ var _user$project$TrainRoute_View$view = function (model) {
 			]));
 };
 
+var _user$project$TrainStop_Model$Model = F4(
+	function (a, b, c, d) {
+		return {isFavorited: a, stop: b, predictions: c, routeId: d};
+	});
+var _user$project$TrainStop_Model$model = _user$project$TrainStop_Model$Model;
+
+var _user$project$TrainStop_Update$load = F2(
+	function (routeId, stopId) {
+		var stopToPredictions = function (stop) {
+			return A2(
+				_elm_lang$core$Task$map,
+				function (predictions) {
+					return {ctor: '_Tuple2', _0: stop, _1: predictions};
+				},
+				A2(_user$project$Api_Train$getTrainPredictions, routeId, stopId));
+		};
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_p0) {
+				var _p1 = _p0;
+				return A4(_user$project$TrainStop_Model$model, false, _p1._0, _p1._1, routeId);
+			},
+			A2(
+				_user$project$Utils$andThen,
+				stopToPredictions,
+				A2(_user$project$Api_Train$getTrainStop, routeId, stopId)));
+	});
+var _user$project$TrainStop_Update$ReloadPredictionsFinish = function (a) {
+	return {ctor: 'ReloadPredictionsFinish', _0: a};
+};
+var _user$project$TrainStop_Update$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'NoOp':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ReloadPredictionsStart':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_user$project$Utils$performSucceed,
+						_user$project$TrainStop_Update$ReloadPredictionsFinish,
+						A2(_user$project$Api_Train$getTrainPredictions, model.routeId, model.stop.id))
+				};
+			default:
+				var _p3 = _p2._0;
+				if (_p3.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{predictions: _p3._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+		}
+	});
+var _user$project$TrainStop_Update$ReloadPredictionsStart = {ctor: 'ReloadPredictionsStart'};
+var _user$project$TrainStop_Update$NoOp = {ctor: 'NoOp'};
+
+var _user$project$TrainStop_Classes$cssNamespace = 'TrainStop';
+var _user$project$TrainStop_Classes$DirectionLabel = {ctor: 'DirectionLabel'};
+var _user$project$TrainStop_Classes$FavoriteText = {ctor: 'FavoriteText'};
+var _user$project$TrainStop_Classes$FavoriteIcon = {ctor: 'FavoriteIcon'};
+var _user$project$TrainStop_Classes$FavoriteContainer = {ctor: 'FavoriteContainer'};
+var _user$project$TrainStop_Classes$ControlsContainer = {ctor: 'ControlsContainer'};
+var _user$project$TrainStop_Classes$FarPrediction = {ctor: 'FarPrediction'};
+var _user$project$TrainStop_Classes$MediumPrediction = {ctor: 'MediumPrediction'};
+var _user$project$TrainStop_Classes$NearPrediction = {ctor: 'NearPrediction'};
+var _user$project$TrainStop_Classes$PredictionLabel = {ctor: 'PredictionLabel'};
+var _user$project$TrainStop_Classes$PredictionValue = {ctor: 'PredictionValue'};
+var _user$project$TrainStop_Classes$RouteName = {ctor: 'RouteName'};
+var _user$project$TrainStop_Classes$StopName = {ctor: 'StopName'};
+var _user$project$TrainStop_Classes$PredictionDetails = {ctor: 'PredictionDetails'};
+var _user$project$TrainStop_Classes$PredictionItem = {ctor: 'PredictionItem'};
+var _user$project$TrainStop_Classes$ItemIcon = {ctor: 'ItemIcon'};
+
+var _user$project$TrainStop_View$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$TrainStop_Classes$cssNamespace);
+var _user$project$TrainStop_View$class = _user$project$TrainStop_View$_p0.$class;
+var _user$project$TrainStop_View$classList = _user$project$TrainStop_View$_p0.classList;
+var _user$project$TrainStop_View$viewFavoriteControl = function (isFavorited) {
+	var _p1 = isFavorited ? {ctor: '_Tuple2', _0: _user$project$Icons$star, _1: 'Added to favorites'} : {ctor: '_Tuple2', _0: _user$project$Icons$starOutline, _1: 'Add to favorites'};
+	var icon = _p1._0;
+	var favoriteText = _p1._1;
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$TrainStop_View$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$TrainStop_Classes$ControlsContainer]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$TrainStop_View$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$TrainStop_Classes$FavoriteContainer]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$TrainStop_View$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$TrainStop_Classes$FavoriteIcon]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[icon])),
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$TrainStop_View$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$TrainStop_Classes$FavoriteText]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(favoriteText)
+							]))
+					]))
+			]));
+};
+var _user$project$TrainStop_View$arrivingClass = function (inMinutes) {
+	return _user$project$TrainStop_View$classList(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: _user$project$TrainStop_Classes$NearPrediction,
+				_1: _elm_lang$core$Native_Utils.cmp(inMinutes, 5) < 1
+			},
+				{
+				ctor: '_Tuple2',
+				_0: _user$project$TrainStop_Classes$MediumPrediction,
+				_1: (_elm_lang$core$Native_Utils.cmp(inMinutes, 5) > 0) && (_elm_lang$core$Native_Utils.cmp(inMinutes, 12) < 1)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: _user$project$TrainStop_Classes$FarPrediction,
+				_1: _elm_lang$core$Native_Utils.cmp(inMinutes, 12) > 0
+			}
+			]));
+};
+var _user$project$TrainStop_View$viewArrivingMinutes = function (inMinutes) {
+	return _elm_lang$core$Native_Utils.eq(inMinutes, 0) ? 'now' : (_elm_lang$core$Native_Utils.eq(inMinutes, 1) ? '1 min' : A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(inMinutes),
+		' mins'));
+};
+var _user$project$TrainStop_View$viewArrivingLabel = function (inMinutes) {
+	return _elm_lang$core$Native_Utils.eq(inMinutes, 0) ? 'Arrives' : 'Arrives in';
+};
+var _user$project$TrainStop_View$predictionInMinutes = function (prediction) {
+	var predictedTime = _elm_lang$core$Date$toTime(prediction.predictedTime);
+	var timestamp = _elm_lang$core$Date$toTime(prediction.timestamp);
+	return _elm_lang$core$Basics$round((predictedTime - timestamp) / 60000);
+};
+var _user$project$TrainStop_View$viewPrediction = F3(
+	function (routeId, stopName, prediction) {
+		var inMinutes = _user$project$TrainStop_View$predictionInMinutes(prediction);
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$TrainStop_View$class(
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$TrainStop_Classes$PredictionItem]))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainStop_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainStop_Classes$ItemIcon]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[_user$project$Icons$train])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainStop_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainStop_Classes$PredictionDetails]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$div,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_user$project$TrainStop_View$class(
+									_elm_lang$core$Native_List.fromArray(
+										[_user$project$TrainStop_Classes$RouteName]))
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(
+									A2(_elm_lang$core$Basics_ops['++'], 'Route ', routeId))
+								])),
+							A2(
+							_elm_lang$html$Html$div,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_user$project$TrainStop_View$class(
+									_elm_lang$core$Native_List.fromArray(
+										[_user$project$TrainStop_Classes$StopName]))
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(stopName)
+								]))
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainStop_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainStop_Classes$PredictionValue]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$div,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_user$project$TrainStop_View$class(
+									_elm_lang$core$Native_List.fromArray(
+										[_user$project$TrainStop_Classes$PredictionLabel]))
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(
+									_user$project$TrainStop_View$viewArrivingLabel(inMinutes))
+								])),
+							A2(
+							_elm_lang$html$Html$div,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_user$project$TrainStop_View$arrivingClass(inMinutes)
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(
+									_user$project$TrainStop_View$viewArrivingMinutes(inMinutes))
+								]))
+						]))
+				]));
+	});
+var _user$project$TrainStop_View$viewPredictionGroup = F3(
+	function (routeId, stopName, _p2) {
+		var _p3 = _p2;
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$TrainStop_View$class(
+							_elm_lang$core$Native_List.fromArray(
+								[_user$project$TrainStop_Classes$DirectionLabel]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(_p3._0)
+						])),
+					A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					A2(
+						_elm_lang$core$List$map,
+						A2(_user$project$TrainStop_View$viewPrediction, routeId, stopName),
+						A2(_elm_lang$core$List$sortBy, _user$project$TrainStop_View$predictionInMinutes, _p3._1)))
+				]));
+	});
+var _user$project$TrainStop_View$view = function (model) {
+	var items = A2(
+		_elm_lang$core$List$map,
+		A2(_user$project$TrainStop_View$viewPredictionGroup, model.routeId, model.stop.name),
+		_elm_lang$core$Dict$toList(
+			A2(
+				_elm_community$dict_extra$Dict_Extra$groupBy,
+				function (_) {
+					return _.destination;
+				},
+				model.predictions)));
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$TrainStop_View$viewFavoriteControl(model.isFavorited),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				items)
+			]));
+};
+
+var _user$project$TrainStop_Subscriptions$subscriptions = function (model) {
+	return A2(
+		_elm_lang$core$Time$every,
+		60 * _elm_lang$core$Time$second,
+		_elm_lang$core$Basics$always(_user$project$TrainStop_Update$ReloadPredictionsStart));
+};
+
 var _user$project$Routing$title = function (model) {
 	var _p0 = model;
 	switch (_p0.ctor) {
@@ -12452,6 +12894,8 @@ var _user$project$Routing$title = function (model) {
 			return 'Train Routes';
 		case 'TrainRouteModel':
 			return _p0._0.route.name;
+		case 'TrainStopModel':
+			return _p0._0.stop.name;
 		case 'FavoritesModel':
 			return 'Favorites';
 		default:
@@ -12471,6 +12915,8 @@ var _user$project$Routing$isCacheable = function (page) {
 			return true;
 		case 'TrainRoutePage':
 			return true;
+		case 'TrainStopPage':
+			return false;
 		case 'FavoritesPage':
 			return false;
 		default:
@@ -12480,6 +12926,9 @@ var _user$project$Routing$isCacheable = function (page) {
 var _user$project$Routing$NoneModel = {ctor: 'NoneModel'};
 var _user$project$Routing$FavoritesModel = function (a) {
 	return {ctor: 'FavoritesModel', _0: a};
+};
+var _user$project$Routing$TrainStopModel = function (a) {
+	return {ctor: 'TrainStopModel', _0: a};
 };
 var _user$project$Routing$TrainRouteModel = function (a) {
 	return {ctor: 'TrainRouteModel', _0: a};
@@ -12518,6 +12967,11 @@ var _user$project$Routing$load = function (page) {
 				_elm_lang$core$Task$map,
 				_user$project$Routing$TrainRouteModel,
 				_user$project$TrainRoute_Update$load(_p3._0));
+		case 'TrainStopPage':
+			return A2(
+				_elm_lang$core$Task$map,
+				_user$project$Routing$TrainStopModel,
+				A2(_user$project$TrainStop_Update$load, _p3._0, _p3._1));
 		case 'FavoritesPage':
 			return A2(_elm_lang$core$Task$map, _user$project$Routing$FavoritesModel, _user$project$Favorites_Load$load);
 		default:
@@ -12525,6 +12979,9 @@ var _user$project$Routing$load = function (page) {
 	}
 };
 var _user$project$Routing$NoneMsg = {ctor: 'NoneMsg'};
+var _user$project$Routing$TrainStopMsg = function (a) {
+	return {ctor: 'TrainStopMsg', _0: a};
+};
 var _user$project$Routing$TrainRouteMsg = function (a) {
 	return {ctor: 'TrainRouteMsg', _0: a};
 };
@@ -12536,13 +12993,19 @@ var _user$project$Routing$BusStopMsg = function (a) {
 };
 var _user$project$Routing$subscriptions = function (pageModel) {
 	var _p4 = pageModel;
-	if (_p4.ctor === 'BusStopModel') {
-		return A2(
-			_elm_lang$core$Platform_Sub$map,
-			_user$project$Routing$BusStopMsg,
-			_user$project$BusStop_Subscriptions$subscriptions(_p4._0));
-	} else {
-		return _elm_lang$core$Platform_Sub$none;
+	switch (_p4.ctor) {
+		case 'BusStopModel':
+			return A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Routing$BusStopMsg,
+				_user$project$BusStop_Subscriptions$subscriptions(_p4._0));
+		case 'TrainStopModel':
+			return A2(
+				_elm_lang$core$Platform_Sub$map,
+				_user$project$Routing$TrainStopMsg,
+				_user$project$TrainStop_Subscriptions$subscriptions(_p4._0));
+		default:
+			return _elm_lang$core$Platform_Sub$none;
 	}
 };
 var _user$project$Routing$BusRoutesMsg = function (a) {
@@ -12554,7 +13017,7 @@ var _user$project$Routing$BusRouteMsg = function (a) {
 var _user$project$Routing$update = F2(
 	function (msg, model) {
 		var _p5 = {ctor: '_Tuple2', _0: msg, _1: model};
-		_v4_5:
+		_v4_6:
 		do {
 			if (_p5.ctor === '_Tuple2') {
 				switch (_p5._0.ctor) {
@@ -12569,7 +13032,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_5;
+							break _v4_6;
 						}
 					case 'BusRoutesMsg':
 						if (_p5._1.ctor === 'BusRoutesModel') {
@@ -12582,7 +13045,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_5;
+							break _v4_6;
 						}
 					case 'BusStopMsg':
 						if (_p5._1.ctor === 'BusStopModel') {
@@ -12595,7 +13058,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$BusStopMsg, subCmd)
 							};
 						} else {
-							break _v4_5;
+							break _v4_6;
 						}
 					case 'TrainRoutesMsg':
 						if (_p5._1.ctor === 'TrainRoutesModel') {
@@ -12608,7 +13071,7 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainRoutesMsg, subCmd)
 							};
 						} else {
-							break _v4_5;
+							break _v4_6;
 						}
 					case 'TrainRouteMsg':
 						if (_p5._1.ctor === 'TrainRouteModel') {
@@ -12621,47 +13084,65 @@ var _user$project$Routing$update = F2(
 								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainRouteMsg, subCmd)
 							};
 						} else {
-							break _v4_5;
+							break _v4_6;
+						}
+					case 'TrainStopMsg':
+						if (_p5._1.ctor === 'TrainStopModel') {
+							var _p11 = A2(_user$project$TrainStop_Update$update, _p5._0._0, _p5._1._0);
+							var newModel = _p11._0;
+							var subCmd = _p11._1;
+							return {
+								ctor: '_Tuple2',
+								_0: _user$project$Routing$TrainStopModel(newModel),
+								_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Routing$TrainStopMsg, subCmd)
+							};
+						} else {
+							break _v4_6;
 						}
 					default:
-						break _v4_5;
+						break _v4_6;
 				}
 			} else {
-				break _v4_5;
+				break _v4_6;
 			}
 		} while(false);
 		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Routing$view = function (pageModel) {
-	var _p11 = pageModel;
-	switch (_p11.ctor) {
+	var _p12 = pageModel;
+	switch (_p12.ctor) {
 		case 'BusRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRouteMsg,
-				_user$project$BusRoute_View$view(_p11._0));
+				_user$project$BusRoute_View$view(_p12._0));
 		case 'BusRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusRoutesMsg,
-				_user$project$BusRoutes_View$view(_p11._0));
+				_user$project$BusRoutes_View$view(_p12._0));
 		case 'BusStopModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$BusStopMsg,
-				_user$project$BusStop_View$view(_p11._0));
+				_user$project$BusStop_View$view(_p12._0));
 		case 'TrainRoutesModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$TrainRoutesMsg,
-				_user$project$TrainRoutes_View$view(_p11._0));
+				_user$project$TrainRoutes_View$view(_p12._0));
 		case 'TrainRouteModel':
 			return A2(
 				_elm_lang$html$Html_App$map,
 				_user$project$Routing$TrainRouteMsg,
-				_user$project$TrainRoute_View$view(_p11._0));
+				_user$project$TrainRoute_View$view(_p12._0));
+		case 'TrainStopModel':
+			return A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Routing$TrainStopMsg,
+				_user$project$TrainStop_View$view(_p12._0));
 		case 'FavoritesModel':
-			return _user$project$Favorites_View$view(_p11._0);
+			return _user$project$Favorites_View$view(_p12._0);
 		default:
 			return _elm_lang$html$Html$text('');
 	}
