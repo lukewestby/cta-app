@@ -2,7 +2,9 @@ module TrainRoute.View exposing (view)
 
 import String
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.CssHelpers
+import Pages
 import Api.Train exposing (TrainStop)
 import TrainRoute.Model as Model exposing (Model)
 import TrainRoute.Update as Update exposing (Msg(..))
@@ -23,7 +25,10 @@ filterStops searchText stops =
 
 viewStop : String -> TrainStop -> Html Msg
 viewStop routeId stop =
-    a [ class [ StopItem ] ]
+    a
+        [ class [ StopItem ]
+        , href <| Pages.url <| Pages.TrainStopPage routeId stop.id
+        ]
         [ div [ class [ StopName ] ] [ text stop.name ]
         , div [ class [ Chevron ] ] [ Icons.chevronRight ]
         ]

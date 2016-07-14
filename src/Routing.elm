@@ -30,6 +30,10 @@ import TrainRoutes.View as TrainRoutes
 import TrainRoute.Model as TrainRoute
 import TrainRoute.Update as TrainRoute
 import TrainRoute.View as TrainRoute
+import TrainStop.Model as TrainStop
+import TrainStop.Update as TrainStop
+import TrainStop.View as TrainStop
+import TrainStop.Subscriptions as TrainStop
 import Favorites.Model as Favorites
 import Favorites.Load as Favorites
 import Favorites.View as Favorites
@@ -41,6 +45,7 @@ type PageModel
     | BusStopModel BusStop.Model
     | TrainRoutesModel TrainRoutes.Model
     | TrainRouteModel TrainRoute.Model
+    | TrainStopModel TrainStop.Model
     | FavoritesModel Favorites.Model
     | NoneModel
 
@@ -51,6 +56,7 @@ type PageMsg
     | BusStopMsg BusStop.Msg
     | TrainRoutesMsg TrainRoutes.Msg
     | TrainRouteMsg TrainRoute.Msg
+    | TrainStopMsg TrainStop.Msg
     | NoneMsg
 
 
@@ -102,6 +108,15 @@ update msg model =
                 , Cmd.map TrainRouteMsg subCmd
                 )
 
+        ( TrainStopMsg subMsg, TrainStopModel subModel ) ->
+            let
+                ( newModel, subCmd ) =
+                    TrainStop.update subMsg subModel
+            in
+                ( TrainStopModel newModel
+                , Cmd.map TrainStopMsg subCmd
+                )
+
         _ ->
             ( model, Cmd.none )
 
@@ -123,6 +138,9 @@ load page =
 
         TrainRoutePage routeId ->
             TrainRoute.load routeId |> Task.map TrainRouteModel
+
+        TrainStopPage routeId stopId ->
+            TrainStop.load routeId stopId |> Task.map TrainStopModel
 
         FavoritesPage ->
             Favorites.load |> Task.map FavoritesModel
@@ -149,6 +167,9 @@ view pageModel =
         TrainRouteModel model ->
             HtmlApp.map TrainRouteMsg <| TrainRoute.view model
 
+        TrainStopModel model ->
+            HtmlApp.map TrainStopMsg <| TrainStop.view model
+
         FavoritesModel model ->
             Favorites.view model
 
@@ -173,6 +194,9 @@ isCacheable page =
 
         TrainRoutePage _ ->
             True
+
+        TrainStopPage _ _ ->
+            False
 
         FavoritesPage ->
             False
@@ -201,6 +225,9 @@ title model =
         TrainRouteModel model ->
             model.route.name
 
+        TrainStopModel model ->
+            model.stop.name
+
         FavoritesModel _ ->
             "Favorites"
 
@@ -213,6 +240,9 @@ subscriptions pageModel =
     case pageModel of
         BusStopModel model ->
             Sub.map BusStopMsg <| BusStop.subscriptions model
+
+        TrainStopModel model ->
+            Sub.map TrainStopMsg <| TrainStop.subscriptions model
 
         _ ->
             Sub.none
