@@ -12898,7 +12898,7 @@ var _user$project$Screens_Favorites_View$viewEmpty = A2(
 					_elm_lang$core$Native_List.fromArray(
 						[_user$project$Screens_Favorites_Classes$EmptyMessageLink])),
 					_elm_lang$html$Html_Attributes$href(
-					_user$project$Pages$url(_user$project$Pages$NotFound))
+					_user$project$Pages$url(_user$project$Pages$TrainRoutesPage))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
