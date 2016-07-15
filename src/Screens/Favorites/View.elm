@@ -86,7 +86,7 @@ viewEmpty =
             [ text " or " ]
         , a
             [ class [ EmptyMessageLink ]
-            , href <| Pages.url Pages.NotFound
+            , href <| Pages.url Pages.TrainRoutesPage
             ]
             [ text "train station" ]
         , span []
