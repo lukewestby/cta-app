@@ -8,13 +8,6 @@ appNamespace =
 
 type Classes
     = AppContainer
-    | HeaderNav
-    | HeaderNavIcon
-    | HeaderNavIconActive
     | PageTitle
     | PageContainer
-    | ReloadButtonContainer
-    | ReloadButton
-    | ErrorMessage
-    | FailureView
     | PageTitleInner
