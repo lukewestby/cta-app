@@ -13122,7 +13122,7 @@ var _user$project$Screens_Favorites_View$view = function (model) {
 		var _p1 = {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$List$isEmpty(model.busFavorites),
-			_1: _elm_lang$core$List$isEmpty(model.busFavorites)
+			_1: _elm_lang$core$List$isEmpty(model.trainFavorites)
 		};
 		_v0_3:
 		do {
