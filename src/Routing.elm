@@ -14,29 +14,35 @@ import Task exposing (Task)
 import Html exposing (Html)
 import Html.App as HtmlApp
 import Pages exposing (Page(..))
-import BusRoute.Model as BusRoute
-import BusRoute.Update as BusRoute
-import BusRoute.View as BusRoute
-import BusRoutes.Model as BusRoutes
-import BusRoutes.Update as BusRoutes
-import BusRoutes.View as BusRoutes
-import BusStop.Model as BusStop
-import BusStop.Update as BusStop
-import BusStop.View as BusStop
-import BusStop.Subscriptions as BusStop
-import TrainRoutes.Model as TrainRoutes
-import TrainRoutes.Update as TrainRoutes
-import TrainRoutes.View as TrainRoutes
-import TrainRoute.Model as TrainRoute
-import TrainRoute.Update as TrainRoute
-import TrainRoute.View as TrainRoute
-import TrainStop.Model as TrainStop
-import TrainStop.Update as TrainStop
-import TrainStop.View as TrainStop
-import TrainStop.Subscriptions as TrainStop
-import Favorites.Model as Favorites
-import Favorites.Load as Favorites
-import Favorites.View as Favorites
+import Screens.BusRoute.Model as BusRoute
+import Screens.BusRoute.Update as BusRoute
+import Screens.BusRoute.View as BusRoute
+import Screens.BusRoute.Load as BusRoute
+import Screens.BusRoutes.Model as BusRoutes
+import Screens.BusRoutes.Update as BusRoutes
+import Screens.BusRoutes.View as BusRoutes
+import Screens.BusRoutes.Load as BusRoutes
+import Screens.BusStop.Model as BusStop
+import Screens.BusStop.Update as BusStop
+import Screens.BusStop.View as BusStop
+import Screens.BusStop.Subscriptions as BusStop
+import Screens.BusStop.Load as BusStop
+import Screens.TrainRoutes.Model as TrainRoutes
+import Screens.TrainRoutes.View as TrainRoutes
+import Screens.TrainRoutes.Load as TrainRoutes
+import Screens.TrainRoute.Model as TrainRoute
+import Screens.TrainRoute.Update as TrainRoute
+import Screens.TrainRoute.View as TrainRoute
+import Screens.TrainRoute.Load as TrainRoute
+import Screens.TrainStop.Model as TrainStop
+import Screens.TrainStop.Update as TrainStop
+import Screens.TrainStop.View as TrainStop
+import Screens.TrainStop.Subscriptions as TrainStop
+import Screens.TrainStop.Load as TrainStop
+import Screens.Favorites.Model as Favorites
+import Screens.Favorites.Load as Favorites
+import Screens.Favorites.View as Favorites
+import Screens.Favorites.Load as Favorites
 
 
 type PageModel
@@ -54,7 +60,6 @@ type PageMsg
     = BusRouteMsg BusRoute.Msg
     | BusRoutesMsg BusRoutes.Msg
     | BusStopMsg BusStop.Msg
-    | TrainRoutesMsg TrainRoutes.Msg
     | TrainRouteMsg TrainRoute.Msg
     | TrainStopMsg TrainStop.Msg
     | NoneMsg
@@ -88,15 +93,6 @@ update msg model =
             in
                 ( BusStopModel newModel
                 , Cmd.map BusStopMsg subCmd
-                )
-
-        ( TrainRoutesMsg subMsg, TrainRoutesModel subModel ) ->
-            let
-                ( newModel, subCmd ) =
-                    TrainRoutes.update subMsg subModel
-            in
-                ( TrainRoutesModel newModel
-                , Cmd.map TrainRoutesMsg subCmd
                 )
 
         ( TrainRouteMsg subMsg, TrainRouteModel subModel ) ->
@@ -162,7 +158,7 @@ view pageModel =
             HtmlApp.map BusStopMsg <| BusStop.view model
 
         TrainRoutesModel model ->
-            HtmlApp.map TrainRoutesMsg <| TrainRoutes.view model
+            TrainRoutes.view model
 
         TrainRouteModel model ->
             HtmlApp.map TrainRouteMsg <| TrainRoute.view model
@@ -226,7 +222,7 @@ title model =
             model.route.name
 
         TrainStopModel model ->
-            model.stop.name
+            model.stop.name ++ " – " ++ model.stop.routeName
 
         FavoritesModel _ ->
             "Favorites"

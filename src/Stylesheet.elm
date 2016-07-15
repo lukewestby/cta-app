@@ -7,14 +7,14 @@ import Css.File exposing (..)
 import Html.App as Html
 import Html exposing (text)
 import Classes exposing (Classes(..), appNamespace)
-import BusRoutes.Stylesheet as BusRoutes
-import BusRoute.Stylesheet as BusRoute
-import BusStop.Stylesheet as BusStop
-import TrainRoutes.Stylesheet as TrainRoutes
-import TrainRoute.Stylesheet as TrainRoute
-import TrainStop.Stylesheet as TrainStop
-import Favorites.Styles as Favorites
-import Components.Stylesheet as Components
+import Screens.BusRoutes.Styles as BusRoutes
+import Screens.BusRoute.Styles as BusRoute
+import Screens.BusStop.Styles as BusStop
+import Screens.TrainRoutes.Styles as TrainRoutes
+import Screens.TrainRoute.Styles as TrainRoute
+import Screens.TrainStop.Styles as TrainStop
+import Screens.Favorites.Styles as Favorites
+import Components.Styles as Components
 import Colors exposing (..)
 
 

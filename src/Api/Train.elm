@@ -75,6 +75,7 @@ type alias TrainStop =
     , latitude : Float
     , longitude : Float
     , isAccessible : Bool
+    , routeName : String
     }
 
 
@@ -86,6 +87,7 @@ trainStopDecoder =
         |> required "latitude" float
         |> required "longitude" float
         |> required "isAccessible" bool
+        |> required "routeName" string
 
 
 trainStopsReader : BodyReader (List TrainStop)
