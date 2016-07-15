@@ -98,7 +98,7 @@ view : Model -> Html msg
 view model =
     let
         children =
-            case ( List.isEmpty model.busFavorites, List.isEmpty model.busFavorites ) of
+            case ( List.isEmpty model.busFavorites, List.isEmpty model.trainFavorites ) of
                 ( False, True ) ->
                     [ viewBusFavorites model.busFavorites ]
 
