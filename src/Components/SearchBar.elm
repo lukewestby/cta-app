@@ -10,17 +10,23 @@ import Components.Classes exposing (..)
 
 
 type alias Model =
-    { searchValue : String }
+    { searchValue : String
+    , isFocused : Bool
+    }
 
 
 model : Model
 model =
-    { searchValue = "" }
+    { searchValue = ""
+    , isFocused = False
+    }
 
 
 type Msg
     = UpdateSearchValue String
     | ClearSearchValue
+    | FocusInput
+    | UnfocusInput
 
 
 getSearchValue : Model -> String
@@ -41,26 +47,52 @@ update msg model =
             , Cmd.none
             )
 
+        FocusInput ->
+            ( { model | isFocused = True }
+            , Cmd.none
+            )
+
+        UnfocusInput ->
+            ( { model | isFocused = False }
+            , Cmd.none
+            )
+
 
 view : Model -> (Msg -> msg) -> Html msg
 view model upgrade =
     HtmlApp.map upgrade
-        <| div [ class [ SearchBarContainer ] ]
-            [ span [ class [ SearchIcon ] ] [ Icons.search ]
+        <| div
+            [ classList
+                [ ( SearchBarContainer, True )
+                , ( SearchBarContainerFocused, model.isFocused )
+                ]
+            ]
+            [ span
+                [ classList
+                    [ ( SearchIcon, True )
+                    , ( SearchIconFocused, model.isFocused )
+                    ]
+                ]
+                [ Icons.search ]
             , input
                 [ type' "text"
                 , onInput UpdateSearchValue
+                , onFocus FocusInput
+                , onBlur UnfocusInput
                 , class [ SearchInput ]
                 , value model.searchValue
                 ]
                 []
             , span
-                [ class [ SearchIcon ]
+                [ classList
+                    [ ( SearchIcon, True )
+                    , ( SearchIconFocused, model.isFocused )
+                    ]
                 , onClick ClearSearchValue
                 ]
                 [ Icons.close ]
             ]
 
 
-{ class } =
+{ class, classList } =
     Html.CssHelpers.withNamespace cssNamespace

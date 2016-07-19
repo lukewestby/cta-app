@@ -24,8 +24,10 @@ styles =
             , display block
             , property "fill" midGray
             ]
+        , (.) SearchIconFocused
+            [ property "fill" primaryColor ]
         , (.) SearchInput
-            [ property "flex-grow" "1"
+            [ property "width" "calc(100% - 40px)"
             , margin zero
             , border zero
             , padding2 (px 4) (px 8)
@@ -38,6 +40,9 @@ styles =
             [ displayFlex
             , borderBottom3 (px 1) solid (hex lightGray)
             , property "align-items" "center"
+            ]
+        , (.) SearchBarContainerFocused
+            [ borderBottomColor (hex primaryColor)
             ]
         , (.) HeaderNav
             [ height (px 52)
