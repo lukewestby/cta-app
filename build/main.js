@@ -13072,7 +13072,7 @@ var _user$project$Screens_Favorites_View$viewEmpty = A2(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('train station')
+					_elm_lang$html$Html$text('train stations')
 				])),
 			A2(
 			_elm_lang$html$Html$span,
