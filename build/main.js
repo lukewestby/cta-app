@@ -11094,23 +11094,77 @@ var _user$project$Api_Train$getTrainPredictions = F2(
 
 var _user$project$Classes$appNamespace = 'elm-cta-app';
 var _user$project$Classes$PageTitleInner = {ctor: 'PageTitleInner'};
-var _user$project$Classes$FailureView = {ctor: 'FailureView'};
-var _user$project$Classes$ErrorMessage = {ctor: 'ErrorMessage'};
-var _user$project$Classes$ReloadButton = {ctor: 'ReloadButton'};
-var _user$project$Classes$ReloadButtonContainer = {ctor: 'ReloadButtonContainer'};
 var _user$project$Classes$PageContainer = {ctor: 'PageContainer'};
 var _user$project$Classes$PageTitle = {ctor: 'PageTitle'};
-var _user$project$Classes$HeaderNavIconActive = {ctor: 'HeaderNavIconActive'};
-var _user$project$Classes$HeaderNavIcon = {ctor: 'HeaderNavIcon'};
-var _user$project$Classes$HeaderNav = {ctor: 'HeaderNav'};
 var _user$project$Classes$AppContainer = {ctor: 'AppContainer'};
 
 var _user$project$Components_Classes$cssNamespace = 'Components';
+var _user$project$Components_Classes$ReloadButton = {ctor: 'ReloadButton'};
+var _user$project$Components_Classes$ReloadButtonContainer = {ctor: 'ReloadButtonContainer'};
+var _user$project$Components_Classes$ErrorMessage = {ctor: 'ErrorMessage'};
+var _user$project$Components_Classes$FailureView = {ctor: 'FailureView'};
+var _user$project$Components_Classes$HeaderNavIconActive = {ctor: 'HeaderNavIconActive'};
+var _user$project$Components_Classes$HeaderNavIcon = {ctor: 'HeaderNavIcon'};
+var _user$project$Components_Classes$HeaderNav = {ctor: 'HeaderNav'};
+var _user$project$Components_Classes$SearchBarContainerFocused = {ctor: 'SearchBarContainerFocused'};
+var _user$project$Components_Classes$SearchIconFocused = {ctor: 'SearchIconFocused'};
 var _user$project$Components_Classes$SearchBarContainer = {ctor: 'SearchBarContainer'};
 var _user$project$Components_Classes$SearchInput = {ctor: 'SearchInput'};
 var _user$project$Components_Classes$SearchIcon = {ctor: 'SearchIcon'};
 var _user$project$Components_Classes$LoadingContainer = {ctor: 'LoadingContainer'};
 var _user$project$Components_Classes$LoadingIcon = {ctor: 'LoadingIcon'};
+
+var _user$project$Components_ErrorMessage$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Components_Classes$cssNamespace);
+var _user$project$Components_ErrorMessage$class = _user$project$Components_ErrorMessage$_p0.$class;
+var _user$project$Components_ErrorMessage$view = function (reloadClickedMsg) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Components_ErrorMessage$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Components_Classes$FailureView]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Components_ErrorMessage$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Components_Classes$ErrorMessage]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Something went wrong!')
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Components_ErrorMessage$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Components_Classes$ReloadButtonContainer]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Components_ErrorMessage$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$Components_Classes$ReloadButton])),
+								_elm_lang$html$Html_Events$onClick(reloadClickedMsg)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Retry')
+							]))
+					]))
+			]));
+};
 
 var _user$project$Icons$fromSvgString = function (svgCode) {
 	return A2(
@@ -11125,14 +11179,14 @@ var _user$project$Icons$fromSvgString = function (svgCode) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
-var _user$project$Icons$star = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 32 32\">\n    <polygon stroke=\"none\" fill-rule=\"evenodd\" points=\"32 12 19.7513571 12 16.0020714 0 12.2513571 12 0 12 9.92471429 19.4435 6 32 16 24 26 32 22.0766429 19.4425\"></polygon>\n</svg>');
-var _user$project$Icons$starOutline = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"-2 -2 28 28\">\n    <polygon stroke-width=\"1\" fill=\"none\" points=\"24 9 14.8135179 9 12.0015536 0 9.18851786 9 0 9 7.44353571 14.582625 4.5 24 12 18 19.5 24 16.5574821 14.581875\"></polygon>\n</svg>');
-var _user$project$Icons$bus = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 -1 32 33\">\n    <path d=\"M0,23.9376623 C0,25.5333403 1.26036364,25.9766026 2.42427273,26.9523948 L2.42427273,30.1437506 C2.42427273,31.1186286 3.29690909,31.9169662 4.36363636,31.9169662 L6.303,31.9169662 C7.36972727,31.9169662 8.24245455,31.1187117 8.24245455,30.1437506 L8.24245455,28.3706182 L23.7575455,28.3706182 L23.7575455,30.1437506 C23.7575455,31.1186286 24.6306364,31.9169662 25.697,31.9169662 L27.6363636,31.9169662 C28.7026364,31.9169662 29.5757273,31.1187117 29.5757273,30.1437506 L29.5757273,26.9523948 C30.7396364,25.9766026 32,25.4450701 32,23.9376623 L32,7.00957922 C32,0.803490909 24.5330909,-1.77635684e-15 16,-1.77635684e-15 C7.46690909,-1.77635684e-15 0,0.803490909 0,7.00957922 L0,23.9376623 L0,23.9376623 Z M7.27272727,25.2666182 C5.624,25.2666182 4.36363636,24.1142857 4.36363636,22.6068779 C4.36363636,21.0995532 5.624,19.9471377 7.27272727,19.9471377 C8.92145455,19.9471377 10.1818182,21.0995532 10.1818182,22.6068779 C10.1818182,24.1142857 8.92145455,25.2666182 7.27272727,25.2666182 L7.27272727,25.2666182 Z M24.7272727,25.2666182 C23.0785455,25.2666182 21.8181818,24.1142857 21.8181818,22.6068779 C21.8181818,21.0995532 23.0785455,19.9471377 24.7272727,19.9471377 C26.376,19.9471377 27.6363636,21.0995532 27.6363636,22.6068779 C27.6363636,24.1142857 26.376,25.2666182 24.7272727,25.2666182 L24.7272727,25.2666182 Z M27.6363636,15.0718338 L4.36363636,15.0718338 L4.36363636,6.20608831 L27.6363636,6.20608831 L27.6363636,15.0718338 L27.6363636,15.0718338 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
-var _user$project$Icons$train = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 33 32\">\n    <path d=\"M0,22.9743077 C0,26.1746154 3.00563636,28.7178462 6.78790909,28.7178462 L4.36363636,30.7692308 L4.36363636,32 L27.6363636,32 L27.6363636,30.7692308 L25.2120909,28.7178462 C28.9942727,28.7178462 32,26.1746154 32,22.9743077 L32,6.56415385 C32,0.820615385 24.5330909,0 16,0 C7.46690909,0 0,0.820615385 0,6.56415385 L0,22.9743077 L0,22.9743077 Z M16,25.2307692 C13.9998182,25.2307692 12.3636364,23.8463846 12.3636364,22.1539231 C12.3636364,20.4614615 13.9998182,19.0769231 16,19.0769231 C18.0001818,19.0769231 19.6363636,20.4614615 19.6363636,22.1539231 C19.6363636,23.8463846 18.0001818,25.2307692 16,25.2307692 L16,25.2307692 Z M27.6363636,13.5384615 L4.36363636,13.5384615 L4.36363636,6.15384615 L27.6363636,6.15384615 L27.6363636,13.5384615 L27.6363636,13.5384615 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
-var _user$project$Icons$search = _user$project$Icons$fromSvgString('\n<svg viewBox=\"0 0 32 32\">\n    <path d=\"M31.75,26.8352332 L24.6833333,19.7139896 C25.8333333,17.7160622 26.4333333,15.4943005 26.4333333,13.2559585 C26.4333333,5.99378238 20.5,0.0829015544 13.2166667,0.0829015544 C5.93333333,0.0829015544 0,5.99378238 0,13.2559585 C0,20.5181347 5.93333333,26.4290155 13.2166667,26.4290155 C15.5416667,26.4290155 17.8416667,25.7906736 19.8916667,24.5720207 L26.925,31.6683938 C27.0833333,31.8259067 27.3083333,31.9253886 27.5333333,31.9253886 C27.7583333,31.9253886 27.9833333,31.8341969 28.1416667,31.6683938 L31.75,28.0373057 C32.0833333,27.6974093 32.0833333,27.1668394 31.75,26.8352332 L31.75,26.8352332 Z M13.2166667,5.21450777 C17.6666667,5.21450777 21.2833333,8.82072539 21.2833333,13.2559585 C21.2833333,17.6911917 17.6666667,21.2974093 13.2166667,21.2974093 C8.76666667,21.2974093 5.15,17.6911917 5.15,13.2559585 C5.15,8.82072539 8.76666667,5.21450777 13.2166667,5.21450777 L13.2166667,5.21450777 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
-var _user$project$Icons$chevronRight = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 12 20\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n    <polygon stroke=\"none\" fill-rule=\"evenodd\" points=\"0 1.2125 1.29375 0 12 10 1.29375 20 0 18.79375 9.40625 10\"></polygon>\n</svg>');
-var _user$project$Icons$close = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 -1 20 21\">\n    <path d=\"M17.0382775,2.90174279 C13.15311,-0.967247596 6.85167464,-0.967247596 2.96172249,2.90174279 C-0.928229665,6.77073317 -0.923444976,13.0459306 2.96172249,16.9196858 C6.84688995,20.7886762 13.1483254,20.7886762 17.0382775,16.9196858 C20.9282297,13.0506954 20.923445,6.77073317 17.0382775,2.90174279 L17.0382775,2.90174279 Z M14.5933014,13.9226477 L14.0287081,14.4848901 L9.99043062,10.4729567 L5.97129187,14.465831 L5.40669856,13.9035886 L9.42583732,9.91071429 L5.40669856,5.91783997 L5.97129187,5.35559753 L9.99043062,9.34847184 L14.0287081,5.33653846 L14.5933014,5.89878091 L10.5550239,9.91071429 L14.5933014,13.9226477 L14.5933014,13.9226477 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
-var _user$project$Icons$loading = _user$project$Icons$fromSvgString('\n<svg width=\"100%\" height=\"100%\" viewBox=\"0 0 44 44\">\n    <g fill=\"none\" fill-rule=\"evenodd\" stroke-width=\"2\">\n        <circle cx=\"22\" cy=\"22\" r=\"14.6417\">\n            <animate attributeName=\"r\" begin=\"0s\" dur=\"1.8s\" values=\"1; 20\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.165, 0.84, 0.44, 1\" repeatCount=\"indefinite\"/>\n            <animate attributeName=\"stroke-opacity\" begin=\"0s\" dur=\"1.8s\" values=\"1; 0\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.3, 0.61, 0.355, 1\" repeatCount=\"indefinite\"/>\n        </circle>\n        <circle cx=\"22\" cy=\"22\" r=\"19.7557\">\n            <animate attributeName=\"r\" begin=\"-0.9s\" dur=\"1.8s\" values=\"1; 20\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.165, 0.84, 0.44, 1\" repeatCount=\"indefinite\"/>\n            <animate attributeName=\"stroke-opacity\" begin=\"-0.9s\" dur=\"1.8s\" values=\"1; 0\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.3, 0.61, 0.355, 1\" repeatCount=\"indefinite\"/>\n        </circle>\n    </g>\n</svg>');
+var _user$project$Icons$star = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height100%;\" viewBox=\"0 0 32 32\">\n    <polygon stroke=\"none\" fill-rule=\"evenodd\" points=\"32 12 19.7513571 12 16.0020714 0 12.2513571 12 0 12 9.92471429 19.4435 6 32 16 24 26 32 22.0766429 19.4425\"></polygon>\n</svg>');
+var _user$project$Icons$starOutline = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"-2 -2 28 28\">\n    <polygon stroke-width=\"1\" fill=\"none\" points=\"24 9 14.8135179 9 12.0015536 0 9.18851786 9 0 9 7.44353571 14.582625 4.5 24 12 18 19.5 24 16.5574821 14.581875\"></polygon>\n</svg>');
+var _user$project$Icons$bus = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 -1 32 33\">\n    <path d=\"M0,23.9376623 C0,25.5333403 1.26036364,25.9766026 2.42427273,26.9523948 L2.42427273,30.1437506 C2.42427273,31.1186286 3.29690909,31.9169662 4.36363636,31.9169662 L6.303,31.9169662 C7.36972727,31.9169662 8.24245455,31.1187117 8.24245455,30.1437506 L8.24245455,28.3706182 L23.7575455,28.3706182 L23.7575455,30.1437506 C23.7575455,31.1186286 24.6306364,31.9169662 25.697,31.9169662 L27.6363636,31.9169662 C28.7026364,31.9169662 29.5757273,31.1187117 29.5757273,30.1437506 L29.5757273,26.9523948 C30.7396364,25.9766026 32,25.4450701 32,23.9376623 L32,7.00957922 C32,0.803490909 24.5330909,-1.77635684e-15 16,-1.77635684e-15 C7.46690909,-1.77635684e-15 0,0.803490909 0,7.00957922 L0,23.9376623 L0,23.9376623 Z M7.27272727,25.2666182 C5.624,25.2666182 4.36363636,24.1142857 4.36363636,22.6068779 C4.36363636,21.0995532 5.624,19.9471377 7.27272727,19.9471377 C8.92145455,19.9471377 10.1818182,21.0995532 10.1818182,22.6068779 C10.1818182,24.1142857 8.92145455,25.2666182 7.27272727,25.2666182 L7.27272727,25.2666182 Z M24.7272727,25.2666182 C23.0785455,25.2666182 21.8181818,24.1142857 21.8181818,22.6068779 C21.8181818,21.0995532 23.0785455,19.9471377 24.7272727,19.9471377 C26.376,19.9471377 27.6363636,21.0995532 27.6363636,22.6068779 C27.6363636,24.1142857 26.376,25.2666182 24.7272727,25.2666182 L24.7272727,25.2666182 Z M27.6363636,15.0718338 L4.36363636,15.0718338 L4.36363636,6.20608831 L27.6363636,6.20608831 L27.6363636,15.0718338 L27.6363636,15.0718338 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
+var _user$project$Icons$train = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 0 33 32\">\n    <path d=\"M0,22.9743077 C0,26.1746154 3.00563636,28.7178462 6.78790909,28.7178462 L4.36363636,30.7692308 L4.36363636,32 L27.6363636,32 L27.6363636,30.7692308 L25.2120909,28.7178462 C28.9942727,28.7178462 32,26.1746154 32,22.9743077 L32,6.56415385 C32,0.820615385 24.5330909,0 16,0 C7.46690909,0 0,0.820615385 0,6.56415385 L0,22.9743077 L0,22.9743077 Z M16,25.2307692 C13.9998182,25.2307692 12.3636364,23.8463846 12.3636364,22.1539231 C12.3636364,20.4614615 13.9998182,19.0769231 16,19.0769231 C18.0001818,19.0769231 19.6363636,20.4614615 19.6363636,22.1539231 C19.6363636,23.8463846 18.0001818,25.2307692 16,25.2307692 L16,25.2307692 Z M27.6363636,13.5384615 L4.36363636,13.5384615 L4.36363636,6.15384615 L27.6363636,6.15384615 L27.6363636,13.5384615 L27.6363636,13.5384615 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
+var _user$project$Icons$search = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 0 32 32\">\n    <path d=\"M31.75,26.8352332 L24.6833333,19.7139896 C25.8333333,17.7160622 26.4333333,15.4943005 26.4333333,13.2559585 C26.4333333,5.99378238 20.5,0.0829015544 13.2166667,0.0829015544 C5.93333333,0.0829015544 0,5.99378238 0,13.2559585 C0,20.5181347 5.93333333,26.4290155 13.2166667,26.4290155 C15.5416667,26.4290155 17.8416667,25.7906736 19.8916667,24.5720207 L26.925,31.6683938 C27.0833333,31.8259067 27.3083333,31.9253886 27.5333333,31.9253886 C27.7583333,31.9253886 27.9833333,31.8341969 28.1416667,31.6683938 L31.75,28.0373057 C32.0833333,27.6974093 32.0833333,27.1668394 31.75,26.8352332 L31.75,26.8352332 Z M13.2166667,5.21450777 C17.6666667,5.21450777 21.2833333,8.82072539 21.2833333,13.2559585 C21.2833333,17.6911917 17.6666667,21.2974093 13.2166667,21.2974093 C8.76666667,21.2974093 5.15,17.6911917 5.15,13.2559585 C5.15,8.82072539 8.76666667,5.21450777 13.2166667,5.21450777 L13.2166667,5.21450777 Z\" stroke=\"none\" fill-rule=\"evenodd\"></path>\n</svg>');
+var _user$project$Icons$chevronRight = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 0 12 20\">\n    <polygon stroke=\"none\" fill-rule=\"evenodd\" points=\"0 1.2125 1.29375 0 12 10 1.29375 20 0 18.79375 9.40625 10\"></polygon>\n</svg>');
+var _user$project$Icons$close = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 0 416 416\">\n    <path d=\"M354.396172,60.9 C273.584689,-20.3 142.514833,-20.3 61.6038278,60.9 C-19.307177,142.1 -19.2076555,273.8 61.6038278,355.1 C142.415311,436.3 273.485167,436.3 354.396172,355.1 C435.307177,273.9 435.207656,142.1 354.396172,60.9 L354.396172,60.9 Z M303.54067,292.2 L291.797129,304 L207.800957,219.8 L124.202871,303.6 L112.45933,291.8 L196.057416,208 L112.45933,124.2 L124.202871,112.4 L207.800957,196.2 L291.797129,112 L303.54067,123.8 L219.544498,208 L303.54067,292.2 L303.54067,292.2 Z\" fill-rule=\"evenodd\"></path>\n</svg>\n');
+var _user$project$Icons$loading = _user$project$Icons$fromSvgString('\n<svg style=\"width:100%;height:100%;\" viewBox=\"0 0 44 44\">\n    <g fill=\"none\" fill-rule=\"evenodd\" stroke-width=\"2\">\n        <circle cx=\"22\" cy=\"22\" r=\"14.6417\">\n            <animate attributeName=\"r\" begin=\"0s\" dur=\"1.8s\" values=\"1; 20\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.165, 0.84, 0.44, 1\" repeatCount=\"indefinite\"/>\n            <animate attributeName=\"stroke-opacity\" begin=\"0s\" dur=\"1.8s\" values=\"1; 0\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.3, 0.61, 0.355, 1\" repeatCount=\"indefinite\"/>\n        </circle>\n        <circle cx=\"22\" cy=\"22\" r=\"19.7557\">\n            <animate attributeName=\"r\" begin=\"-0.9s\" dur=\"1.8s\" values=\"1; 20\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.165, 0.84, 0.44, 1\" repeatCount=\"indefinite\"/>\n            <animate attributeName=\"stroke-opacity\" begin=\"-0.9s\" dur=\"1.8s\" values=\"1; 0\" calcMode=\"spline\" keyTimes=\"0; 1\" keySplines=\"0.3, 0.61, 0.355, 1\" repeatCount=\"indefinite\"/>\n        </circle>\n    </g>\n</svg>');
 
 var _user$project$Components_Loading$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Components_Classes$cssNamespace);
 var _user$project$Components_Loading$class = _user$project$Components_Loading$_p0.$class;
@@ -11157,92 +11211,6 @@ var _user$project$Components_Loading$view = A2(
 			_elm_lang$core$Native_List.fromArray(
 				[_user$project$Icons$loading]))
 		]));
-
-var _user$project$Components_SearchBar$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Components_Classes$cssNamespace);
-var _user$project$Components_SearchBar$class = _user$project$Components_SearchBar$_p0.$class;
-var _user$project$Components_SearchBar$update = F2(
-	function (msg, model) {
-		var _p1 = msg;
-		if (_p1.ctor === 'UpdateSearchValue') {
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{searchValue: _p1._0}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			};
-		} else {
-			return {
-				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_Utils.update(
-					model,
-					{searchValue: ''}),
-				_1: _elm_lang$core$Platform_Cmd$none
-			};
-		}
-	});
-var _user$project$Components_SearchBar$getSearchValue = function (_) {
-	return _.searchValue;
-};
-var _user$project$Components_SearchBar$model = {searchValue: ''};
-var _user$project$Components_SearchBar$Model = function (a) {
-	return {searchValue: a};
-};
-var _user$project$Components_SearchBar$ClearSearchValue = {ctor: 'ClearSearchValue'};
-var _user$project$Components_SearchBar$UpdateSearchValue = function (a) {
-	return {ctor: 'UpdateSearchValue', _0: a};
-};
-var _user$project$Components_SearchBar$view = F2(
-	function (model, upgrade) {
-		return A2(
-			_elm_lang$html$Html_App$map,
-			upgrade,
-			A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$Components_SearchBar$class(
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$Components_Classes$SearchBarContainer]))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_user$project$Components_SearchBar$class(
-								_elm_lang$core$Native_List.fromArray(
-									[_user$project$Components_Classes$SearchIcon]))
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$Icons$search])),
-						A2(
-						_elm_lang$html$Html$input,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('text'),
-								_elm_lang$html$Html_Events$onInput(_user$project$Components_SearchBar$UpdateSearchValue),
-								_user$project$Components_SearchBar$class(
-								_elm_lang$core$Native_List.fromArray(
-									[_user$project$Components_Classes$SearchInput])),
-								_elm_lang$html$Html_Attributes$value(model.searchValue)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_user$project$Components_SearchBar$class(
-								_elm_lang$core$Native_List.fromArray(
-									[_user$project$Components_Classes$SearchIcon])),
-								_elm_lang$html$Html_Events$onClick(_user$project$Components_SearchBar$ClearSearchValue)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$Icons$close]))
-					])));
-	});
 
 var _user$project$Pages$url = function (page) {
 	return A2(
@@ -11397,6 +11365,208 @@ var _user$project$Pages$parser = _elm_lang$navigation$Navigation$makeParser(
 					function (_) {
 						return _.hash;
 					}(_p1))));
+	});
+
+var _user$project$Components_NavBar$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Components_Classes$cssNamespace);
+var _user$project$Components_NavBar$class = _user$project$Components_NavBar$_p0.$class;
+var _user$project$Components_NavBar$classList = _user$project$Components_NavBar$_p0.classList;
+var _user$project$Components_NavBar$viewNavIcon = F3(
+	function (isActive, pageForIcon, icon) {
+		return A2(
+			_elm_lang$html$Html$a,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Components_NavBar$classList(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: _user$project$Components_Classes$HeaderNavIcon, _1: true},
+							{ctor: '_Tuple2', _0: _user$project$Components_Classes$HeaderNavIconActive, _1: isActive}
+						])),
+					_elm_lang$html$Html_Attributes$href(
+					_user$project$Pages$url(pageForIcon))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[icon]));
+	});
+var _user$project$Components_NavBar$isTrainLinkActive = function (page) {
+	var _p1 = page;
+	switch (_p1.ctor) {
+		case 'TrainRoutesPage':
+			return true;
+		case 'TrainRoutePage':
+			return true;
+		case 'TrainStopPage':
+			return true;
+		default:
+			return false;
+	}
+};
+var _user$project$Components_NavBar$isBusLinkActive = function (page) {
+	var _p2 = page;
+	switch (_p2.ctor) {
+		case 'BusRoutesPage':
+			return true;
+		case 'BusRoutePage':
+			return true;
+		case 'BusStopPage':
+			return true;
+		default:
+			return false;
+	}
+};
+var _user$project$Components_NavBar$isFavoritesLinkActive = function (page) {
+	var _p3 = page;
+	if (_p3.ctor === 'FavoritesPage') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var _user$project$Components_NavBar$view = function (currentPage) {
+	return A2(
+		_elm_lang$html$Html$header,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Components_NavBar$class(
+				_elm_lang$core$Native_List.fromArray(
+					[_user$project$Components_Classes$HeaderNav]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A3(
+				_user$project$Components_NavBar$viewNavIcon,
+				_user$project$Components_NavBar$isFavoritesLinkActive(currentPage),
+				_user$project$Pages$FavoritesPage,
+				_user$project$Icons$star),
+				A3(
+				_user$project$Components_NavBar$viewNavIcon,
+				_user$project$Components_NavBar$isBusLinkActive(currentPage),
+				_user$project$Pages$BusRoutesPage,
+				_user$project$Icons$bus),
+				A3(
+				_user$project$Components_NavBar$viewNavIcon,
+				_user$project$Components_NavBar$isTrainLinkActive(currentPage),
+				_user$project$Pages$TrainRoutesPage,
+				_user$project$Icons$train)
+			]));
+};
+
+var _user$project$Components_SearchBar$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Components_Classes$cssNamespace);
+var _user$project$Components_SearchBar$class = _user$project$Components_SearchBar$_p0.$class;
+var _user$project$Components_SearchBar$classList = _user$project$Components_SearchBar$_p0.classList;
+var _user$project$Components_SearchBar$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'UpdateSearchValue':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{searchValue: _p1._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ClearSearchValue':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{searchValue: ''}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'FocusInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isFocused: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isFocused: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Components_SearchBar$getSearchValue = function (_) {
+	return _.searchValue;
+};
+var _user$project$Components_SearchBar$model = {searchValue: '', isFocused: false};
+var _user$project$Components_SearchBar$Model = F2(
+	function (a, b) {
+		return {searchValue: a, isFocused: b};
+	});
+var _user$project$Components_SearchBar$UnfocusInput = {ctor: 'UnfocusInput'};
+var _user$project$Components_SearchBar$FocusInput = {ctor: 'FocusInput'};
+var _user$project$Components_SearchBar$ClearSearchValue = {ctor: 'ClearSearchValue'};
+var _user$project$Components_SearchBar$UpdateSearchValue = function (a) {
+	return {ctor: 'UpdateSearchValue', _0: a};
+};
+var _user$project$Components_SearchBar$view = F2(
+	function (model, upgrade) {
+		return A2(
+			_elm_lang$html$Html_App$map,
+			upgrade,
+			A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Components_SearchBar$classList(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchBarContainer, _1: true},
+								{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchBarContainerFocused, _1: model.isFocused}
+							]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Components_SearchBar$classList(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchIcon, _1: true},
+										{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchIconFocused, _1: model.isFocused}
+									]))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Icons$search])),
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$type$('text'),
+								_elm_lang$html$Html_Events$onInput(_user$project$Components_SearchBar$UpdateSearchValue),
+								_elm_lang$html$Html_Events$onFocus(_user$project$Components_SearchBar$FocusInput),
+								_elm_lang$html$Html_Events$onBlur(_user$project$Components_SearchBar$UnfocusInput),
+								_user$project$Components_SearchBar$class(
+								_elm_lang$core$Native_List.fromArray(
+									[_user$project$Components_Classes$SearchInput])),
+								_elm_lang$html$Html_Attributes$value(model.searchValue)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$Components_SearchBar$classList(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchIcon, _1: true},
+										{ctor: '_Tuple2', _0: _user$project$Components_Classes$SearchIconFocused, _1: model.isFocused}
+									])),
+								_elm_lang$html$Html_Events$onClick(_user$project$Components_SearchBar$ClearSearchValue)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Icons$close]))
+					])));
 	});
 
 var _user$project$Screens_BusRoute_Model$model = F2(
@@ -13434,80 +13604,11 @@ var _user$project$Routing$view = function (pageModel) {
 var _user$project$Main$_p0 = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$Classes$appNamespace);
 var _user$project$Main$class = _user$project$Main$_p0.$class;
 var _user$project$Main$classList = _user$project$Main$_p0.classList;
-var _user$project$Main$viewNavIcon = F3(
-	function (currentPage, pageForIcon, icon) {
-		return A2(
-			_elm_lang$html$Html$a,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_user$project$Main$classList(
-					_elm_lang$core$Native_List.fromArray(
-						[
-							{ctor: '_Tuple2', _0: _user$project$Classes$HeaderNavIcon, _1: true},
-							{
-							ctor: '_Tuple2',
-							_0: _user$project$Classes$HeaderNavIconActive,
-							_1: _elm_lang$core$Native_Utils.eq(currentPage, pageForIcon)
-						}
-						])),
-					_elm_lang$html$Html_Attributes$href(
-					_user$project$Pages$url(pageForIcon))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[icon]));
-	});
 var _user$project$Main$Model = F3(
 	function (a, b, c) {
 		return {pageModel: a, currentPage: b, cache: c};
 	});
 var _user$project$Main$RetryLoad = {ctor: 'RetryLoad'};
-var _user$project$Main$viewFailure = A2(
-	_elm_lang$html$Html$div,
-	_elm_lang$core$Native_List.fromArray(
-		[
-			_user$project$Main$class(
-			_elm_lang$core$Native_List.fromArray(
-				[_user$project$Classes$FailureView]))
-		]),
-	_elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_user$project$Main$class(
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$Classes$ErrorMessage]))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('Something went wrong!')
-				])),
-			A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_user$project$Main$class(
-					_elm_lang$core$Native_List.fromArray(
-						[_user$project$Classes$ReloadButtonContainer]))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$button,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_user$project$Main$class(
-							_elm_lang$core$Native_List.fromArray(
-								[_user$project$Classes$ReloadButton])),
-							_elm_lang$html$Html_Events$onClick(_user$project$Main$RetryLoad)
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Retry')
-						]))
-				]))
-		]));
 var _user$project$Main$LoadPageFinish = F2(
 	function (a, b) {
 		return {ctor: 'LoadPageFinish', _0: a, _1: b};
@@ -13661,7 +13762,7 @@ var _user$project$Main$viewPage = function (model) {
 						_user$project$Routing$view(_p8))
 					]));
 		case 'Failure':
-			return _user$project$Main$viewFailure;
+			return _user$project$Components_ErrorMessage$view(_user$project$Main$RetryLoad);
 		default:
 			return _user$project$Components_Loading$view;
 	}
@@ -13677,20 +13778,7 @@ var _user$project$Main$view = function (model) {
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A2(
-				_elm_lang$html$Html$header,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_user$project$Main$class(
-						_elm_lang$core$Native_List.fromArray(
-							[_user$project$Classes$HeaderNav]))
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$FavoritesPage, _user$project$Icons$star),
-						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$BusRoutesPage, _user$project$Icons$bus),
-						A3(_user$project$Main$viewNavIcon, model.currentPage, _user$project$Pages$TrainRoutesPage, _user$project$Icons$train)
-					])),
+				_user$project$Components_NavBar$view(model.currentPage),
 				A2(
 				_elm_lang$html$Html$main$,
 				_elm_lang$core$Native_List.fromArray(

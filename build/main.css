@@ -24,48 +24,6 @@ a {
     position: relative;
 }
 
-.elm-cta-appHeaderNav {
-    height: 52px;
-    border-bottom: 1px solid #E1E8ED;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 32px;
-    width: 100%;
-    background-color: #fff;
-    position: fixed;
-    z-index: 3;
-    max-width: 768px;
-}
-
-.elm-cta-appHeaderNavIcon {
-    width: 24px;
-    height: 24px;
-    position: relative;
-    display: inline-block;
-    fill: #8899A6;
-    transition: transform 0.15s;
-    touch-action: none;
-}
-
-.elm-cta-appHeaderNavIcon:active {
-    transform: scale(1.2);
-}
-
-.elm-cta-appHeaderNavIcon:active:hover {
-    transform: scale(1.2);
-}
-
-.elm-cta-appPageContainer {
-    height: 100%;
-    padding-top: 52px;
-    position: relative;
-}
-
-.elm-cta-appHeaderNavIconActive {
-    fill: #1DA1F2;
-}
-
 .elm-cta-appPageTitle {
     height: 48px;
     font-weight: 300;
@@ -82,32 +40,10 @@ a {
     text-overflow: ellipsis;
 }
 
-.elm-cta-appFailureView {
-    background-color: #fff;
+.elm-cta-appPageContainer {
     height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 32px;
-}
-
-.elm-cta-appErrorMessage {
-    color: #8899A6;
-    font-size: 20px;
-}
-
-.elm-cta-appReloadButtonContainer {
-    padding: 32px 0;
-}
-
-.elm-cta-appReloadButton {
-    border: 1px solid #1DA1F2;
-    color: #1DA1F2;
-    text-transform: uppercase;
-    background-color: transparent;
-    font-size: 16px;
-    padding: 8px 16px;
-    outline: 0;
+    padding-top: 52px;
+    position: relative;
 }
 
 .Screens_BusRoutesRouteItem {
@@ -581,8 +517,12 @@ a {
     fill: #8899A6;
 }
 
+.ComponentsSearchIconFocused {
+    fill: #1DA1F2;
+}
+
 .ComponentsSearchInput {
-    flex-grow: 1;
+    width: calc(100% - 40px);
     margin: 0;
     border: 0;
     padding: 4px 8px;
@@ -596,4 +536,72 @@ a {
     display: flex;
     border-bottom: 1px solid #E1E8ED;
     align-items: center;
+}
+
+.ComponentsSearchBarContainerFocused {
+    border-bottom-color: #1DA1F2;
+}
+
+.ComponentsHeaderNav {
+    height: 52px;
+    border-bottom: 1px solid #E1E8ED;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px;
+    width: 100%;
+    background-color: #fff;
+    position: fixed;
+    z-index: 3;
+    max-width: 768px;
+}
+
+.ComponentsHeaderNavIcon {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    display: inline-block;
+    fill: #8899A6;
+    transition: transform 0.15s;
+    touch-action: none;
+}
+
+.ComponentsHeaderNavIcon:active {
+    transform: scale(1.2);
+}
+
+.ComponentsHeaderNavIcon:active:hover {
+    transform: scale(1.2);
+}
+
+.ComponentsHeaderNavIconActive {
+    fill: #1DA1F2;
+}
+
+.ComponentsFailureView {
+    background-color: #fff;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 32px;
+}
+
+.ComponentsErrorMessage {
+    color: #8899A6;
+    font-size: 20px;
+}
+
+.ComponentsReloadButtonContainer {
+    padding: 32px 0;
+}
+
+.ComponentsReloadButton {
+    border: 1px solid #1DA1F2;
+    color: #1DA1F2;
+    text-transform: uppercase;
+    background-color: transparent;
+    font-size: 16px;
+    padding: 8px 16px;
+    outline: 0;
 }
