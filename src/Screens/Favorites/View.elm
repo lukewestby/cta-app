@@ -88,7 +88,7 @@ viewEmpty =
             [ class [ EmptyMessageLink ]
             , href <| Pages.url Pages.TrainRoutesPage
             ]
-            [ text "train station" ]
+            [ text "train stations" ]
         , span []
             [ text " that you take frequently." ]
         ]
