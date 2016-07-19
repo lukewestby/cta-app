@@ -3,8 +3,6 @@ module Main exposing (..)
 import Dict exposing (Dict)
 import Utils exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import Html.App as HtmlApp
 import Navigation
 import Routing
@@ -12,7 +10,8 @@ import Pages
 import Html.CssHelpers
 import Classes exposing (Classes(..), appNamespace)
 import Components.Loading as LoadingComponent
-import Icons
+import Components.NavBar as NavBar
+import Components.ErrorMessage as ErrorMessage
 
 
 -- MODEL
@@ -101,33 +100,6 @@ update msg model =
 -- VIEW
 
 
-viewNavIcon : Pages.Page -> Pages.Page -> Html Msg -> Html Msg
-viewNavIcon currentPage pageForIcon icon =
-    a
-        [ classList
-            [ ( HeaderNavIcon, True )
-            , ( HeaderNavIconActive, currentPage == pageForIcon )
-            ]
-        , href <| Pages.url pageForIcon
-        ]
-        [ icon ]
-
-
-viewFailure : Html Msg
-viewFailure =
-    div [ class [ FailureView ] ]
-        [ div [ class [ ErrorMessage ] ]
-            [ text "Something went wrong!" ]
-        , div [ class [ ReloadButtonContainer ] ]
-            [ button
-                [ class [ ReloadButton ]
-                , onClick RetryLoad
-                ]
-                [ text "Retry" ]
-            ]
-        ]
-
-
 viewPage : Model -> Html Msg
 viewPage model =
     case model.pageModel of
@@ -141,7 +113,7 @@ viewPage model =
                 ]
 
         Failure _ ->
-            viewFailure
+            ErrorMessage.view RetryLoad
 
         _ ->
             LoadingComponent.view
@@ -150,11 +122,7 @@ viewPage model =
 view : Model -> Html Msg
 view model =
     div [ class [ AppContainer ] ]
-        [ header [ class [ HeaderNav ] ]
-            [ viewNavIcon model.currentPage Pages.FavoritesPage Icons.star
-            , viewNavIcon model.currentPage Pages.BusRoutesPage Icons.bus
-            , viewNavIcon model.currentPage Pages.TrainRoutesPage Icons.train
-            ]
+        [ NavBar.view model.currentPage
         , main' [ class [ PageContainer ] ]
             [ viewPage model
             ]

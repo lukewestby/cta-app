@@ -12,3 +12,12 @@ type Classes
     | SearchIcon
     | SearchInput
     | SearchBarContainer
+    | SearchIconFocused
+    | SearchBarContainerFocused
+    | HeaderNav
+    | HeaderNavIcon
+    | HeaderNavIconActive
+    | FailureView
+    | ErrorMessage
+    | ReloadButtonContainer
+    | ReloadButton
