@@ -1,17 +1,19 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Dict exposing (Dict)
 import Utils exposing (..)
 import Html exposing (..)
 import Html.App as HtmlApp
+import Html.CssHelpers
 import Navigation
+import NetworkConnection exposing (Connection(..))
 import Routing
 import Pages
-import Html.CssHelpers
 import Classes exposing (Classes(..), appNamespace)
 import Components.Loading as LoadingComponent
 import Components.NavBar as NavBar
 import Components.ErrorMessage as ErrorMessage
+import Icons
 
 
 -- MODEL
@@ -20,6 +22,7 @@ import Components.ErrorMessage as ErrorMessage
 type alias Model =
     { pageModel : LoadState String Routing.PageModel
     , currentPage : Pages.Page
+    , connection : Connection
     , cache : Dict String Routing.PageModel
     }
 
@@ -32,13 +35,18 @@ type Msg
     = PageMsg Pages.Page Routing.PageMsg
     | LoadPageFinish Bool (Result String Routing.PageModel)
     | RetryLoad
+    | ConnectionChanged Connection
 
 
 init : Pages.Page -> ( Model, Cmd Msg )
 init page =
-    ( { pageModel = Loading, currentPage = page, cache = Dict.empty }
-    , Routing.load page
-        |> performSucceed (LoadPageFinish (Routing.isCacheable page))
+    ( { pageModel = Loading, currentPage = page, cache = Dict.empty, connection = Online }
+    , Cmd.batch
+        [ Routing.load page
+            |> performSucceed (LoadPageFinish (Routing.isCacheable page))
+        , NetworkConnection.connection
+            |> performFailproof ConnectionChanged
+        ]
     )
 
 
@@ -81,6 +89,11 @@ update msg model =
         RetryLoad ->
             init model.currentPage
 
+        ConnectionChanged connection ->
+            ( { model | connection = connection }
+            , Cmd.none
+            )
+
         PageMsg intendedPage subMsg ->
             case ( intendedPage == model.currentPage, model.pageModel ) of
                 ( True, Success pageModel ) ->
@@ -119,13 +132,28 @@ viewPage model =
             LoadingComponent.view
 
 
+viewOffline : Html msg
+viewOffline =
+    div [ class [ MessageContainer ] ]
+        [ span [ class [ MessageIcon ] ] [ Icons.warning ]
+        , text "Lost internet connection"
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div [ class [ AppContainer ] ]
         [ NavBar.view model.currentPage
-        , main' [ class [ PageContainer ] ]
-            [ viewPage model
+        , main'
+            [ classList
+                [ ( PageContainer, True )
+                , ( PageWithMessage, model.connection == Offline )
+                ]
             ]
+            <| flatten
+                [ ( True, \_ -> viewPage model )
+                , ( model.connection == Offline, \_ -> viewOffline )
+                ]
         ]
 
 
@@ -139,12 +167,19 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.pageModel of
-        Success pageModel ->
-            Sub.map (PageMsg model.currentPage) (Routing.subscriptions pageModel)
+    let
+        pageSub =
+            case model.pageModel of
+                Success pageModel ->
+                    Sub.map (PageMsg model.currentPage) (Routing.subscriptions pageModel)
 
-        _ ->
-            Sub.none
+                _ ->
+                    Sub.none
+    in
+        Sub.batch
+            [ pageSub
+            , NetworkConnection.connectionChanges ConnectionChanged
+            ]
 
 
 

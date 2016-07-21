@@ -72,17 +72,22 @@ performSucceed onFinished task =
         |> Task.perform never onFinished
 
 
+performFailproof : (a -> msg) -> Task Never a -> Cmd msg
+performFailproof tagger task =
+    Task.perform never tagger task
+
+
 constant : msg -> Cmd msg
 constant msg =
     Task.succeed () |> performSucceed (always msg)
 
 
-flatten : List ( Bool, a ) -> List a
+flatten : List ( Bool, () -> a ) -> List a
 flatten =
     List.filterMap
         <| \( pred, val ) ->
             if pred then
-                Just val
+                Just <| val ()
             else
                 Nothing
 
