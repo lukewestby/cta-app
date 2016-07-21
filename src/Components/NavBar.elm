@@ -65,9 +65,11 @@ viewNavIcon isActive pageForIcon icon =
 view : Page -> Html msg
 view currentPage =
     header [ class [ HeaderNav ] ]
-        [ viewNavIcon (isFavoritesLinkActive currentPage) Pages.FavoritesPage Icons.star
-        , viewNavIcon (isBusLinkActive currentPage) Pages.BusRoutesPage Icons.bus
-        , viewNavIcon (isTrainLinkActive currentPage) Pages.TrainRoutesPage Icons.train
+        [ div [ class [ HeaderNavInner ] ]
+            [ viewNavIcon (isFavoritesLinkActive currentPage) Pages.FavoritesPage Icons.star
+            , viewNavIcon (isBusLinkActive currentPage) Pages.BusRoutesPage Icons.bus
+            , viewNavIcon (isTrainLinkActive currentPage) Pages.TrainRoutesPage Icons.train
+            ]
         ]
 
 

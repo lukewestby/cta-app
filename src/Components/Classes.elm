@@ -15,6 +15,7 @@ type Classes
     | SearchIconFocused
     | SearchBarContainerFocused
     | HeaderNav
+    | HeaderNavInner
     | HeaderNavIcon
     | HeaderNavIconActive
     | FailureView
