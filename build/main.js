@@ -13935,6 +13935,9 @@ var _user$project$Main$urlUpdate = F2(
 			};
 		}
 	});
+var _user$project$Main$reloadCurrentPage = function (model) {
+	return A2(_user$project$Main$urlUpdate, model.currentPage, model);
+};
 var _user$project$Main$PageMsg = F2(
 	function (a, b) {
 		return {ctor: 'PageMsg', _0: a, _1: b};
@@ -13973,25 +13976,39 @@ var _user$project$Main$update = F2(
 					};
 				}
 			case 'RetryLoad':
-				return _user$project$Main$init(model.currentPage);
+				return _user$project$Main$reloadCurrentPage(model);
 			case 'ConnectionChanged':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{connection: _p2._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var _p6 = _p2._0;
+				if (_elm_lang$core$Native_Utils.eq(model.connection, _lukewestby$network_connection$NetworkConnection$Offline) && _elm_lang$core$Native_Utils.eq(_p6, _lukewestby$network_connection$NetworkConnection$Online)) {
+					var _p5 = _user$project$Main$reloadCurrentPage(model);
+					var nextModel = _p5._0;
+					var nextCmd = _p5._1;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							nextModel,
+							{connection: _p6}),
+						_1: nextCmd
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{connection: _p6}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			default:
-				var _p5 = {
+				var _p7 = {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.eq(_p2._0, model.currentPage),
 					_1: model.pageModel
 				};
-				if (((_p5.ctor === '_Tuple2') && (_p5._0 === true)) && (_p5._1.ctor === 'Success')) {
-					var _p6 = A2(_user$project$Routing$update, _p2._1, _p5._1._0);
-					var pageModel = _p6._0;
-					var pageCmd = _p6._1;
+				if (((_p7.ctor === '_Tuple2') && (_p7._0 === true)) && (_p7._1.ctor === 'Success')) {
+					var _p8 = A2(_user$project$Routing$update, _p2._1, _p7._1._0);
+					var pageModel = _p8._0;
+					var pageCmd = _p8._1;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -14010,10 +14027,10 @@ var _user$project$Main$update = F2(
 		}
 	});
 var _user$project$Main$viewPage = function (model) {
-	var _p7 = model.pageModel;
-	switch (_p7.ctor) {
+	var _p9 = model.pageModel;
+	switch (_p9.ctor) {
 		case 'Success':
-			var _p8 = _p7._0;
+			var _p10 = _p9._0;
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -14041,13 +14058,13 @@ var _user$project$Main$viewPage = function (model) {
 								_elm_lang$core$Native_List.fromArray(
 									[
 										_elm_lang$html$Html$text(
-										_user$project$Routing$title(_p8))
+										_user$project$Routing$title(_p10))
 									]))
 							])),
 						A2(
 						_elm_lang$html$Html_App$map,
 						_user$project$Main$PageMsg(model.currentPage),
-						_user$project$Routing$view(_p8))
+						_user$project$Routing$view(_p10))
 					]));
 		case 'Failure':
 			return _user$project$Components_ErrorMessage$view(_user$project$Main$RetryLoad);
@@ -14088,14 +14105,14 @@ var _user$project$Main$view = function (model) {
 							{
 							ctor: '_Tuple2',
 							_0: true,
-							_1: function (_p9) {
+							_1: function (_p11) {
 								return _user$project$Main$viewPage(model);
 							}
 						},
 							{
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.eq(model.connection, _lukewestby$network_connection$NetworkConnection$Offline),
-							_1: function (_p10) {
+							_1: function (_p12) {
 								return _user$project$Main$viewOffline;
 							}
 						}
@@ -14104,12 +14121,12 @@ var _user$project$Main$view = function (model) {
 };
 var _user$project$Main$subscriptions = function (model) {
 	var pageSub = function () {
-		var _p11 = model.pageModel;
-		if (_p11.ctor === 'Success') {
+		var _p13 = model.pageModel;
+		if (_p13.ctor === 'Success') {
 			return A2(
 				_elm_lang$core$Platform_Sub$map,
 				_user$project$Main$PageMsg(model.currentPage),
-				_user$project$Routing$subscriptions(_p11._0));
+				_user$project$Routing$subscriptions(_p13._0));
 		} else {
 			return _elm_lang$core$Platform_Sub$none;
 		}
