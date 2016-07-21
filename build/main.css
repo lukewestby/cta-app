@@ -571,15 +571,25 @@ a {
 .ComponentsHeaderNav {
     height: 52px;
     border-bottom: 1px solid #E1E8ED;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    position: fixed;
+    z-index: 3;
+}
+
+.ComponentsHeaderNavInner {
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 32px;
     width: 100%;
-    background-color: #fff;
-    position: fixed;
+    position: relative;
     z-index: 3;
     max-width: 768px;
+    margin: 0 auto;
 }
 
 .ComponentsHeaderNavIcon {

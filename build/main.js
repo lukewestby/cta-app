@@ -11342,6 +11342,7 @@ var _user$project$Components_Classes$ErrorMessage = {ctor: 'ErrorMessage'};
 var _user$project$Components_Classes$FailureView = {ctor: 'FailureView'};
 var _user$project$Components_Classes$HeaderNavIconActive = {ctor: 'HeaderNavIconActive'};
 var _user$project$Components_Classes$HeaderNavIcon = {ctor: 'HeaderNavIcon'};
+var _user$project$Components_Classes$HeaderNavInner = {ctor: 'HeaderNavInner'};
 var _user$project$Components_Classes$HeaderNav = {ctor: 'HeaderNav'};
 var _user$project$Components_Classes$SearchBarContainerFocused = {ctor: 'SearchBarContainerFocused'};
 var _user$project$Components_Classes$SearchIconFocused = {ctor: 'SearchIconFocused'};
@@ -11671,21 +11672,32 @@ var _user$project$Components_NavBar$view = function (currentPage) {
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A3(
-				_user$project$Components_NavBar$viewNavIcon,
-				_user$project$Components_NavBar$isFavoritesLinkActive(currentPage),
-				_user$project$Pages$FavoritesPage,
-				_user$project$Icons$star),
-				A3(
-				_user$project$Components_NavBar$viewNavIcon,
-				_user$project$Components_NavBar$isBusLinkActive(currentPage),
-				_user$project$Pages$BusRoutesPage,
-				_user$project$Icons$bus),
-				A3(
-				_user$project$Components_NavBar$viewNavIcon,
-				_user$project$Components_NavBar$isTrainLinkActive(currentPage),
-				_user$project$Pages$TrainRoutesPage,
-				_user$project$Icons$train)
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Components_NavBar$class(
+						_elm_lang$core$Native_List.fromArray(
+							[_user$project$Components_Classes$HeaderNavInner]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_user$project$Components_NavBar$viewNavIcon,
+						_user$project$Components_NavBar$isFavoritesLinkActive(currentPage),
+						_user$project$Pages$FavoritesPage,
+						_user$project$Icons$star),
+						A3(
+						_user$project$Components_NavBar$viewNavIcon,
+						_user$project$Components_NavBar$isBusLinkActive(currentPage),
+						_user$project$Pages$BusRoutesPage,
+						_user$project$Icons$bus),
+						A3(
+						_user$project$Components_NavBar$viewNavIcon,
+						_user$project$Components_NavBar$isTrainLinkActive(currentPage),
+						_user$project$Pages$TrainRoutesPage,
+						_user$project$Icons$train)
+					]))
 			]));
 };
 
