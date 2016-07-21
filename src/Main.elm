@@ -50,6 +50,11 @@ init page =
     )
 
 
+reloadCurrentPage : Model -> ( Model, Cmd Msg )
+reloadCurrentPage model =
+    urlUpdate model.currentPage model
+
+
 urlUpdate : Pages.Page -> Model -> ( Model, Cmd Msg )
 urlUpdate page model =
     case Dict.get (Pages.url page) model.cache of
@@ -87,12 +92,21 @@ update msg model =
                     )
 
         RetryLoad ->
-            init model.currentPage
+            reloadCurrentPage model
 
         ConnectionChanged connection ->
-            ( { model | connection = connection }
-            , Cmd.none
-            )
+            if (model.connection == Offline) && (connection == Online) then
+                let
+                    ( nextModel, nextCmd ) =
+                        reloadCurrentPage model
+                in
+                    ( { nextModel | connection = connection }
+                    , nextCmd
+                    )
+            else
+                ( { model | connection = connection }
+                , Cmd.none
+                )
 
         PageMsg intendedPage subMsg ->
             case ( intendedPage == model.currentPage, model.pageModel ) of
