@@ -83,3 +83,11 @@ loading =
         </circle>
     </g>
 </svg>"""
+
+
+warning : Html msg
+warning =
+    fromSvgString """
+<svg width="100%" height="100%" viewBox="0 0 449 384" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <path d="M445.7,358.2 L239.1,8.7 C236.2,3.7 230.8,0 225,0 C219.1,0 213.7,3.7 210.9,8.7 L4.3,358.2 C1.5,363.2 -0.5,371.2 2.4,376.1 C5.3,381 10.6,384 16.4,384 L433.5,384 C439.3,384 444.6,381 447.5,376.1 C450.5,371.2 448.5,363.1 445.7,358.2 L445.7,358.2 Z M257,336 L193,336 L193,288 L257,288 L257,336 L257,336 Z M257,256 L193,256 L193,112 L257,112 L257,256 L257,256 Z" stroke="none" fill-rule="evenodd"></path>
+</svg>"""

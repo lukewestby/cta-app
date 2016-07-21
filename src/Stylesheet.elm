@@ -64,6 +64,29 @@ css =
                     , paddingTop (px 52)
                     , position relative
                     ]
+                , (.) PageWithMessage
+                    [ paddingBottom (px 40)
+                    ]
+                , (.) MessageContainer
+                    [ position fixed
+                    , bottom zero
+                    , left zero
+                    , right zero
+                    , height (px 40)
+                    , displayFlex
+                    , alignItems center
+                    , property "justify-content" "center"
+                    , backgroundColor (hex red)
+                    , color (hex "#fff")
+                    , textTransform uppercase
+                    , fontWeight bold
+                    ]
+                , (.) MessageIcon
+                    [ height (px 16)
+                    , width (px 19)
+                    , marginRight (px 8)
+                    , property "fill" "#fff"
+                    ]
                 ]
             , BusRoutes.styles
             , BusRoute.styles

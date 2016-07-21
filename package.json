@@ -1,0 +1,23 @@
+{
+  "name": "elm-cta-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "elm-css ./src/Stylesheet.elm --output ./build/",
+    "build:js": "elm-make ./src/Main.elm --output ./build/main.js",
+    "build": "npm run build:css && npm run build:js",
+    "watch": "nodemon --exec \"npm run build\" -e elm",
+    "serve": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukewestby/cta-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukewestby/cta-app/issues"
+  },
+  "homepage": "https://github.com/lukewestby/cta-app#readme"
+}

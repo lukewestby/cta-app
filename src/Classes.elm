@@ -10,4 +10,7 @@ type Classes
     = AppContainer
     | PageTitle
     | PageContainer
+    | PageWithMessage
     | PageTitleInner
+    | MessageContainer
+    | MessageIcon
