@@ -46,6 +46,32 @@ a {
     position: relative;
 }
 
+.elm-cta-appPageWithMessage {
+    padding-bottom: 40px;
+}
+
+.elm-cta-appMessageContainer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #D0021B;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.elm-cta-appMessageIcon {
+    height: 16px;
+    width: 19px;
+    margin-right: 8px;
+    fill: #fff;
+}
+
 .Screens_BusRoutesRouteItem {
     padding: 0 32px;
     height: 64px;
