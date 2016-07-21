@@ -47,15 +47,24 @@ styles =
         , (.) HeaderNav
             [ height (px 52)
             , borderBottom3 (px 1) solid (hex lightGray)
+            , top zero
+            , left zero
+            , right zero
+            , backgroundColor (hex "#fff")
+            , position fixed
+            , property "z-index" "3"
+            ]
+        , (.) HeaderNavInner
+            [ height (pct 100)
             , displayFlex
             , property "justify-content" "space-between"
             , property "align-items" "center"
             , padding2 zero (px 32)
             , width (pct 100)
-            , backgroundColor (hex "#fff")
-            , position fixed
+            , position relative
             , property "z-index" "3"
             , maxWidth (px 768)
+            , margin2 zero auto
             ]
         , (.) HeaderNavIcon
             [ width (px 24)
